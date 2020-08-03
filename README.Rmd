@@ -7,6 +7,87 @@ output: github_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Documentación
+#### Documentación
 
 Revisar para completar
+
+
+### Analisis comunitario de especies preliminar
+
+Analisis preliminar: solo reagrupacion de datos **exploracion datos, analisis preliminar.R**
+
+Utilización del paquete vegan, archivo **AnalisisVegan.R**
+
+
+### Ocupancia monitoreo visual
+
+
+#### Preparación de capas de trabajo
+
+Cada capa de trabajo para ocupancia se realizó de forma independiente y fueron determinadas en base a las preguntas de investigación. El archivo Prep_capas muestra este trabajo tomando como referencia la capa "altura" que determina la resolucion del raster.
+
+Se utilizó un shape file de Chile politico contemplando frontera nacional y división de comunas.Se trabajo solo con la máscara de las comunas de valparaiso, vinña del mar y concon. Las capas creadas fueron distancia a la costa a partir de la frontera de chile por el oeste, rios de chile descargados de divagis, distancia a cuerpos de agua al interior de las ciudades, distancia a caminos (NASA:build_up), distancia a construccion (NASA:build_up) y poblacion de divagis.
+la capa build up de la nasa era una y fue dividida en dos: caminos y contruccion /imagenes_sat.R
+creacion de capa "distancias" que incluye todas las variables.
+
+#### Preparación de datos para ocupancia
+
+Dada la confeccion del paquete DiversityOccupancy, los datos deben estar ordenados de una forma en particular. Para esto se debió crear un data frame para los registros de especies por cada uno de los tres dias de muestreo por sitio, un data frame para las variables de ocupancia para cada sitio y una lista de todas las variables de detección para los momentos en que se realizan los registros de especies. archivo Prep datos_Occu_punto.R
+
+Archivos para ocupancia: (capas deteccion, ocupancia y registros)
+
+INVIERNO
+Occdata_regInv.rds
+Occdata_ocu.rds
+Occdata_detInv.rds 
+
+PRIMAVERA
+Occdata_regPRIM.rds
+Occdata_ocu.rds
+Occdata_detPrim.rds
+
+Datos presencias:
+
++ Invierno: /home/giorgia/Documents/Doctorado Tesis/Monitoreo aves/Muestreo Aves jun-jul 2019/Monitoreo_punto/Reg_completo_aves.csv
+
++ Primavera: /home/giorgia/Documents/Doctorado tesis/Monitoreo aves/Muestreo aves sep-oct 2019/Monitoreo punto/Registro_aves_veranoFINAL.csv
+
+#### Ocupancia
+
+El análisis de ocupancia se realizó para los datos de invierno y primavera por separado. Los análisis se enceuntran en los archivos Analisis_Occu_Invierno.R y Analisis_Occu
+
+En esos mismo archivos se determinó la ocupancia y deteccion de las 6 especies usadas en las encuestas para cada ambiente
+
+
+Existe un archivo llamado Prueba_funcion_nueva.R que armó Derek para ocupancia de varias especies, en donde se continua con la siguiente especies aun cuando la anterior no haya convergido en un modelo.
+
+#### Junio
+Se realiza ocupancia con función nueva utilizando nuevas variables ambientales generadas en **MapaYuryi.R** que corresponde a capas de cobertura vegetal en buffers (distancia desde los puntos de muestreo), archivo de salida que incluye variables ambientales y buffers por distancia: **Occdata_ocu.rds** y un leaflet al final del código para ver las capas por cada sitio en el mapa.
+La ocupancia se realiza en el archivo **Occu37sp.R** utilizando las 37 especies primero para la temporada de invierno. Se genera un data frame con el resumen de los modelos, el cual se exporta como csv **Resumen_ocuInv_buffer.csv** ubicado en la carpeta de ocupancia.
+Se determinó a mano los modelos con valores significativos y se incluyó el valor de SE en **Resumen_ocuInv_buffer.csv** mediante excel.
+El elemento **ResModelosOcuBuffer.csv** muestra el resultado de los modelos de ocupancia por distintcas capas de buffer, lo q determina las escalas. A partir de esta tabla y según los valores de AICc, se eligieron los valores más bajos para determinar la escala a trabajar
+Se corrió ocupancia con laas variables ambientales y los porcentajes de cobertura vegetal definidos para la escala buffer de 2200m radio, todos juntos. 
+Resultados están en **OccuInv37_final.rds** y **OccuPrim37_final.rds**
+El resumen de resultados esta en una planilla excel llamada **Resumen_ocu_37total.xlsx** ubicada en la carpeta **Analisis_Occu_punto**.
+
+Para poder comparar el efecto de los estimadores por igual se estandarizaron las variables mediante un escalamiento (también en **Occu37sp.R**). El escalamiento se realizó para primavera e invierno y se corrió la ocupancia nuevamente para las variables seleccionadas que se habian identificado como las más importantes (algunas variables no se presentaban en el mapa revisado de buffers del leaflet). Se guardan los valores de estimadores en un data frame: PorSppInv- PorSppPrim para graficar tipo meta-analisis (guardado como **meta_ocupancia.rds**, incluuir funcion **FUN**)
+
+existe el archivo **Prueba_Funcion_Nueva.R** que contiene otros analisis de ocupancia realizados
+
+
+
+Se genera un nuevo archivo llamado **PredOccuAmb_37sp.R** donde se rescatan los datos de predicciones de la ocupancia realizada y se arman graficos de todas las especies para mostrar el rango de ocupancia dde las especies para cada ambiente para primavera e invierno.
+Se modificó la funcion de ocupancia, ahora llamada DiversityOccupancy::batchoccu3, en donde se fuerza a generar un modelo con el AMBIENTE para cada especie. Se ve la oacupancia por sitio
+
+
+
+#### Ordenando los resultados y buscando una explicacion: 1. Marco conceptual rasgos funcionales
+
+Se crearon dos archivos: 
+1. **Funcionales aves.R** 
+Se toman los nombres de las 37sp desde el archivo  Bird_guilts.xlsx, se descargaron los rasgos funcionales de aves (alimenticios y de habitat) y se filtro para las 37 aves trabajadas (comun a ambas temporadas)
+2. **Clusters ocupancia.R** para ver la agrupacion de especies segun variables de ocupancia para invierno y primavera y luego generar los clusters para rasgos funcionales
+
+
+
+

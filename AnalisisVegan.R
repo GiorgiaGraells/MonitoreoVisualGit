@@ -127,8 +127,9 @@ plot(vare.mds.Prim, type = "t", display = "sites")
 #...................
 
 
-#cluster analysis- "single", "complete", or "average" type: INVIERNO
+#cluster analysis- "single", "complete", or "average" type
 
+#invierno
 dis.Inv <- vegdist(AvesInv)
 cluster.Inv <- hclust(dis.Inv, "complete")
 plot(cluster.Inv)
@@ -158,7 +159,7 @@ grp <- cutree(cluster.Prim, 3)
 #Eigenvector methods -PCA CA
 
 #Principal components analysis can be run as:
-vare.pca <- rda(Aves)
+vare.pca <- rda(AvesPrim)
 vare.pca
 
 plot(vare.pca)
@@ -172,7 +173,7 @@ vare.pca <- rda(Aves, scale = TRUE)
 vare.pca
 
 plot(vare.pca, scaling = 3)
-dim(Aves)
+dim(AvesPrim)
 
 #####
 #Correspondence analysis is very similar to pca:
@@ -196,8 +197,8 @@ plot(vare.dca, display="sites", cex = 0.5)
 
 ##################
 #################  
-# Environmental interpretation
-
+# Environmental interpretation (imagen 900x600)
+#inv
 vare.mds <- metaMDS(AvesInv, trace = FALSE)
 ef <- envfit(ord=vare.mds, env=Amb, permu = 999)
 ef
@@ -209,10 +210,17 @@ ef <- envfit(vare.mds~ CobVeg + Distancia_Costa+Altura, Amb, perm=999) #Variable
 plot(vare.mds, display="site")
 plot(ef)
 
+#prim
 vare.mds2 <-metaMDS(AvesPrim,trace=FALSE)
-ef <- envfit(vare.mds ~ CobVeg + Distancia_Costa+Altura, Amb) #Variables significativas <0.001
-plot(vare.mds, display = "sites")
-plot(ef, p.max = 0.05)
+ef2 <- envfit(ord=vare.mds, env=Amb, permu = 999) #Variables significativas <0.001
+ef2
+plot(vare.mds2, display = "sites")
+plot(ef2, p.max = 0.05)
+#para variables significativas
+ef2 <- envfit(vare.mds2~ CobVeg + Distancia_Costa+Altura, Amb, perm=999) #Variables significativas <0.001
+plot(vare.mds2, display="site")
+plot(ef2)
+
 
 #plot(ef)
 tmp <- with(Amb, ordisurf(vare.mds, CobVeg, add = TRUE))

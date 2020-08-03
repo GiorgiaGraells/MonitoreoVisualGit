@@ -1,0 +1,166 @@
+---
+title: "Diversidad de aves"
+author: "Giorgia Graells"
+date: "5/4/2020"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+bibliography: /home/giorgia/Documents/Doctorado tesis/Review Urban ecology/CoastalReviewGit/tesis_ref_2019sept.bib
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(ggplot2)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Urbanizacion
+
+Centrar en especies marinas y su interaccion con las terrestres
+
+Seasonal patterns of urban bird diversity in a Mediterranean coastal city: the positive role of open green spaces (Tzortzakaki et al. 2018)
+
+Existen espacios urbanos creados por el hombre que presentan ventajas para las aves... como es el caso de  los espacio abandonados en las ciudades para especies terrestres
+
+Hipotesis: La interacción entre aves marinas y terrestres ocurre en un ecotono intervenido por la urbanización el cual pudiera presentar elementos positivos y negativos para la presencia de las distintas especies en basae a sus necesidades de habitat y alimenticias.
+
+
+
+
+
+
+
+
+
+
+
+
+
+### Extraido de: @lepczyk2017global
+
+Because animals respond differentially to urbaniza-tion, they are often classified into the following categories: (1)urban avoiders,which are species that are generally absent in highly developed areas, but can bepresent in natural areas embedded in urban area; (2)urban utilizers, which arespecies that use urban resources and conditions but whose populations requireimmigration from natural areas; and (3)urban dwellers, which are species thatreproduce and persist in urban areas (@fischer2015categorizing).
+
+
+The presence and distribution of bird species inside a city depend, amongother factors, on the biogeographic species pools, the natural history of species,and the nature and distribution of habitat-related traits (Lepczyk et al.2008;MacGregor-Fors and Scondube2011; McCaffrey et al.2012). In general,omnivorous, granivorous, and cavity-nesting species have shown the strongestassociations with urban areas in temperate areas (Chace and Walsh2006).However, insectivorous, frugivorous, and nectarivorous species are also predom-inant in some tropical and subtropical urban areas (Brazil and Mexico, Singapore,Australia, respectively; Ortega-A ́lvarez and MacGregor-Fors2011a,b).
+
+#### Global and regional drivers
+
+Human population size andland-cover class had the strongest correspondence with the number of bird species.The age of the cities played a tertiary role suggesting human history has a muchmore limited role relative to the physical features of the city.
+Increment habitat heterogeneity with urbanization (Desrochers et al.2011)
+
+#### Season drivers
+
+Breeding season and migration
+
+#### Local scale drivers
+
+As predicted by thespecies-area relationship, urban bird species richness is strongly correlated witharea, both at the scale of the entire city (MacGregor-Fors et al.2011; Ferencet al.2014a) and within individual urban habitat patches (Fernandez-Juricic andJokimaki2001;M€ortberg2001; Chamberlain et al.2007; Murgui2007; van Heeziket al.2013). Within cities, bird species density was highest in cities with the lowestproportion of urban land cover (Aronson et al.2014), indicating that the provisionof green space at the city scale is crucial to bird species conservation in cities(Chace and Walsh2006; Evans et al.2009). 
+
+Within cities a number of factors have been suggested that determine theirsuitability for birds. These factors include (1) the presence and size of remnant(native) vegetation patches, (2) the presence of nonnative predators, (3) the struc-ture and floristic attributes of planted vegetation, and (4) supplementary feeding byhumans (Chace and Walsh2006).
+
+
+### Extraído de @bellocq2017urbanization
+
+Patrones espaciales y temporales en argentina. Se muestran relaciones interesantes con la latitud, pero rescato gráficos de riqueza de aves en relacion a distancia de centros urbanos o a cubierta de concreto. Por último un gráfico de persistencia de especies en epoca reproductiva y no reproductiva (0 a 1). Detalle de la figura: "Interannual variability of bird community composition along the urban gradient of Mardel Plata city, showing the values of persistence during the breeding and nonbreeding seasons.Persistence values vary from 0 (no species were recorded in all 3 years) to 1 (all species wererecorded all 3 years). Thecontinuous lineindicates that the level of persistence was the same inboth periods. Adapted from Leveau and Leveau (2012)"
+
+
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+
+AvesInv <- read_csv("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/Muestreo Aves jun-jul 2019/Monitoreo_punto/Reg_completo_aves.csv") %>% dplyr::mutate(Especie = str_trim(str_remove_all(Especie,pattern = "JUVENIL")))
+AvesPrim <- read_csv("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/Muestreo aves sep-oct 2019/Monitoreo punto/Registro_aves_veranoFINAL.csv")
+```
+
+
+
+###Metodología
+
+
+
+Orden de datos en donde todas las presencia de la base de datos quedan como abundancias de cada especie para cada sitio muestreado.
+
+Se calculó la riqueza mínima y máxima de especies y la riqueza acumulada de especies (100 permutaciones) por temporada estudiada.
+
+Se calculó el índice de diversidad de Shannon para especies de aves por cada sitio por temporada de muestreo. Se comparó la diferencia entre la diversidad de invierno y primavera revisando su aumento o disminución para cada sitio estudiado. Se comparó la diversidad por ambientes para cada temporada estudiada.
+
+NMDS:
+Análisis de cluster a partir de matriz de dissimilaridades. Separación de grupos a partir de dendrograma
+
+seleccion variables ambientales mediante stepwise (funcion ordistep) para las dos temporadas de estudio
+
+#Resultados
+
+#### Caracterización de sitios de muestreo
+
+```{r, fig.height=8, fig.width=7}
+Caract_amb <-read_rds ("Caract_amb.rds")
+
+
+
+ggplot(Caract_amb, aes(x = AMBIENTE, y = Media)) + geom_col(aes(fill = fct_reorder(Variable, Media, .desc=TRUE)), position = "dodge") + geom_errorbar(aes(group = fct_reorder(Variable, Media, .desc=TRUE), ymax = Media + SD, ymin = Media - SD), position = "dodge") + facet_wrap(~AMBIENTE, scales = "free_x", nrow = 3) + theme_bw()+ labs(fill="Variables")+ xlab("Ambientes")+ ylab("Promedio porcentaje cobertura")
+
+
+```
+
+#### Aves
+
+Un total de 54 especies de aves fueron identificadas en los sitios muestreados. De estas xx fueron vistas durante la epoca de invierno y xx durante la primavera. Sólo 37 especies se mantuvieron presentes durante ambas temporadas de muestreo
+
+#### Ocupancia aves
+
+```{r, fig.height=7,fig.width=8}
+#extraído de Occu37sp.R
+
+FUNS <- function(x){
+  abs(diff(range(x)))
+}
+meta_ocupancia <- readRDS("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/MonitoreoVisualGit/meta_ocupancia.rds")
+plot(meta_ocupancia)
+```
+
+```{r}
+#### Cluster por ocupancia (Ocupación predicha por sitio muestreado en base a modelos definidos anteriormente)
+library(ggdendro)
+
+OccuPrim37_final <- read_rds("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/MonitoreoVisualGit/Analisis_Occu_punto/OccuPrim37_final.rds")
+
+Dist_Prim <- dist(x = t(OccuPrim37_final$fit))
+Cluster_Prim <- hclust(Dist_Prim)
+
+#plot(Cluster_Prim, labels = Nombres)
+ggdendrogram(Cluster_Prim)
+
+```
+
+```{r}
+OccuInv37_final <- read_rds("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/MonitoreoVisualGit/Analisis_Occu_punto/OccuInv37_final.rds")
+
+Dist_Inv <- dist(x = t(OccuInv37_final$fit))
+Cluster_Inv <- hclust(Dist_Inv)
+
+#plot(Cluster_Inv, labels = Nombres)
+ggdendrogram(Cluster_Inv)
+```
+
+
+
+### separación por gremios de aves
+
+
+### Comportamineto especies por ambiente
+
+Dado que los ambientes no definen espacios diferenciables, es mejor hacer esto segun una variable y por sitios... quizas las mismas variables seleccionadas por ocupancia para cada gremio
+```{r}
+
+
+ggplot(AvesInv) + geom_point(aes(x=AMBIENTE, y=Especie, color =Comportamiento))
+
+
+
+```
+
+
+#### Referencias
