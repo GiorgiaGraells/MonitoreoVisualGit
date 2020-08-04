@@ -78,6 +78,7 @@ existe el archivo **Prueba_Funcion_Nueva.R** que contiene otros analisis de ocup
 
 Se genera un nuevo archivo llamado **PredOccuAmb_37sp.R** donde se rescatan los datos de predicciones de la ocupancia realizada y se arman graficos de todas las especies para mostrar el rango de ocupancia dde las especies para cada ambiente para primavera e invierno.
 Se modificó la funcion de ocupancia, ahora llamada DiversityOccupancy::batchoccu3, en donde se fuerza a generar un modelo con el AMBIENTE para cada especie. Se ve la oacupancia por sitio
+Ocupancia con ambiente como variable forzada. El codigo está listo para la primavera, falta invierno. Se obtienen dos resultados: para cada ambiente (considerando el promedio de cada variable para cada ambiente) y para cada sitio considerando el valor de cada variable
 
 
 
