@@ -284,6 +284,9 @@ batchoccu3 <- function(pres, sitecov, obscov, spp, form, SppNames = NULL, dredge
   return(result)
 }
 
+
+
+
 #Ocupancia para todas las especies en primavera
 
 data_det <-read_rds("Occdata_detPrim.rds")
@@ -297,9 +300,13 @@ data_reg <-read_rds("Occdata_regPRIM.rds")
 
 Spp <- colnames(data_reg) %>% str_remove_all("\\d") %>% unique()
 
-Nuevos_Datos <- data.frame(AMBIENTE = unique(data_ocu$AMBIENTE), Pred = NA, SE = NA, Spp = NA, Up = NA, Down = NA)
+#Nuevos_Datos <- data.frame(AMBIENTE = unique(data_ocu$AMBIENTE), Pred = NA, SE = NA, Spp = NA, Up = NA, Down = NA)
+Nuevos_Datos <- data_ocu %>% group_by(AMBIENTE) %>% summarise_all(mean) %>% mutate(Pred = NA, SE = NA, Spp = NA, Up = NA, Down = NA)
 
 Resultados <- list()
+
+PorSitio <- data.frame(Sitio = read_rds("Occdata_ocu.rds")$Sitio, Ambiente = data_ocu$AMBIENTE)
+
 
 for(i in 1:length(Spp)){
   data_reg_temp <- data_reg %>% dplyr::select(starts_with(Spp[i]))
@@ -307,25 +314,29 @@ for(i in 1:length(Spp)){
   data_reg_temp <- data_reg_temp[,1:3]
   
   message("Ajustando el modelo")
-  OccuPrim_temp <- batchoccu3(pres = data_reg_temp, sitecov = data_ocu, obscov = data_det, spp=1,  form= "~1 ~ AMBIENTE", dredge=TRUE, SppNames =Spp[i])
+  OccuPrim_temp <- batchoccu3(pres = data_reg_temp, sitecov = data_ocu, obscov = data_det, spp=1,  form= "~Temperatura + Humedad +Agua~ AMBIENTE + CobVeg + Distancia_Costa+Altura+ Distancia_construccion+Distancia_rio", dredge=TRUE, SppNames =Spp[i])
   
-  Nuevos_Datos_Temp <- Nuevos_Datos
+  Nuevos_Datos$Spp <- Spp[i]
+
+  Nuevos_Datos_Temp <- as.data.frame(Nuevos_Datos)
   
-  Nuevos_Datos_Temp$Spp <- Spp[i]
+  PorSitio <-  PorSitio %>% mutate(Spp = NA)
+  PorSitio$Spp <- OccuPrim_temp$fit
+  colnames(PorSitio)[i + 2] <- Spp[i]
   
-  message(paste("Prediciendo occupancia", dim(Nuevos_Datos), Spp[i]))
+  message(paste("Prediciendo occupancia", Spp[i]))
   
-  Nuevos_Datos_Temp$Pred <- predict(OccuPrim_temp$models[[1]], type = "state", newdata = Nuevos_Datos)$Predicted
+  Nuevos_Datos_Temp$Pred <- predict(OccuPrim_temp$models[[1]], type = "state", newdata = Nuevos_Datos_Temp)$Predicted
   
   message("Prediciendo SE")
   
-  Nuevos_Datos_Temp$SE <- predict(OccuPrim_temp$models[[1]], type = "state", newdata = Nuevos_Datos)$SE
+  Nuevos_Datos_Temp$SE <- predict(OccuPrim_temp$models[[1]], type = "state", newdata = Nuevos_Datos_Temp)$SE
   
   message("Prediciendo Limites")
   
-  Nuevos_Datos_Temp$Up <- predict(OccuPrim_temp$models[[1]], type = "state", newdata = Nuevos_Datos)$upper
+  Nuevos_Datos_Temp$Up <- predict(OccuPrim_temp$models[[1]], type = "state", newdata = Nuevos_Datos_Temp)$upper
   
-  Nuevos_Datos_Temp$Down <- predict(OccuPrim_temp$models[[1]], type = "state", newdata = Nuevos_Datos)$lower
+  Nuevos_Datos_Temp$Down <- predict(OccuPrim_temp$models[[1]], type = "state", newdata = Nuevos_Datos_Temp)$lower
   Resultados[[i]] <- Nuevos_Datos_Temp
   message(i)
 }
