@@ -147,7 +147,7 @@ batchoccu2 <- function(pres, sitecov, obscov, spp, form, SppNames = NULL, dredge
   return(result)
 }
 
-
+#Nueva funcion ocupancia con ambiente forzado como variable de ocupancia
 batchoccu3 <- function(pres, sitecov, obscov, spp, form, SppNames = NULL, dredge = FALSE) {
   if(is.null(SppNames)){
     SppNames <- paste("species", 1:spp, sep =".")
@@ -286,12 +286,11 @@ batchoccu3 <- function(pres, sitecov, obscov, spp, form, SppNames = NULL, dredge
 
 
 
-
 #Ocupancia para todas las especies en primavera
 
 data_det <-read_rds("Occdata_detPrim.rds")
 
-data_ocu <-read_rds("Occdata_ocu.rds")
+data_ocu <-read_rds("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/MonitoreoVisualGit/Occdata_occu.rds")
 data_ocu <- data_ocu %>% dplyr::select(-Sitio)
 colnames(data_ocu) <- str_replace_all(colnames(data_ocu), pattern = " ", "_")
 
@@ -314,7 +313,7 @@ for(i in 1:length(Spp)){
   data_reg_temp <- data_reg_temp[,1:3]
   
   message("Ajustando el modelo")
-  OccuPrim_temp <- batchoccu3(pres = data_reg_temp, sitecov = data_ocu, obscov = data_det, spp=1,  form= "~Temperatura + Humedad +Agua~ AMBIENTE + CobVeg + Distancia_Costa+Altura+ Distancia_construccion+Distancia_rio", dredge=TRUE, SppNames =Spp[i])
+  OccuPrim_temp <- batchoccu3(pres = data_reg_temp, sitecov = data_ocu, obscov = data_det, spp=1,  form= "~ Temperatura +Humedad ~ CobVeg +AMBIENTE+ Altura + Distancia_rio+ Buffer_2200_Pastizales+Buffer_2200_Matorrales + Buffer_2200_Oceano+ Buffer_2200_Sup_impermeables+ Buffer_2200_Suelo_arenoso+ Buffer_2200_Cultivos + Buffer_2200_Plantación_de_árboles ", dredge=TRUE, SppNames =Spp[i])
   
   Nuevos_Datos$Spp <- Spp[i]
 
@@ -343,14 +342,14 @@ for(i in 1:length(Spp)){
 
 Resultados <- Resultados %>% reduce(bind_rows)
 
-##############
+##############################################
 
 
 #Ocupancia para todas las especies en invierno
 
 data_det <-read_rds("Occdata_detInv.rds")
 
-data_ocu <-read_rds("Occdata_ocu.rds")
+data_ocu <-read_rds("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/MonitoreoVisualGit/Occdata_occu.rds")
 data_ocu <- data_ocu %>% dplyr::select(-Sitio)
 colnames(data_ocu) <- str_replace_all(colnames(data_ocu), pattern = " ", "_")
 
@@ -359,9 +358,13 @@ data_reg <-read_rds("Occdata_regInv.rds")
 
 Spp <- colnames(data_reg) %>% str_remove_all("\\d") %>% unique()
 
-Nuevos_Datos <- data.frame(AMBIENTE = unique(data_ocu$AMBIENTE), Pred = NA, SE = NA, Spp = NA, Up = NA, Down = NA)
+#Nuevos_Datos <- data.frame(AMBIENTE = unique(data_ocu$AMBIENTE), Pred = NA, SE = NA, Spp = NA, Up = NA, Down = NA)
+Nuevos_Datos <- data_ocu %>% group_by(AMBIENTE) %>% summarise_all(mean) %>% mutate(Pred = NA, SE = NA, Spp = NA, Up = NA, Down = NA)
 
-Resultados2 <- list()
+ResultadosInv <- list()
+
+PorSitioInv <- data.frame(Sitio = read_rds("Occdata_ocu.rds")$Sitio, Ambiente = data_ocu$AMBIENTE)
+
 
 for(i in 1:length(Spp)){
   data_reg_temp <- data_reg %>% dplyr::select(starts_with(Spp[i]))
@@ -369,54 +372,47 @@ for(i in 1:length(Spp)){
   data_reg_temp <- data_reg_temp[,1:3]
   
   message("Ajustando el modelo")
-  OccuInv_temp <- batchoccu2(pres = data_reg_temp, sitecov = data_ocu, obscov = data_det, spp=1,  form= "~1 ~ AMBIENTE", dredge=FALSE, SppNames =Spp[i])
+  OccuInv_temp <- batchoccu3(pres = data_reg_temp, sitecov = data_ocu, obscov = data_det, spp=1,  form= "~ Temperatura +Humedad ~ CobVeg +AMBIENTE+ Altura + Distancia_rio+ Buffer_2200_Pastizales+Buffer_2200_Matorrales + Buffer_2200_Oceano+ Buffer_2200_Sup_impermeables+ Buffer_2200_Suelo_arenoso+ Buffer_2200_Cultivos + Buffer_2200_Plantación_de_árboles ", dredge=TRUE, SppNames =Spp[i])
   
-  Nuevos_Datos_Temp <- Nuevos_Datos
+  Nuevos_Datos$Spp <- Spp[i]
   
-  Nuevos_Datos_Temp$Spp <- Spp[i]
+  Nuevos_Datos_Temp <- as.data.frame(Nuevos_Datos)
   
-  message(paste("Prediciendo occupancia", dim(Nuevos_Datos), Spp[i]))
+  PorSitioInv <-  PorSitioInv %>% mutate(Spp = NA)
+  PorSitioInv$Spp <- OccuInv_temp$fit
+  colnames(PorSitioInv)[i + 2] <- Spp[i]
   
-  Nuevos_Datos_Temp$Pred <- predict(OccuInv_temp$models[[1]], type = "state", newdata = Nuevos_Datos)$Predicted
+  message(paste("Prediciendo occupancia", Spp[i]))
+  
+  Nuevos_Datos_Temp$Pred <- predict(OccuInv_temp$models[[1]], type = "state", newdata = Nuevos_Datos_Temp)$Predicted
   
   message("Prediciendo SE")
   
-  Nuevos_Datos_Temp$SE <- predict(OccuInv_temp$models[[1]], type = "state", newdata = Nuevos_Datos)$SE
+  Nuevos_Datos_Temp$SE <- predict(OccuInv_temp$models[[1]], type = "state", newdata = Nuevos_Datos_Temp)$SE
   
   message("Prediciendo Limites")
   
-  Nuevos_Datos_Temp$Up <- predict(OccuInv_temp$models[[1]], type = "state", newdata = Nuevos_Datos)$upper
+  Nuevos_Datos_Temp$Up <- predict(OccuInv_temp$models[[1]], type = "state", newdata = Nuevos_Datos_Temp)$upper
   
-  Nuevos_Datos_Temp$Down <- predict(OccuInv_temp$models[[1]], type = "state", newdata = Nuevos_Datos)$lower
-  Resultados2[[i]] <- Nuevos_Datos_Temp
+  Nuevos_Datos_Temp$Down <- predict(OccuInv_temp$models[[1]], type = "state", newdata = Nuevos_Datos_Temp)$lower
+  ResultadosInv[[i]] <- Nuevos_Datos_Temp
   message(i)
 }
 
-
-Resultados2 <- Resultados2 %>% reduce(bind_rows)
+ResultadosInv <- ResultadosInv %>% reduce(bind_rows)
 
 ###
 
-
+######################################################################visualizar luego
 #PRIM
 Resultados <- Resultados %>% mutate(AMBIENTE=fct_relevel(AMBIENTE, "URBANO", "VERDE", "ROCA INTERVENIDA", "PLAYA INTERVENIDA", "PLAYA NATURAL"))
-ggplot(Resultados, aes(x=AMBIENTE, y=Pred))+ geom_point(aes(color = Spp)) + geom_errorbar(aes(ymax = Pred + SE, ymin = Pred - SE, color = Spp)) + 
+ggplot(Resultados, aes(x=AMBIENTE, y=Pred))+ geom_point(aes(color = Spp)) + geom_errorbar(aes(ymax = Pred + SE, ymin = Pred - SE, color = Spp)) + ylim(c(0,1.05))+
   xlab("Ambientes")+ylab("Predicción de presencia") + facet_wrap(~Spp)+theme_classic()+ theme(axis.text.x = element_text(angle=70, vjust= 1, hjust=1), legend.position = "none")
-
-#El mismo grafico pero sin color por especie
-ggplot(Resultados, aes(x=AMBIENTE, y=Pred))+ geom_point() + geom_errorbar(aes(ymax = Pred + SE, ymin = Pred - SE)) + ylim(c(0,1.05))+
-  xlab("Ambientes")+ylab("Predicción de presencia") + facet_wrap(~Spp)+theme_classic()+ theme(axis.text.x = element_text(angle=70, vjust= 1, hjust=1), legend.position = "none")
-
 
 #INV
-Resultados2 <- Resultados2 %>% mutate(AMBIENTE=fct_relevel(AMBIENTE, "URBANO", "VERDE", "ROCA INTERVENIDA", "PLAYA INTERVENIDA", "PLAYA NATURAL"))
-ggplot(Resultados2, aes(x=AMBIENTE, y=Pred))+ geom_point(aes(color = Spp)) + geom_errorbar(aes(ymax = Pred + SE, ymin = Pred - SE, color = Spp)) + ylim(c(0,1.05))+
+ResultadosInv <- ResultadosInv %>% mutate(AMBIENTE=fct_relevel(AMBIENTE, "URBANO", "VERDE", "ROCA INTERVENIDA", "PLAYA INTERVENIDA", "PLAYA NATURAL"))
+ggplot(ResultadosInv, aes(x=AMBIENTE, y=Pred))+ geom_point(aes(color = Spp)) + geom_errorbar(aes(ymax = Pred + SE, ymin = Pred - SE, color = Spp)) + ylim(c(0,1.05))+
   xlab("Ambientes")+ylab("Predicción de presencia") + facet_wrap(~Spp)+theme_classic()+ theme(axis.text.x = element_text(angle=70, vjust= 1, hjust=1), legend.position = "none")
-
-#El mismo grafico pero sin color por especie
-ggplot(Resultados2, aes(x=AMBIENTE, y=Pred))+ geom_point() + geom_errorbar(aes(ymax = Pred + SE, ymin = Pred - SE)) + ylim(c(0,1.05))+
-  xlab("Ambientes")+ylab("Predicción de presencia") + facet_wrap(~Spp)+theme_classic()+ theme(axis.text.x = element_text(angle=70, vjust= 1, hjust=1), legend.position = "none")
-
 
 
 #########################################################
@@ -439,7 +435,7 @@ rownames(PredOccuAmb_Prim) <-PredOccuAmb_Prim$AMBIENTE
 PredOccuAmb_Prim <- PredOccuAmb_Prim %>% dplyr::select(-AMBIENTE)
 
 #Inv
-PredOccuAmb_Inv <- Resultados2 %>%  dplyr::select(-SE) %>% dplyr::select(-Up) %>% dplyr::select(-Down)%>%  
+PredOccuAmb_Inv <- ResultadosInv %>%  dplyr::select(-SE) %>% dplyr::select(-Up) %>% dplyr::select(-Down)%>%  
   group_by(AMBIENTE,Spp) %>% spread(key = Spp, value = Pred, fill=0) %>% ungroup
 
 #saco columna de ambientes, pero queda en el orde de intervencion humana que se utilizo para graficar:urbano/verde/roca-int/playa-int/playa-nat/roca-nat
@@ -448,52 +444,57 @@ PredOccuAmb_Inv <- PredOccuAmb_Inv %>% dplyr::select(-AMBIENTE)
 
 
 
-####
-#para juntar la ocupancia de invierrno y primavera parra poder comparar entre ellas
-
-#Inv
-PredOccuAmb_Inv <- Resultados2 %>%  dplyr::select(-SE) %>% dplyr::select(-Up) %>% dplyr::select(-Down)%>%  
-  group_by(AMBIENTE,Spp) %>% spread(key = Spp, value = Pred, fill=0) %>% ungroup
-
-#PredOccuAmb_Inv$AMBIENTE <- paste0('I-', PredOccuAmb_Inv$AMBIENTE)
-
-#Prim
-PredOccuAmb_Prim <- Resultados %>%  dplyr::select(-SE) %>% dplyr::select(-Up) %>% dplyr::select(-Down)%>%  
-  group_by(AMBIENTE,Spp) %>% spread(key = Spp, value = Pred, fill=0) %>% ungroup
-
-
+#################
+#para juntar la ocupancia de invierrno y primavera para poder comparar entre ellas
 
 #Uniendo ambas temporadas orden invierno-primavera
-PredOccuAmb <- bind_rows(PredOccuAmb_Inv, PredOccuAmb_Prim) %>%  arrange(AMBIENTE, desc())
+PredOccuSitio <- bind_rows(PorSitio, PorSitioInv)
 
 #saco columna de ambientes, pero queda en el orden de intervencion humana que se utilizo para graficar:urbano/verde/roca-int/playa-int/playa-nat/roca-nat
-PredOccuAmb <- PredOccuAmb %>% dplyr::select(-AMBIENTE)
+PredOccuSitio <- PredOccuSitio %>% dplyr::select(-Ambiente) %>% dplyr::select(-Sitio)
 
 #Reemplazando NA por valores dde cero
-
-PredOccuAmb[is.na(PredOccuAmb)] = 0
+PredOccuSitio[is.na(PredOccuSitio)] = 0
 
 ############variables ambientales
 Amb<- read_rds("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/Analisis_Occu_punto/Occdata_ocu.rds")
 Sitio_Amb <- Amb %>% dplyr::select(Sitio, AMBIENTE)
+Sitio_Amb <- bind_rows(Sitio_Amb,Sitio_Amb)
+
+Sitio_Amb$Estacion <- rep(c("Primavera", "Invierno"), each = 36)
 
 #########################
 #ordination by NMDS
-
-NMDSPredOccuAmb <- metaMDS(PredOccuAmb, distance = "bray", k = 2)
-
+library(vegan)
+library(ggrepel)
+NMDSPredOccuSitio <- metaMDS(PredOccuSitio, distance = "bray", k = 2) #K  num axes
+#Se espera q stress sea menor a 0.2
 #visualizacion
-plot(NMDSPredOccuAmb, type = "t", display = "species")
-plot(NMDSPredOccuAmb, type = "t", display = "sites")
 
+Todo_NMDS <- Sitio_Amb %>% bind_cols((NMDSPredOccuSitio$points %>% as_tibble()))
 
-#mejorando la visualizacion
-co=c("red", "green", "blue", "brown", "yellow")
-shape= c(18,16)
+Hull <- Todo_NMDS %>% group_by(AMBIENTE, Estacion) %>% slice(chull(MDS1, MDS2))
 
-#Seguir con las indicaciones de youtube
+Species <- NMDSPredOccuSitio$species %>% as_tibble() %>% mutate(Especies = rownames(NMDSPredOccuSitio$species))
 
-###Prediccion de ocupancia por sitio
+#ggplot(Todo_NMDS, aes(x = MDS1, y = MDS2)) + geom_density2d(aes(color = AMBIENTE))+ geom_point(aes(color = AMBIENTE, shape = Estacion), size = 5) + theme_bw()
 
+#todo junot sin separacion estacional
+ggplot(Todo_NMDS, aes(x = MDS1, y = MDS2)) + geom_point(aes(color = AMBIENTE), size = 3) + 
+   theme_bw()
+
+ggplot(Todo_NMDS, aes(x = MDS1, y = MDS2)) + geom_point(aes(color = AMBIENTE, shape = Estacion), size = 3) + 
+  geom_polygon(data = Hull, aes(color = AMBIENTE, lty = Estacion, fill = AMBIENTE), alpha = 0.1) + theme_bw()
+
+ggplot(Todo_NMDS, aes(x = MDS1, y = MDS2)) + geom_point(aes(color = AMBIENTE, shape = Estacion), size = 3) + 
+  geom_polygon(data = Hull, aes(color = AMBIENTE,  fill = AMBIENTE), alpha = 0.1) + theme_bw() + facet_wrap(~Estacion)
+
+# Con especies
+
+ggplot(Todo_NMDS, aes(x = MDS1, y = MDS2)) + geom_point(aes(color = AMBIENTE, shape = Estacion), size = 5) +
+  geom_polygon(data = Hull, aes(color = AMBIENTE, lty = Estacion, fill = AMBIENTE), alpha = 0.3) + theme_bw() + 
+  facet_wrap(~Estacion) + geom_point(data = Species) + ggrepel::geom_text_repel(data = Species, aes(label = Especies))
+
+#ggplot(Todo_NMDS, aes(x = MDS1, y = MDS2)) + geom_density2d(aes(color = AMBIENTE))+ geom_point(aes(color = AMBIENTE, shape = Estacion), size = 5) + theme_bw() + facet_wrap(~Estacion)
 
 
