@@ -300,9 +300,9 @@ data_reg <-read_rds("Occdata_regPRIM.rds")
 Spp <- colnames(data_reg) %>% str_remove_all("\\d") %>% unique()
 
 #Nuevos_Datos <- data.frame(AMBIENTE = unique(data_ocu$AMBIENTE), Pred = NA, SE = NA, Spp = NA, Up = NA, Down = NA)
-Nuevos_Datos <- data_ocu %>% group_by(AMBIENTE) %>% summarise_all(mean) %>% mutate(Pred = NA, SE = NA, Spp = NA, Up = NA, Down = NA)
+Nuevos_Datos <- data_ocu %>% group_by(AMBIENTE) %>% summarise_all(mean) %>% mutate(Pred = NA, SE = NA, Spp = NA, Up = NA, Down = NA, Modelo = NA)
 
-Resultados <- list()
+ResultadosPrim <- list()
 
 PorSitio <- data.frame(Sitio = read_rds("Occdata_ocu.rds")$Sitio, Ambiente = data_ocu$AMBIENTE)
 
@@ -326,6 +326,7 @@ for(i in 1:length(Spp)){
   message(paste("Prediciendo occupancia", Spp[i]))
   
   Nuevos_Datos_Temp$Pred <- predict(OccuPrim_temp$models[[1]], type = "state", newdata = Nuevos_Datos_Temp)$Predicted
+  Nuevos_Datos_Temp$Modelo <- OccuPrim_temp$Mods[[1]]$Form[1]
   
   message("Prediciendo SE")
   
@@ -336,11 +337,15 @@ for(i in 1:length(Spp)){
   Nuevos_Datos_Temp$Up <- predict(OccuPrim_temp$models[[1]], type = "state", newdata = Nuevos_Datos_Temp)$upper
   
   Nuevos_Datos_Temp$Down <- predict(OccuPrim_temp$models[[1]], type = "state", newdata = Nuevos_Datos_Temp)$lower
-  Resultados[[i]] <- Nuevos_Datos_Temp
+  ResultadosPrim[[i]] <- Nuevos_Datos_Temp
   message(i)
 }
 
-Resultados <- Resultados %>% reduce(bind_rows)
+ResultadosPrim <- ResultadosPrim %>% reduce(bind_rows)
+PorSitioPrim <- PorSitio
+
+saveRDS(ResultadosPrim, "ResultadosPrim.rds")
+saveRDS(PorSitioPrim, "PorSitioPrim.rds")
 
 ##############################################
 
@@ -366,6 +371,7 @@ ResultadosInv <- list()
 PorSitioInv <- data.frame(Sitio = read_rds("Occdata_ocu.rds")$Sitio, Ambiente = data_ocu$AMBIENTE)
 
 
+
 for(i in 1:length(Spp)){
   data_reg_temp <- data_reg %>% dplyr::select(starts_with(Spp[i]))
   
@@ -385,6 +391,7 @@ for(i in 1:length(Spp)){
   message(paste("Prediciendo occupancia", Spp[i]))
   
   Nuevos_Datos_Temp$Pred <- predict(OccuInv_temp$models[[1]], type = "state", newdata = Nuevos_Datos_Temp)$Predicted
+  Nuevos_Datos_Temp$Modelo <- OccuInv_temp$Mods[[1]]$Form[1]
   
   message("Prediciendo SE")
   
@@ -399,13 +406,18 @@ for(i in 1:length(Spp)){
   message(i)
 }
 
+
 ResultadosInv <- ResultadosInv %>% reduce(bind_rows)
+
+saveRDS(ResultadosInv, "ResultadosInv.rds")
+saveRDS(PorSitioInv, "PorSitioInv.rds")
+
 
 ###
 
-######################################################################visualizar luego
+###################################################################### Visualizando
 #PRIM
-Resultados <- Resultados %>% mutate(AMBIENTE=fct_relevel(AMBIENTE, "URBANO", "VERDE", "ROCA INTERVENIDA", "PLAYA INTERVENIDA", "PLAYA NATURAL"))
+ResultadosPrim <- ResultadosPrim %>% mutate(AMBIENTE=fct_relevel(AMBIENTE, "URBANO", "VERDE", "ROCA INTERVENIDA", "PLAYA INTERVENIDA", "PLAYA NATURAL"))
 ggplot(Resultados, aes(x=AMBIENTE, y=Pred))+ geom_point(aes(color = Spp)) + geom_errorbar(aes(ymax = Pred + SE, ymin = Pred - SE, color = Spp)) + ylim(c(0,1.05))+
   xlab("Ambientes")+ylab("Predicción de presencia") + facet_wrap(~Spp)+theme_classic()+ theme(axis.text.x = element_text(angle=70, vjust= 1, hjust=1), legend.position = "none")
 
