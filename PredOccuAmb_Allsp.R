@@ -413,12 +413,20 @@ saveRDS(ResultadosInv, "ResultadosInv.rds")
 saveRDS(PorSitioInv, "PorSitioInv.rds")
 
 
-###
+#################################################################################################################
+setwd("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/MonitoreoVisualGit/Analisis_Occu_punto")
+
+
+ResultadosInv <- readRDS("ResultadosInv.rds")
+ResultadosPrim <- readRDS("ResultadosPrim.rds")
+PorSitioInv <- readRDS("PorSitioInv.rds")
+PorSitioPrim <- readRDS("PorSitioPrim.rds")
+
 
 ###################################################################### Visualizando
 #PRIM
 ResultadosPrim <- ResultadosPrim %>% mutate(AMBIENTE=fct_relevel(AMBIENTE, "URBANO", "VERDE", "ROCA INTERVENIDA", "PLAYA INTERVENIDA", "PLAYA NATURAL"))
-ggplot(Resultados, aes(x=AMBIENTE, y=Pred))+ geom_point(aes(color = Spp)) + geom_errorbar(aes(ymax = Pred + SE, ymin = Pred - SE, color = Spp)) + ylim(c(0,1.05))+
+ggplot(ResultadosPrim, aes(x=AMBIENTE, y=Pred))+ geom_point(aes(color = Spp)) + geom_errorbar(aes(ymax = Pred + SE, ymin = Pred - SE, color = Spp)) + ylim(c(0,1.05))+
   xlab("Ambientes")+ylab("Predicción de presencia") + facet_wrap(~Spp)+theme_classic()+ theme(axis.text.x = element_text(angle=70, vjust= 1, hjust=1), legend.position = "none")
 
 #INV
@@ -434,33 +442,12 @@ ggplot(ResultadosInv, aes(x=AMBIENTE, y=Pred))+ geom_point(aes(color = Spp)) + g
 ###############################
 #Inicio analisis vegan
 
-library(vegan)
-
-#modificando el orden de columnas para analisis vegan
-
-#Prim
-PredOccuAmb_Prim <- Resultados %>%  dplyr::select(-SE) %>% dplyr::select(-Up) %>% dplyr::select(-Down)%>%  
-  group_by(AMBIENTE,Spp) %>% spread(key = Spp, value = Pred, fill=0) %>% ungroup
-
-#saco columna de ambientes, pero queda en el orde de intervencion humana que se utilizo para graficar:urbano/verde/roca-int/playa-int/playa-nat/roca-nat
-rownames(PredOccuAmb_Prim) <-PredOccuAmb_Prim$AMBIENTE
-PredOccuAmb_Prim <- PredOccuAmb_Prim %>% dplyr::select(-AMBIENTE)
-
-#Inv
-PredOccuAmb_Inv <- ResultadosInv %>%  dplyr::select(-SE) %>% dplyr::select(-Up) %>% dplyr::select(-Down)%>%  
-  group_by(AMBIENTE,Spp) %>% spread(key = Spp, value = Pred, fill=0) %>% ungroup
-
-#saco columna de ambientes, pero queda en el orde de intervencion humana que se utilizo para graficar:urbano/verde/roca-int/playa-int/playa-nat/roca-nat
-rownames(PredOccuAmb_Inv) <-PredOccuAmb_Inv$AMBIENTE
-PredOccuAmb_Inv <- PredOccuAmb_Inv %>% dplyr::select(-AMBIENTE)
-
-
-
 #################
 #para juntar la ocupancia de invierrno y primavera para poder comparar entre ellas
 
 #Uniendo ambas temporadas orden invierno-primavera
-PredOccuSitio <- bind_rows(PorSitio, PorSitioInv)
+PredOccuSitio <- bind_rows(PorSitioPrim, PorSitioInv)
+saveRDS(PredOccuSitio, "PredOccuSitio.rds")
 
 #saco columna de ambientes, pero queda en el orden de intervencion humana que se utilizo para graficar:urbano/verde/roca-int/playa-int/playa-nat/roca-nat
 PredOccuSitio <- PredOccuSitio %>% dplyr::select(-Ambiente) %>% dplyr::select(-Sitio)
@@ -468,7 +455,8 @@ PredOccuSitio <- PredOccuSitio %>% dplyr::select(-Ambiente) %>% dplyr::select(-S
 #Reemplazando NA por valores dde cero
 PredOccuSitio[is.na(PredOccuSitio)] = 0
 
-############variables ambientales
+############variables ambientales... ojo q esto no sale de carpeta de github
+
 Amb<- read_rds("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/Analisis_Occu_punto/Occdata_ocu.rds")
 Sitio_Amb <- Amb %>% dplyr::select(Sitio, AMBIENTE)
 Sitio_Amb <- bind_rows(Sitio_Amb,Sitio_Amb)
@@ -489,6 +477,10 @@ Hull <- Todo_NMDS %>% group_by(AMBIENTE, Estacion) %>% slice(chull(MDS1, MDS2))
 
 Species <- NMDSPredOccuSitio$species %>% as_tibble() %>% mutate(Especies = rownames(NMDSPredOccuSitio$species))
 
+write.csv(Species, "Species.csv")
+write.csv(Hull, "Hull.csv")
+write.csv(Todo_NMDS,"Todo_NMDS.csv")
+
 #ggplot(Todo_NMDS, aes(x = MDS1, y = MDS2)) + geom_density2d(aes(color = AMBIENTE))+ geom_point(aes(color = AMBIENTE, shape = Estacion), size = 5) + theme_bw()
 
 #todo junot sin separacion estacional
@@ -508,5 +500,4 @@ ggplot(Todo_NMDS, aes(x = MDS1, y = MDS2)) + geom_point(aes(color = AMBIENTE, sh
   facet_wrap(~Estacion) + geom_point(data = Species) + ggrepel::geom_text_repel(data = Species, aes(label = Especies))
 
 #ggplot(Todo_NMDS, aes(x = MDS1, y = MDS2)) + geom_density2d(aes(color = AMBIENTE))+ geom_point(aes(color = AMBIENTE, shape = Estacion), size = 5) + theme_bw() + facet_wrap(~Estacion)
-
 

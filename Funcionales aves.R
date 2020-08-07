@@ -4,26 +4,27 @@
 library(tidyverse)
 library(readr)
 library(readxl)
+library(taxize)
 
-#Se toman los nombres de las 37sp desde el archivo  Bird_guilts.xlsx
-Bird_guilts <- read_excel("Bird guilts.xlsx") %>% dplyr::select(Nombre, Especie)
+
+setwd("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/MonitoreoVisualGit")
+
+#Se toman los nombres de las 59sp totales de ambas temporadas desde el archivo Bird guilts.xlsx preparado con nombre comun y cientifico
+
+Bird_sp <- read_excel("Bird guilts.xlsx") %>% dplyr::select(-Alimentacion)%>% dplyr::select(-Habitat)
 
 BirdFuncDat <- read_delim("BirdFuncDat.txt", "\t", escape_double = FALSE, trim_ws = TRUE) %>% 
-  rename(Especie=Scientific) %>% mutate(Especie= str_replace(Especie, "Larus pipixcan", "Leucophaeus pipixcan")) %>% 
-  mutate(Especie= str_replace(Especie, "Larus modestus", "Leucophaeus modestus"))
+  rename(Especie=Scientific) %>% mutate(Especie= str_replace(Especie, "Larus pipixcan", "Leucophaeus pipixcan"),
+                                        Especie= str_replace(Especie, "Larus modestus", "Leucophaeus modestus"),
+                                        Especie= str_replace(Especie, "Buteo polyosoma", "Geranoaetus polyosoma"),
+                                        Especie= str_replace(Especie, "Casmerodius albus", "Ardea alba"),
+                                        Especie= str_replace(Especie, "Larus maculipennis", "Chroicocephalus maculipennis"),
+                                        Especie= str_replace(Especie, "Sterna elegans", "Thalasseus elegans"),
+                                        Especie= str_replace(Especie, "Carduelis barbata", "Spinus barbatus"),
+                                        Especie= str_replace(Especie, "Catharacta chilensis", "Stercorarius chilensis")) 
+  
 
 
-BirdFunc <- left_join(Bird_guilts,BirdFuncDat)
+BirdFunc <- left_join(Bird_sp, BirdFuncDat)
 
 saveRDS(BirdFunc, "BirdFunc.rds")
-
-#prim
-cluster1 <-BirdFunc %>% filter(Nombre %in% c("CORMORAN", "CHINCOL","GAVIOTA","PALOMA", "ZORZAL"))
-cluster2 <-BirdFunc %>% filter(Nombre %in% c("TORTOLA", "RARA", "TORDO"))
-
-#inv
-cluster1 <-BirdFunc %>% filter(Nombre %in% c("TIUQUE", "PALOMA", "CHINCOL","GAVIOTA"))
-cluster2<-BirdFunc%>%filter(Nombre%in%c("CORMORAN","PELICANO COMÚN","MONJA","PIQUERO","PILPILEN","CHURRETE CHICO","PILPILEN NEGRO","GARUMA","JOTE CABEZA NEGRA"))
-cluster3 <-BirdFunc %>% filter(Nombre %in% c("BLANQUILLO","CHURRETE COMUN","QUELTEHUE","COLEGIAL","GOLONDRINA DORSO NEGRO","PERRITO","LILE","CHURRETE COSTERO", "GUANAY", "FRANKLIN","TAGUA COMUN","COTORRA ARGENTINA","DIUCA","GORRION","HUAIRAVO"))
-cluster4 <-BirdFunc %>% filter(Nombre %in% c("TORTOLA", "RARA", "TORDO"))
-

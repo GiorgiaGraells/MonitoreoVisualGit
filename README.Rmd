@@ -78,10 +78,9 @@ existe el archivo **Prueba_Funcion_Nueva.R** que contiene otros analisis de ocup
 
 Se genera un nuevo archivo llamado **PredOccuAmb_37sp.R** donde se rescatan los datos de predicciones de la ocupancia realizada y se arman graficos de todas las especies para mostrar el rango de ocupancia dde las especies para cada ambiente para primavera e invierno.
 Se modificó la funcion de ocupancia, ahora llamada DiversityOccupancy::batchoccu3, en donde se fuerza a generar un modelo con el AMBIENTE para cada especie. Se ve la oacupancia por sitio
-Ocupancia con ambiente como variable forzada. Se corrio ocupancia con forzamiento de ambiente y todas las otras variables definidas en el ppt seleccionadas con anteriorirdad (incluidos los buffers de 2200 (prim e inv). Se obtienen dos resultados: para cada ambiente (considerando el promedio de cada variable para cada ambiente) y para cada sitio considerando el valor de cada variable
+Ocupancia con ambiente como variable forzada. Se corrio ocupancia con forzamiento de ambiente y todas las otras variables definidas en el ppt seleccionadas con anteriorirdad (incluidos los buffers de 2200 (prim e inv). Se obtienen dos resultados: para cada ambiente (considerando el promedio de cada variable para cada ambiente) y para cada sitio considerando el valor de cada variable, se saca tb el mejor modelo y queda en una columna. Se guardan los resultados como **ResultadosInv.rds**, **ResultadosPrim.rds**, **PorSitioInv.rds** y **PorSitioPrim.rds** y **PredOccuSitio.rds**
+
 Se corre nmsd en vegan y se hacen varios graficos bacanes
-
-
 
 #### Ordenando los resultados y buscando una explicacion: 1. Marco conceptual rasgos funcionales
 
@@ -91,5 +90,6 @@ Se toman los nombres de las 37sp desde el archivo  Bird_guilts.xlsx, se descarga
 2. **Clusters ocupancia.R** para ver la agrupacion de especies segun variables de ocupancia para invierno y primavera y luego generar los clusters para rasgos funcionales
 
 
+Archivo **Ensamble_func.R** con graficos y analisis exploratorios de ensamble de aves y su posible explicacion con rasgos funcionales
 
 
