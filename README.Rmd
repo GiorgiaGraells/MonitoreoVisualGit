@@ -90,6 +90,6 @@ Se toman los nombres de todas las especies desde el archivo  Bird_guilts.xlsx, s
 
 **Clusters ocupancia.R** para ver la agrupacion de especies segun variables de ocupancia para invierno y primavera y luego generar los clusters para rasgos funcionales
 
-Archivo **Ensamble_func.R** con graficos y analisis exploratorios de ensamble de aves y su posible explicacion con rasgos funcionales. Resumen de modelos e importancia de variables.- se obtiene el df Resumen_Modelos (para inv y prim)
+Archivo **Ensamble_func.R** con graficos y analisis exploratorios de ensamble de aves y su posible explicacion con rasgos funcionales. Resumen de modelos e importancia de variables.- se obtiene el df Resumen_Modelos (para inv y prim) 
 
 
