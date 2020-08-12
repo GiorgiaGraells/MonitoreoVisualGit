@@ -414,13 +414,11 @@ saveRDS(PorSitioInv, "PorSitioInv.rds")
 
 
 #################################################################################################################
-setwd("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/MonitoreoVisualGit/Analisis_Occu_punto")
 
-
-ResultadosInv <- readRDS("ResultadosInv.rds")
-ResultadosPrim <- readRDS("ResultadosPrim.rds")
-PorSitioInv <- readRDS("PorSitioInv.rds")
-PorSitioPrim <- readRDS("PorSitioPrim.rds")
+ResultadosInv <- readRDS("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/MonitoreoVisualGit/Analisis_Occu_punto/ResultadosInv.rds")
+ResultadosPrim <- readRDS("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/MonitoreoVisualGit/Analisis_Occu_punto/ResultadosPrim.rds")
+PorSitioInv <- readRDS("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/MonitoreoVisualGit/Analisis_Occu_punto/PorSitioInv.rds")
+PorSitioPrim <- readRDS("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/MonitoreoVisualGit/Analisis_Occu_punto/PorSitioPrim.rds")
 
 
 ###################################################################### Visualizando

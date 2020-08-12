@@ -84,12 +84,12 @@ Se corre nmsd en vegan y se hacen varios graficos bacanes
 
 #### Ordenando los resultados y buscando una explicacion: 1. Marco conceptual rasgos funcionales
 
-Se crearon dos archivos: 
-1. **Funcionales aves.R** 
-Se toman los nombres de las 37sp desde el archivo  Bird_guilts.xlsx, se descargaron los rasgos funcionales de aves (alimenticios y de habitat) y se filtro para las 37 aves trabajadas (comun a ambas temporadas)
-2. **Clusters ocupancia.R** para ver la agrupacion de especies segun variables de ocupancia para invierno y primavera y luego generar los clusters para rasgos funcionales
+Se crearon distintos archivos: 
+**Funcionales aves.R** 
+Se toman los nombres de todas las especies desde el archivo  Bird_guilts.xlsx, se descargaron los rasgos funcionales de aves (alimenticios y de habitat) y se filtro para todas las aves, idependiente de la temporada
 
+**Clusters ocupancia.R** para ver la agrupacion de especies segun variables de ocupancia para invierno y primavera y luego generar los clusters para rasgos funcionales
 
-Archivo **Ensamble_func.R** con graficos y analisis exploratorios de ensamble de aves y su posible explicacion con rasgos funcionales
+Archivo **Ensamble_func.R** con graficos y analisis exploratorios de ensamble de aves y su posible explicacion con rasgos funcionales. Resumen de modelos e importancia de variables.- se obtiene el df Resumen_Modelos (para inv y prim)
 
 
