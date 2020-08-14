@@ -15,9 +15,18 @@ library(dplyr)
 #REGISTRO AVES: INVIERNO 2019
 
 
-Reg_completo_aves <- read_csv("/home/giorgia/Documents/Doctorado Tesis/Monitoreo aves/Muestreo Aves jun-jul 2019/Monitoreo_punto/Reg_completo_aves.csv") %>% dplyr::mutate(Especie = str_trim(str_remove_all(Especie,pattern = "JUVENIL"))) 
+Reg_completo_aves <- read_csv("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/MonitoreoVisualGit/Muestreo aves jun-jul 2019/Monitoreo_punto/Reg_completo_aves_inv.csv") %>% dplyr::mutate(Especie = str_trim(str_remove_all(Especie,pattern = "JUVENIL"))) 
+Reg_completo_aves <- Reg_completo_aves  %>% 
+  mutate(Especie=case_when(Especie == "JOTE NEGRO"~"JOTE CABEZA NEGRA",
+                           Especie == "LILEN"~"LILE",
+                           Especie == "PELICANO"~"PELICANO COMÚN", 
+                          TRUE~Especie)) %>% rename(Nombre=Especie)
 
- ### Modificar data frame
+Nombre_sp <- read_excel("Bird guilts.xlsx") %>% dplyr::select(Nombre, Especie) %>% mutate(Especie=str_replace_all(Especie, " ", "_"))
+
+Reg_completo_aves <- left_join(Reg_completo_aves, Nombre_sp)
+ 
+### Modificar data frame
 
 SITIOS <- Reg_completo_aves %>% pull(Sitio) %>% unique() %>% sort()
 Spp <- Reg_completo_aves %>% pull(Especie) %>% unique() %>% sort()
@@ -66,7 +75,17 @@ saveRDS(OccData2, "Occdata_regInv.rds")
 
 #REGISTRO DE AVES : PRIMAVERA 2019
 
-Registro_aves_verano <- read_csv("G:/Mi unidad/Documentos Yoryi/Documents yoryi/Doctorado Tesis/Monitoreo aves/Muestreo aves sep-oct 2019/Monitoreo punto/Registro_aves_veranoFINAL.csv")
+Registro_aves_verano <- read_csv("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/MonitoreoVisualGit/Muestreo aves sep-oct 2019/Monitoreo punto/Registro_aves_veranoFINAL.csv")
+Registro_aves_verano <- Registro_aves_verano %>% 
+  mutate(Especie=case_when(Especie == "CAHUIL"~ "GAVIOTA CAHUIL",
+                           Especie == "PELICANO"~"PELICANO COMÚN", 
+                           TRUE~Especie)) %>% rename(Nombre=Especie)
+
+Nombre_sp <- read_excel("Bird guilts.xlsx") %>% dplyr::select(Nombre, Especie) %>% mutate(Especie=str_replace_all(Especie, " ", "_"))
+
+Registro_aves_verano <- left_join(Registro_aves_verano, Nombre_sp)
+
+
 
 ### Modificar data frame
 
@@ -111,7 +130,6 @@ for(i in 1:nrow(OccDatav)){
   OccData2v[i,OccDatav[i,]>0] <- 1
 }
 
-setwd("G:/Mi unidad/Documentos Yoryi/Documents yoryi/Doctorado Tesis/Monitoreo aves/Analisis_Occu_punto")
 saveRDS(OccData2v, "Occdata_regPRIM.rds")
 
 
