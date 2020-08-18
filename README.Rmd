@@ -93,3 +93,10 @@ Se toman los nombres de todas las especies desde el archivo  Bird_guilts.xlsx, s
 Archivo **Ensamble_func.R** con graficos y analisis exploratorios de ensamble de aves y su posible explicacion con rasgos funcionales. Resumen de modelos e importancia de variables.- se obtiene el df Resumen_Modelos (para inv y prim) 
 
 
+--- analisis exploraorios con rasgos funcionales, pero se presentan errores desde informaciond e ocupancia por nombre comun de especies (ademas dde elevados valores de ocupancia para mas de 42 sp)
+14 agoosto: Modificacion de codigo para trabajar ocupancias con nombre de especies en vez de nombre comun de aves.
+Modificacion enarcihvo de preparacion de cpas ocupancia y cambio de elementos Occdata_regPRIM.rds y Occdata_regInv.rds guardados en MonitoreoVisualGit
+
+Se cambio el nombre de las especies por los nombres cientificos y se corrio ocupancia para todas las sp nuevamente. Graficos
+Tmabien se vio analisis NMDS y ensambles con nuevos y mejores colores
+

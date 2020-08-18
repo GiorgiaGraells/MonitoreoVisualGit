@@ -6,7 +6,6 @@ library(unmarked)
 library(MuMIn)
 library(caret)
 
-setwd("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/MonitoreoVisualGit/Analisis_Occu_punto")
 
 ## Funcion nueva ocupancia:
 
@@ -288,9 +287,9 @@ batchoccu3 <- function(pres, sitecov, obscov, spp, form, SppNames = NULL, dredge
 
 #Ocupancia para todas las especies en primavera
 
-data_det <-read_rds("Occdata_detPrim.rds")
+data_det <-read_rds("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/MonitoreoVisualGit/Analisis_Occu_punto/Occdata_detPrim.rds")
 
-data_ocu <-read_rds("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/MonitoreoVisualGit/Occdata_occu.rds")
+data_ocu <-read_rds("Occdata_occu.rds")
 data_ocu <- data_ocu %>% dplyr::select(-Sitio)
 colnames(data_ocu) <- str_replace_all(colnames(data_ocu), pattern = " ", "_")
 
@@ -304,7 +303,7 @@ Nuevos_Datos <- data_ocu %>% group_by(AMBIENTE) %>% summarise_all(mean) %>% muta
 
 ResultadosPrim <- list()
 
-PorSitio <- data.frame(Sitio = read_rds("Occdata_ocu.rds")$Sitio, Ambiente = data_ocu$AMBIENTE)
+PorSitio <- data.frame(Sitio = read_rds("Occdata_occu.rds")$Sitio, Ambiente = data_ocu$AMBIENTE)
 
 
 for(i in 1:length(Spp)){
@@ -320,7 +319,7 @@ for(i in 1:length(Spp)){
   Nuevos_Datos_Temp <- as.data.frame(Nuevos_Datos)
   
   PorSitio <-  PorSitio %>% mutate(Spp = NA)
-  PorSitio$Spp <- OccuPrim_temp$fit
+  PorSitio$Spp <- OccuPrim_temp$fit 
   colnames(PorSitio)[i + 2] <- Spp[i]
   
   message(paste("Prediciendo occupancia", Spp[i]))
@@ -340,7 +339,7 @@ for(i in 1:length(Spp)){
   ResultadosPrim[[i]] <- Nuevos_Datos_Temp
   message(i)
 }
-
+#
 ResultadosPrim <- ResultadosPrim %>% reduce(bind_rows)
 PorSitioPrim <- PorSitio
 
@@ -352,9 +351,9 @@ saveRDS(PorSitioPrim, "PorSitioPrim.rds")
 
 #Ocupancia para todas las especies en invierno
 
-data_det <-read_rds("Occdata_detInv.rds")
+data_det <-read_rds("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/MonitoreoVisualGit/Analisis_Occu_punto/Occdata_detInv.rds")
 
-data_ocu <-read_rds("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/MonitoreoVisualGit/Occdata_occu.rds")
+data_ocu <-read_rds("Occdata_occu.rds")
 data_ocu <- data_ocu %>% dplyr::select(-Sitio)
 colnames(data_ocu) <- str_replace_all(colnames(data_ocu), pattern = " ", "_")
 
@@ -368,7 +367,7 @@ Nuevos_Datos <- data_ocu %>% group_by(AMBIENTE) %>% summarise_all(mean) %>% muta
 
 ResultadosInv <- list()
 
-PorSitioInv <- data.frame(Sitio = read_rds("Occdata_ocu.rds")$Sitio, Ambiente = data_ocu$AMBIENTE)
+PorSitioInv <- data.frame(Sitio = read_rds("Occdata_occu.rds")$Sitio, Ambiente = data_ocu$AMBIENTE)
 
 
 
@@ -406,7 +405,7 @@ for(i in 1:length(Spp)){
   message(i)
 }
 
-
+###
 ResultadosInv <- ResultadosInv %>% reduce(bind_rows)
 
 saveRDS(ResultadosInv, "ResultadosInv.rds")
@@ -415,22 +414,25 @@ saveRDS(PorSitioInv, "PorSitioInv.rds")
 
 #################################################################################################################
 
-ResultadosInv <- readRDS("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/MonitoreoVisualGit/Analisis_Occu_punto/ResultadosInv.rds")
-ResultadosPrim <- readRDS("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/MonitoreoVisualGit/Analisis_Occu_punto/ResultadosPrim.rds")
-PorSitioInv <- readRDS("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/MonitoreoVisualGit/Analisis_Occu_punto/PorSitioInv.rds")
-PorSitioPrim <- readRDS("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/MonitoreoVisualGit/Analisis_Occu_punto/PorSitioPrim.rds")
+ResultadosInv <- readRDS("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/MonitoreoVisualGit/ResultadosInv.rds")
+ResultadosPrim <- readRDS("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/MonitoreoVisualGit/ResultadosPrim.rds")
+PorSitioInv <- readRDS("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/MonitoreoVisualGit/PorSitioInv.rds")
+PorSitioPrim <- readRDS("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/MonitoreoVisualGit/PorSitioPrim.rds")
 
 
 ###################################################################### Visualizando
-#PRIM
-ResultadosPrim <- ResultadosPrim %>% mutate(AMBIENTE=fct_relevel(AMBIENTE, "URBANO", "VERDE", "ROCA INTERVENIDA", "PLAYA INTERVENIDA", "PLAYA NATURAL"))
-ggplot(ResultadosPrim, aes(x=AMBIENTE, y=Pred))+ geom_point(aes(color = Spp)) + geom_errorbar(aes(ymax = Pred + SE, ymin = Pred - SE, color = Spp)) + ylim(c(0,1.05))+
-  xlab("Ambientes")+ylab("Predicción de presencia") + facet_wrap(~Spp)+theme_classic()+ theme(axis.text.x = element_text(angle=70, vjust= 1, hjust=1), legend.position = "none")
 
 #INV
 ResultadosInv <- ResultadosInv %>% mutate(AMBIENTE=fct_relevel(AMBIENTE, "URBANO", "VERDE", "ROCA INTERVENIDA", "PLAYA INTERVENIDA", "PLAYA NATURAL"))
 ggplot(ResultadosInv, aes(x=AMBIENTE, y=Pred))+ geom_point(aes(color = Spp)) + geom_errorbar(aes(ymax = Pred + SE, ymin = Pred - SE, color = Spp)) + ylim(c(0,1.05))+
   xlab("Ambientes")+ylab("Predicción de presencia") + facet_wrap(~Spp)+theme_classic()+ theme(axis.text.x = element_text(angle=70, vjust= 1, hjust=1), legend.position = "none")
+
+
+#PRIM
+ResultadosPrim <- ResultadosPrim %>% mutate(AMBIENTE=fct_relevel(AMBIENTE, "URBANO", "VERDE", "ROCA INTERVENIDA", "PLAYA INTERVENIDA", "PLAYA NATURAL"))
+ggplot(ResultadosPrim, aes(x=AMBIENTE, y=Pred))+ geom_point(aes(color = Spp)) + geom_errorbar(aes(ymax = Pred + SE, ymin = Pred - SE, color = Spp)) + ylim(c(0,1.05))+
+  xlab("Ambientes")+ylab("Predicción de presencia") + facet_wrap(~Spp)+theme_classic()+ theme(axis.text.x = element_text(angle=70, vjust= 1, hjust=1), legend.position = "none")
+
 
 
 #########################################################
@@ -483,19 +485,16 @@ write.csv(Todo_NMDS,"Todo_NMDS.csv")
 
 #todo junot sin separacion estacional
 ggplot(Todo_NMDS, aes(x = MDS1, y = MDS2)) + geom_point(aes(color = AMBIENTE), size = 3) + 
+  scale_fill_manual(aesthetics = c("colour", "fill"),values=c('#1b9e77','#d95f02','#7570b3','#e7298a','#66a61e','#e6ab02'))+
    theme_bw()
 
 ggplot(Todo_NMDS, aes(x = MDS1, y = MDS2)) + geom_point(aes(color = AMBIENTE, shape = Estacion), size = 3) + 
-  geom_polygon(data = Hull, aes(color = AMBIENTE, lty = Estacion, fill = AMBIENTE), alpha = 0.1) + theme_bw()
+  geom_polygon(data = Hull, aes(color = AMBIENTE, lty = Estacion, fill = AMBIENTE), alpha = 0.1) + 
+  scale_fill_manual(aesthetics = c("colour", "fill"),values=c('#1b9e77','#d95f02','#7570b3','#e7298a','#66a61e','#e6ab02'))+
+  theme_bw()
 
-ggplot(Todo_NMDS, aes(x = MDS1, y = MDS2)) + geom_point(aes(color = AMBIENTE, shape = Estacion), size = 3) + 
-  geom_polygon(data = Hull, aes(color = AMBIENTE,  fill = AMBIENTE), alpha = 0.1) + theme_bw() + facet_wrap(~Estacion)
-
-# Con especies
-
-ggplot(Todo_NMDS, aes(x = MDS1, y = MDS2)) + geom_point(aes(color = AMBIENTE, shape = Estacion), size = 5) +
-  geom_polygon(data = Hull, aes(color = AMBIENTE, lty = Estacion, fill = AMBIENTE), alpha = 0.3) + theme_bw() + 
-  facet_wrap(~Estacion) + geom_point(data = Species) + ggrepel::geom_text_repel(data = Species, aes(label = Especies))
-
-#ggplot(Todo_NMDS, aes(x = MDS1, y = MDS2)) + geom_density2d(aes(color = AMBIENTE))+ geom_point(aes(color = AMBIENTE, shape = Estacion), size = 5) + theme_bw() + facet_wrap(~Estacion)
+ggplot(Todo_NMDS, aes(x = MDS1, y = MDS2)) + geom_point(aes(color = AMBIENTE), size = 1) + 
+  geom_polygon(data = Hull, aes(color = AMBIENTE,  fill = AMBIENTE), alpha = 0.2) + theme_bw() + 
+  scale_fill_manual(aesthetics = c("colour", "fill"),values=c('#1b9e77','#d95f02','#7570b3','#e7298a','#66a61e','#e6ab02'))+
+  facet_wrap(~Estacion)
 
