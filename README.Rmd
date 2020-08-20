@@ -100,3 +100,17 @@ Modificacion enarcihvo de preparacion de cpas ocupancia y cambio de elementos Oc
 Se cambio el nombre de las especies por los nombres cientificos y se corrio ocupancia para todas las sp nuevamente. Graficos
 Tmabien se vio analisis NMDS y ensambles con nuevos y mejores colores
 
+
+### Exploración de datos en base a reunion 18 agosto
+
+Se acuerda generar una grafico de riqueza de especies por ambiente, separado en marino-terrestre
+Para Presencia especies, abundancia y probabilidad de ocupancia realizar:
+- NMDS + ANOSIM
+- SIMPER
+- BIOENV
+
+
+Se borró script de exploración de datos en donde se habia comenzado con la exploración, pero fue cocntinuada en el script AnalisisVegan
+Se geneó un nuevo script llamado ExploracionEnfocada, en donde se resuelve lo conversado en reunion del 18 agosto con stefan. 
+
+grafico de riqueza por ambiente, estacional
