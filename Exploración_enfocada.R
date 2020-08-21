@@ -78,12 +78,19 @@ AvesInv <- AvesInv %>% dplyr::select(-Sitio)
 
 AvesPrim <- read_csv("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/MonitoreoVisualGit/Muestreo aves sep-oct 2019/Monitoreo punto/Registro_aves_veranoFINAL.csv")
 AvesPrim <- AvesPrim %>% group_by(Sitio, Especie) %>% summarise(n=sum(N_individuos)) %>% spread(key = Especie, value = n, fill=0) %>% ungroup
-AvesPrim <-AvesPrim %>% dplyr::select(-Sitio)
+AvesPrim <-AvesPrim %>% dplyr::select(-Sitio) 
 
 #Datos ambientales  incluidos buffers
 Amb<- read_rds("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/MonitoreoVisualGit/Occdata_occu.rds")
-Amb <- Amb %>% dplyr::select(-Sitio)
-
+Amb <- Amb %>% dplyr::select(-Sitio)%>% 
+  dplyr::select(CobVeg, AMBIENTE, Distancia_rio, Altura, `Buffer_2200_Bosque Nativo`, `Buffer_2200_Cultivos`, `Buffer_2200_Grava`, `Buffer_2200_Oceano`, `Buffer_2200_Pastizales`, `Buffer_2200_Matorrales`, `Buffer_2200_Sup impermeables`, `Buffer_2200_Suelo arenoso`, `Buffer_2200_Plantación de árboles`) %>% 
+  rename( `Cobertura vegetal` =CobVeg) %>% rename( `Distancia a río` =Distancia_rio) %>% 
+  rename( `Bosque nativo` =`Buffer_2200_Bosque Nativo`) %>% rename( Cultivos =`Buffer_2200_Cultivos`) %>% 
+  rename( Grava =`Buffer_2200_Grava`) %>% rename( Oceano =`Buffer_2200_Oceano`) %>% 
+  rename( Pastizales =`Buffer_2200_Pastizales`) %>% rename( `Matorrales` =`Buffer_2200_Matorrales`) %>% 
+  rename( `Superficies impermeables` =`Buffer_2200_Sup impermeables`) %>% rename( `Suelo arenoso` =`Buffer_2200_Suelo arenoso`) %>% 
+  rename( `Plantacion de arboles` =`Buffer_2200_Plantación de árboles`)
+  
 
 
 
@@ -110,7 +117,7 @@ ord1Prim <- metaMDS(AvesPrim) #stress= 0.1947774
 stressplot(ord1Prim)
 
 ordiplot(ord1Prim)
-ordihull(ord1Prim, groups = Amb$AMBIENTE, show.groups = TRUE)
+ordihull(ord1Prim, groups = Amb$AMBIENTE)
 points(ord1Prim)
 
 AnosimPrim <-anosim(AvesPrim, grouping=Amb$AMBIENTE, permutations = 999, distance = "bray", strata = NULL,
@@ -131,3 +138,17 @@ summary(SimperInv, ordered = TRUE)
 
 SimperPrim <- simper(AvesPrim, group=Amb$AMBIENTE)
 summary(SimperPrim)
+
+
+### envit: Fits an Environmental Vector or Factor onto an Ordination
+
+EnvfitInv <- envfit(ord=ord1Inv, env=Amb, permutations = 999, strata = NULL)
+plot(ord1Inv)
+plot(EnvfitInv)
+ordihull(ord1Inv, groups = Amb$AMBIENTE)
+
+
+EnvfitPrim<- envfit(ord=ord1Prim, env=Amb, permutations = 999, strata = NULL)
+plot(ord1Prim)
+plot(EnvfitPrim)
+ordihull(ord1Prim, groups = Amb$AMBIENTE)

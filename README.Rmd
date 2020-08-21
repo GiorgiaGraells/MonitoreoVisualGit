@@ -116,3 +116,4 @@ Se geneó un nuevo script llamado ExploracionEnfocada, en donde se resuelve lo c
 grafico de riqueza por ambiente, estacional
 
 vegan para abundancia por especie invierno y primavera: NMDS, Anosim, Simper
+vegan para abundancia por especie invierno y primaveera: envfit
