@@ -117,3 +117,5 @@ grafico de riqueza por ambiente, estacional
 
 vegan para abundancia por especie invierno y primavera: NMDS, Anosim, Simper
 vegan para abundancia por especie invierno y primaveera: envfit
+
+analisis listos para abundancia, comp especies y ocupancia
