@@ -114,3 +114,5 @@ Se borró script de exploración de datos en donde se habia comenzado con la exp
 Se geneó un nuevo script llamado ExploracionEnfocada, en donde se resuelve lo conversado en reunion del 18 agosto con stefan. 
 
 grafico de riqueza por ambiente, estacional
+
+vegan para abundancia por especie invierno y primavera: NMDS, Anosim, Simper
