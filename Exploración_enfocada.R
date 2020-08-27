@@ -97,29 +97,58 @@ Amb <- Amb %>% dplyr::select(-Sitio)%>%
 #############################################################################################################################################
 # PRES-AUS: En base a funcion metaMDS, que estandariza las abundancias, considera solo composicion de especies
 
+
+
 ##### METAMDS Non-metric Multidimensional scaling- NMDS
+#metaMDS: estandariza, genera matriz, genera monoMDS
 
-#Invierno
-ord1Inv <- metaMDS(AvesInv) #stress= 0.234609 
-stressplot(ord1Inv)
+### Invierno
+Inv_nmds1_bray <- metaMDS(AvesInv, distance="bray", k=2, try=20, trymax=100, autotransform=TRUE, wascores=FALSE, trace=1, plot=FALSE) 
+#try: num de randomizaciones para solucione estable
+#autotransform: wisconsin double standarization para datos grandes de abundancia
+#stress= 0.2380544  
 
-ordiplot(ord1Inv)
-ordihull(ord1Inv,groups = Amb$AMBIENTE)
-points(ord1Inv)
+plot(Inv_nmds1_bray, type = "n")
+points(Inv_nmds1_bray, display = "sites", cex = 0.8, pch=21, col="red", bg="red") #revisar para graficar con color por grupo
+#probar orditorp para superposicion
 
-AnosimInv <-anosim(AvesInv, grouping=Amb$AMBIENTE, permutations = 999, distance = "bray", strata = NULL,
-       parallel = getOption("mc.cores"))
-summary(AnosimInv)
-plot(AnosimInv)
+stressplot(Inv_nmds1_bray)
+#buen fit con alto valor de ajuste
 
-##Primavera
-ord1Prim <- metaMDS(AvesPrim) #stress= 0.1947774
-stressplot(ord1Prim)
+GoF_Inv_nmds1_bray <- goodness(Inv_nmds1_bray)
+plot(Inv_nmds1_bray, type = "p")
+points(Inv_nmds1_bray, display = "sites", cex=GoF_Inv_nmds1_bray*100) 
 
-ordiplot(ord1Prim)
-ordihull(ord1Prim, groups = Amb$AMBIENTE)
-points(ord1Prim)
+#Testeo con Anosim
+#ejemplo en PAST3: perm=9999, bray-curtis index similarity
+#respuestas: meanrankwithin, meanrankbetween, R, p
+# R=0 no hay dif entre grupos,  cercano a 1 mas grande las diferencias entre grupos
+#pairwise: dif entre grupos
 
+Diss_Inv1 <- vegdist(AvesInv, method="bray", binary=TRUE, diag=TRUE, upper=TRUE,
+                     na.rm = FALSE) #binary TRUE estandariza presencia/ausencia 
+#revisar metodo de distancia
+
+Anosim_Diss_Inv1<-anosim(Diss_Inv1, grouping=Amb$AMBIENTE, permutations = 9999, distance = "bray", 
+                   strata = NULL, parallel = getOption("mc.cores")) #tengo 4 cores en este pc
+summary(Anosim_Diss_Inv1)
+plot(Anosim_Diss_Inv1) ##ojo con notchs
+
+### Primavera
+Prim_nmds1_bray <- metaMDS(AvesPrim, distance="bray", k=2, try=20, trymax=100, autotransform=TRUE, wascores=FALSE, trace=1, plot=FALSE) 
+#stress= 0.1947774
+
+plot(Prim_nmds1_bray, type = "n")
+points(Prim_nmds1_bray, display = "sites", cex = 0.8, pch=21, col="red", bg="red")
+
+
+stressplot(Prim_nmds1_bray)
+
+GoF_Prim_nmds1_bray <- goodness(Prim_nmds1_bray)
+plot(Prim_nmds1_bray, type = "p")
+points(Prim_nmds1_bray, display = "sites", cex=GoF_Inv_nmds1_bray*100) 
+
+#Test
 AnosimPrim <-anosim(AvesPrim, grouping=Amb$AMBIENTE, permutations = 999, distance = "bray", strata = NULL,
                    parallel = getOption("mc.cores"))
 summary(AnosimPrim)
@@ -141,20 +170,25 @@ summary(SimperPrim)
 
 ##### ENVIT: Fits an Environmental Vector or Factor onto an Ordination
 
-EnvfitInv <- envfit(ord=ord1Inv, env=Amb, permutations = 999, strata = NULL)
-plot(ord1Inv)
-plot(EnvfitInv)
-ordihull(ord1Inv, groups = Amb$AMBIENTE)
+# data= Amb
+# srt(Amb): 13 variables
+# se usa el resultado del mnds, basado en bray curtis
 
+EnvfitInv <- envfit(Inv_nmds1_bray~ `Cobertura vegetal`+ `Distancia a río`+Altura+ `Bosque nativo`+ Cultivos+ Grava + Oceano +Pastizales+ Matorrales+`Superficies impermeables` + `Suelo arenoso`+ `Plantacion de arboles`, data=Amb, perm=999)
+EnvfitInv
+plot(Inv_nmds1_bray, display = "sites")#poner ambientes por color
+plot(EnvfitInv, p.max = 0.05 , display="species")
+#Direccion del vector indica hacia donde cammbia mas rapido la variable
+#largo del vector es proporcional a la correlacion (fuerza del gradiente)
 
-EnvfitPrim<- envfit(ord=ord1Prim, env=Amb, permutations = 999, strata = NULL)
-plot(ord1Prim)
-plot(EnvfitPrim)
-ordihull(ord1Prim, groups = Amb$AMBIENTE)
+#poner las especies permitiria ver la respues de la especie sobre los vectore
 
-
-EnvfitPrim <- envfit(ord1Prim~ AMBIENTE+`Cobertura vegetal`+ `Distancia a río`+Altura+ `Bosque nativo`+ Cultivos+ Grava + Oceano +Pastizales+ Matorrales+`Superficies impermeables` + `Suelo arenoso`+ `Plantacion de arboles`, data=Amb, perm=999)
+EnvfitPrim <- envfit(Prim_nmds1_bray~ `Cobertura vegetal`+ `Distancia a río`+Altura+ `Bosque nativo`+ Cultivos+ Grava + Oceano +Pastizales+ Matorrales+`Superficies impermeables` + `Suelo arenoso`+ `Plantacion de arboles`, data=Amb, perm=999)
 EnvfitPrim
+plot(Prim_nmds1_bray, display = "sites")#poner ambientes por color
+plot(EnvfitPrim, p.max = 0.05 )#chequear orditorp o algo q repela los nombres de vectores
+
+
 
 
 #############################################################################################################################################
@@ -171,7 +205,7 @@ ordihull(ord2Inv,groups = Amb$AMBIENTE)
 points(ord2Inv)
 
 AnosimInv <-anosim(AvesInv, grouping=Amb$AMBIENTE, permutations = 999, distance = "bray", strata = NULL,
-                   parallel = getOption("mc.cores"))
+                   parallel = getOption("mc.cores"))  ###revisar la autotransformacion
 summary(AnosimInv)
 plot(AnosimInv)
 
@@ -205,22 +239,19 @@ summary(SimperPrim)
 
 
 ##### ENVFIT: Fits an Environmental Vector or Factor onto an Ordination
-
-EnvfitInv <- envfit(ord=ord2Inv, env=Amb, permutations = 999, strata = NULL)
+EnvfitInv <- envfit(ord2Inv~ `Cobertura vegetal`+ `Distancia a río`+Altura+ `Bosque nativo`+ Cultivos+ Grava + Oceano +Pastizales+ Matorrales+`Superficies impermeables` + `Suelo arenoso`+ `Plantacion de arboles`, data=Amb, perm=999)
 plot(ord2Inv)
 plot(EnvfitInv)
 ordihull(ord2Inv, groups = Amb$AMBIENTE)
 
-EnvfitInv <- envfit(ord2Inv~ AMBIENTE+`Cobertura vegetal`+ `Distancia a río`+Altura+ `Bosque nativo`+ Cultivos+ Grava + Oceano +Pastizales+ Matorrales+`Superficies impermeables` + `Suelo arenoso`+ `Plantacion de arboles`, data=Amb, perm=999)
 EnvfitInv
 
-EnvfitPrim<- envfit(ord=ord2Prim, env=Amb, permutations = 999, strata = NULL)
+EnvfitPrim <- envfit(ord2Prim~ `Cobertura vegetal`+ `Distancia a río`+Altura+ `Bosque nativo`+ Cultivos+ Grava + Oceano +Pastizales+ Matorrales+`Superficies impermeables` + `Suelo arenoso`+ `Plantacion de arboles`, data=Amb, perm=999)
 plot(ord2Prim)
 plot(EnvfitPrim)
 ordihull(ord2Prim, groups = Amb$AMBIENTE)
 
 
-EnvfitPrim <- envfit(ord2Prim~ AMBIENTE+`Cobertura vegetal`+ `Distancia a río`+Altura+ `Bosque nativo`+ Cultivos+ Grava + Oceano +Pastizales+ Matorrales+`Superficies impermeables` + `Suelo arenoso`+ `Plantacion de arboles`, data=Amb, perm=999)
 EnvfitPrim
 
 
@@ -238,7 +269,7 @@ PorSitioPrim <- readRDS("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/
 ##### METAMDS: Non-metric Multidimensional scaling- NMDS
 
 #Invierno
-ord3Inv <- metaMDS(PorSitioInv, autotransform = FALSE) #stress= 0.2183811
+ord3Inv <- metaMDS(PorSitioInv, autotransform = FALSE) #stress= 0.2137632
 stressplot(ord3Inv)
 
 ordiplot(ord3Inv)
@@ -252,7 +283,7 @@ plot(AnosimInv)
 
 
 ##Primavera
-ord3Prim <- metaMDS(PorSitioPrim,autotransform = FALSE) #stress= 0.2280575 
+ord3Prim <- metaMDS(PorSitioPrim,autotransform = FALSE) #stress= 0.1625658 
 stressplot(ord3Prim)
 
 ordiplot(ord3Prim)
@@ -281,20 +312,21 @@ summary(SimperPrim)
 
 ##### ENVFIT: Fits an Environmental Vector or Factor onto an Ordination
 
-EnvfitInv <- envfit(ord=ord3Inv, env=Amb, permutations = 999, strata = NULL)
+#EnvfitInv <- envfit(ord=ord3Inv, env=Amb, permutations = 999, strata = NULL)
+
+EnvfitInv <- envfit(ord3Inv~ `Cobertura vegetal`+ `Distancia a río`+Altura+ `Bosque nativo`+ Cultivos+ Grava + Oceano +Pastizales+ Matorrales+`Superficies impermeables` + `Suelo arenoso`+ `Plantacion de arboles`, data=Amb, perm=999)
 plot(ord3Inv)
 plot(EnvfitInv)
 ordihull(ord3Inv, groups = Amb$AMBIENTE)
-
-EnvfitInv <- envfit(ord3Inv~ AMBIENTE+`Cobertura vegetal`+ `Distancia a río`+Altura+ `Bosque nativo`+ Cultivos+ Grava + Oceano +Pastizales+ Matorrales+`Superficies impermeables` + `Suelo arenoso`+ `Plantacion de arboles`, data=Amb, perm=999)
+#significancias
 EnvfitInv
 
-EnvfitPrim<- envfit(ord=ord3Prim, env=Amb, permutations = 999, strata = NULL)
+#EnvfitPrim<- envfit(ord=ord3Prim, env=Amb, permutations = 999, strata = NULL)
+
+EnvfitPrim <- envfit(ord3Prim~ `Cobertura vegetal`+ `Distancia a río`+Altura+ `Bosque nativo`+ Cultivos+ Grava + Oceano +Pastizales+ Matorrales+`Superficies impermeables` + `Suelo arenoso`+ `Plantacion de arboles`, data=Amb, perm=999)
 plot(ord3Prim)
 plot(EnvfitPrim)
 ordihull(ord3Prim, groups = Amb$AMBIENTE)
-
-
-EnvfitPrim <- envfit(ord3Prim~ AMBIENTE+`Cobertura vegetal`+ `Distancia a río`+Altura+ `Bosque nativo`+ Cultivos+ Grava + Oceano +Pastizales+ Matorrales+`Superficies impermeables` + `Suelo arenoso`+ `Plantacion de arboles`, data=Amb, perm=999)
+#significancias
 EnvfitPrim
 
