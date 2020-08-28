@@ -95,39 +95,33 @@ Amb <- Amb %>% dplyr::select(-Sitio)%>%
   
 
 #############################################################################################################################################
-# PRES-AUS: En base a funcion metaMDS, que estandariza las abundancias, considera solo composicion de especies
+# A.  Riqueza especies: En base a funcion metaMDS, que estandariza las abundancias, considera solo composicion de especies
 
-
-
-##### METAMDS Non-metric Multidimensional scaling- NMDS
-#metaMDS: estandariza, genera matriz, genera monoMDS
+##### 1. METAMDS Non-metric Multidimensional scaling- NMDS
+#metaMDS: estandariza, genera matriz a partir de vegdist, genera monoMDS
 
 ### Invierno
 Inv_nmds1_bray <- metaMDS(AvesInv, distance="bray", k=2, try=20, trymax=100, autotransform=TRUE, wascores=FALSE, trace=1, plot=FALSE) 
-#try: num de randomizaciones para solucione estable
+#try: num de randomizaciones para soluciones estable
 #autotransform: wisconsin double standarization para datos grandes de abundancia
-#stress= 0.2380544  
+##### stress= 0.2316405   
 
 plot(Inv_nmds1_bray, type = "n")
-points(Inv_nmds1_bray, display = "sites", cex = 0.8, pch=21, col="red", bg="red") #revisar para graficar con color por grupo
-#probar orditorp para superposicion
+points(Inv_nmds1_bray, display = "sites") #revisar para graficar con color por grupo
+ordispider(Inv_nmds1_bray, groups = Amb$AMBIENTE, col=1:6, label = TRUE)
 
+#plot(Inv_nmds1_bray$dist, Inv_nmds1_bray$diss, type = "p")
 stressplot(Inv_nmds1_bray)
 #buen fit con alto valor de ajuste
 
-GoF_Inv_nmds1_bray <- goodness(Inv_nmds1_bray)
-plot(Inv_nmds1_bray, type = "p")
-points(Inv_nmds1_bray, display = "sites", cex=GoF_Inv_nmds1_bray*100) 
-
-#Testeo con Anosim
+## test: ANOSIM
 #ejemplo en PAST3: perm=9999, bray-curtis index similarity
 #respuestas: meanrankwithin, meanrankbetween, R, p
 # R=0 no hay dif entre grupos,  cercano a 1 mas grande las diferencias entre grupos
 #pairwise: dif entre grupos
 
-Diss_Inv1 <- vegdist(AvesInv, method="bray", binary=TRUE, diag=TRUE, upper=TRUE,
-                     na.rm = FALSE) #binary TRUE estandariza presencia/ausencia 
-#revisar metodo de distancia
+Diss_Inv1 <- vegdist(AvesInv, method="bray", binary=TRUE, diag=TRUE, upper=TRUE, na.rm = FALSE)
+#binary TRUE estandariza presencia/ausencia /revisar metodo de distancia
 
 Anosim_Diss_Inv1<-anosim(Diss_Inv1, grouping=Amb$AMBIENTE, permutations = 9999, distance = "bray", 
                    strata = NULL, parallel = getOption("mc.cores")) #tengo 4 cores en este pc
@@ -139,34 +133,56 @@ Prim_nmds1_bray <- metaMDS(AvesPrim, distance="bray", k=2, try=20, trymax=100, a
 #stress= 0.1947774
 
 plot(Prim_nmds1_bray, type = "n")
-points(Prim_nmds1_bray, display = "sites", cex = 0.8, pch=21, col="red", bg="red")
-
+points(Prim_nmds1_bray, display = "sites") #revisar para graficar con color por grupo
+ordispider(Prim_nmds1_bray,groups = Amb$AMBIENTE, col=1:6, label = TRUE)
 
 stressplot(Prim_nmds1_bray)
 
-GoF_Prim_nmds1_bray <- goodness(Prim_nmds1_bray)
-plot(Prim_nmds1_bray, type = "p")
-points(Prim_nmds1_bray, display = "sites", cex=GoF_Inv_nmds1_bray*100) 
+## Test: ANOSIM
+Diss_Prim1 <- vegdist(AvesPrim, method="bray", binary=TRUE, diag=TRUE, upper=TRUE, na.rm = FALSE)
 
-#Test
-AnosimPrim <-anosim(AvesPrim, grouping=Amb$AMBIENTE, permutations = 999, distance = "bray", strata = NULL,
+Anosim_Diss_Prim1 <-anosim(Diss_Prim1, grouping=Amb$AMBIENTE, permutations = 9999, distance = "bray", strata = NULL,
                    parallel = getOption("mc.cores"))
-summary(AnosimPrim)
-plot(AnosimPrim)
+summary(Anosim_Diss_Prim1)
+plot(Anosim_Diss_Prim1) #1400x700
 
 
-##### SIMPER:gives the contribution of each species to overall dissimilarities, but these
-#          are caused by variation in species abundances, and only partly by differences among groups.
+##### 2. SIMPER:
+#   Simper gives the contribution of each species to overall dissimilarities, but these
+# are caused by variation in species abundances, and only partly by differences among groups.
+#   The function displays most important species for each pair of groups. These species contribute at
+# least to 70 % of the differences between groups.
+#   The method gives the contribution of each species to overall dissimilarities, but these
+# are caused by variation in species abundances, and only partly by differences among groups
 
-#  The function displays most important species for each pair of groups. These species contribute at
-#  least to 70 % of the differences between groups.
+Simper_Inv1 <- simper(AvesInv, group = Amb$AMBIENTE)
+Sum <-summary(Simper_Inv1, ordered = TRUE, digits = max(3,getOption("digits") - 3))
 
-SimperInv <- simper(AvesInv, group = Amb$AMBIENTE)
-summary(SimperInv, ordered = TRUE)
+DF <- data.frame(Comparacion_amb = names(Sum))
+Comp1 <- list()
+for(i in 1:nrow(DF)){
+  Comp1[[i]] <- Sum[[i]][1,] %>% mutate(Especie = rownames(Sum[[i]][1,]))
+}
+ResumenSimper_Inv1 <- Comp1 %>% reduce(bind_rows) %>% bind_cols(DF) %>% 
+  mutate(Aporte_dif= round(average*100,0)) %>% 
+  dplyr::select(Comparacion_amb, Especie,Aporte_dif ) ############modificar para el resto de los simper
 
-SimperPrim <- simper(AvesPrim, group=Amb$AMBIENTE)
-summary(SimperPrim)
+write_csv(ResumenSimper_Inv1, "ResumenSimper_Inv1.csv")
 
+#  
+  
+Simper_Prim1 <- simper(AvesPrim, group=Amb$AMBIENTE)
+Sum <-summary(Simper_Prim1)
+
+DF <- data.frame(Comparacion_amb = names(Sum))
+Comp1 <- list()
+for(i in 1:nrow(DF)){
+  Comp1[[i]] <- Sum[[i]][1,] %>% mutate(Especie = rownames(Sum[[i]][1,]))
+}
+ResumenSimper_Prim1 <- Comp1 %>% reduce(bind_rows) %>% bind_cols(DF) %>% 
+  dplyr::select(Comparacion_amb, Especie, average) %>% rename(Prop_aporte_dif=average)
+
+write_csv(ResumenSimper_Prim1, "ResumenSimper_Prim1.csv")
 
 ##### ENVIT: Fits an Environmental Vector or Factor onto an Ordination
 
@@ -174,20 +190,25 @@ summary(SimperPrim)
 # srt(Amb): 13 variables
 # se usa el resultado del mnds, basado en bray curtis
 
-EnvfitInv <- envfit(Inv_nmds1_bray~ `Cobertura vegetal`+ `Distancia a río`+Altura+ `Bosque nativo`+ Cultivos+ Grava + Oceano +Pastizales+ Matorrales+`Superficies impermeables` + `Suelo arenoso`+ `Plantacion de arboles`, data=Amb, perm=999)
+EnvfitInv <- envfit(Inv_nmds1_bray~ `Cobertura vegetal`+ `Distancia a río`+Altura+ `Bosque nativo`+ Cultivos+ Grava + Oceano +Pastizales+ Matorrales+`Superficies impermeables` + `Suelo arenoso`+ `Plantacion de arboles`, data=Amb, perm=9999)
 EnvfitInv
 plot(Inv_nmds1_bray, display = "sites")#poner ambientes por color
-plot(EnvfitInv, p.max = 0.05 , display="species")
+plot(EnvfitInv, p.max = 0.05 , col="blue")
+ordispider(Inv_nmds1_bray,groups = Amb$AMBIENTE, col=c("yellow", "red", "green", "light blue", "orange", "purple"), label = TRUE)
+
+
 #Direccion del vector indica hacia donde cammbia mas rapido la variable
 #largo del vector es proporcional a la correlacion (fuerza del gradiente)
 
 #poner las especies permitiria ver la respues de la especie sobre los vectore
 
-EnvfitPrim <- envfit(Prim_nmds1_bray~ `Cobertura vegetal`+ `Distancia a río`+Altura+ `Bosque nativo`+ Cultivos+ Grava + Oceano +Pastizales+ Matorrales+`Superficies impermeables` + `Suelo arenoso`+ `Plantacion de arboles`, data=Amb, perm=999)
+EnvfitPrim <- envfit(Prim_nmds1_bray~ `Cobertura vegetal`+ `Distancia a río`+Altura+ `Bosque nativo`+ Cultivos+ Grava + Oceano +Pastizales+ Matorrales+`Superficies impermeables` + `Suelo arenoso`+ `Plantacion de arboles`, data=Amb, perm=9999)
 EnvfitPrim
-plot(Prim_nmds1_bray, display = "sites")#poner ambientes por color
-plot(EnvfitPrim, p.max = 0.05 )#chequear orditorp o algo q repela los nombres de vectores
 
+plot(Prim_nmds1_bray, display = "sites")#poner ambientes por color
+plot(EnvfitPrim, p.max = 0.05, col="blue")
+ordispider(Prim_nmds1_bray,groups = Amb$AMBIENTE, col=c("yellow", "red", "green", "light blue", "orange", "purple"),
+           label = TRUE, cex=0.8)
 
 
 
@@ -197,32 +218,30 @@ plot(EnvfitPrim, p.max = 0.05 )#chequear orditorp o algo q repela los nombres de
 ##### METAMDS: Non-metric Multidimensional scaling- NMDS
 
 #Invierno
-ord2Inv <- metaMDS(AvesInv,autotransform = FALSE) #stress= 0.1325971
-stressplot(ord2Inv)
+Inv_nmds2_bray <- metaMDS(AvesInv,autotransform = FALSE, distance="bray", k=2, try=20, trymax=100, 
+                          wascores=FALSE, trace=1, plot=FALSE) #stress= 0.1284733
 
-ordiplot(ord2Inv)
-ordihull(ord2Inv,groups = Amb$AMBIENTE)
-points(ord2Inv)
+plot(Inv_nmds2_bray, type = "n")
+points(Inv_nmds2_bray, display = "sites") #revisar para graficar con color por grupo
+ordispider(Inv_nmds2_bray,groups = Amb$AMBIENTE, col=1:6, label = FALSE)
 
-AnosimInv <-anosim(AvesInv, grouping=Amb$AMBIENTE, permutations = 999, distance = "bray", strata = NULL,
-                   parallel = getOption("mc.cores"))  ###revisar la autotransformacion
-summary(AnosimInv)
-plot(AnosimInv)
+stressplot(Inv_nmds2_bray)
+
+#Anosim 
+
+
 
 
 ##Primavera
-ord2Prim <- metaMDS(AvesPrim,autotransform = FALSE) #stress= 0.0.1566688 
-stressplot(ord2Prim)
+Prim_nmds2_bray <- metaMDS(AvesPrim,autotransform = FALSE) #stress= 0.1314343 
 
-ordiplot(ord2Prim)
-ordihull(ord2Prim, groups = Amb$AMBIENTE)
-points(ord2Prim)
+plot(Prim_nmds2_bray, type = "n")
+points(Prim_nmds2_bray, display = "sites") #revisar para graficar con color por grupo
+ordispider(Prim_nmds2_bray,groups = Amb$AMBIENTE, col=1:6, label = FALSE)
 
-AnosimPrim <-anosim(AvesPrim, grouping=Amb$AMBIENTE, permutations = 999, distance = "bray", strata = NULL,
-                    parallel = getOption("mc.cores"))
-summary(AnosimPrim)
-plot(AnosimPrim)
+stressplot(Prim_nmds2_bray)
 
+#Anosim== riqueza sp prim
 
 
 ##### SIMPER:gives the contribution of each species to overall dissimilarities, but these
