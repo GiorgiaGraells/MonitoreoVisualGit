@@ -110,7 +110,21 @@ plot(Inv_nmds1_bray, type = "n")
 points(Inv_nmds1_bray, display = "sites") #revisar para graficar con color por grupo
 ordispider(Inv_nmds1_bray, groups = Amb$AMBIENTE, col=1:6, label = TRUE)
 
-#plot(Inv_nmds1_bray$dist, Inv_nmds1_bray$diss, type = "p")
+#########################################################
+#Función para sacar los datos y ocupar ggplot
+TidyNMDS <- function(MDS, COVS){
+  DF <- COVS
+  DF2 <- MDS$points %>% as.data.frame()
+  DF <- bind_cols(DF2, DF)
+  return(DF = DF)
+}
+#########################################################
+
+#Funcion para grafico NMDS en ggplot
+Tidy_Inv_nmds1_bray <- TidyNMDS(MDS = Inv_nmds1_bray, COVS = Amb)
+ggplot(Tidy_Inv_nmds1_bray)+geom_point(aes(x=MDS1, y=MDS2, color=AMBIENTE))+theme_classic()+ scale_color_manual(values = c('#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33'))
+
+#stress
 stressplot(Inv_nmds1_bray)
 #buen fit con alto valor de ajuste
 
@@ -122,7 +136,6 @@ stressplot(Inv_nmds1_bray)
 
 Diss_Inv1 <- vegdist(AvesInv, method="bray", binary=TRUE, diag=TRUE, upper=TRUE, na.rm = FALSE)
 #binary TRUE estandariza presencia/ausencia /revisar metodo de distancia
-
 Anosim_Diss_Inv1<-anosim(Diss_Inv1, grouping=Amb$AMBIENTE, permutations = 9999, distance = "bray", 
                    strata = NULL, parallel = getOption("mc.cores")) #tengo 4 cores en este pc
 summary(Anosim_Diss_Inv1)
@@ -136,6 +149,11 @@ plot(Prim_nmds1_bray, type = "n")
 points(Prim_nmds1_bray, display = "sites") #revisar para graficar con color por grupo
 ordispider(Prim_nmds1_bray,groups = Amb$AMBIENTE, col=1:6, label = TRUE)
 
+#grafico con ggplot funcion nueva
+Tidy_Prim_nmds1_bray <- TidyNMDS(MDS = Prim_nmds1_bray, COVS = Amb)
+ggplot(Tidy_Prim_nmds1_bray)+geom_point(aes(x=MDS1, y=MDS2, color=AMBIENTE))+theme_classic()+ scale_color_manual(values = c('#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33'))
+
+##stres
 stressplot(Prim_nmds1_bray)
 
 ## Test: ANOSIM
