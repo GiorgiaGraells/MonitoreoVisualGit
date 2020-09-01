@@ -121,3 +121,7 @@ vegan para abundancia por especie invierno y primaveera: envfit
 analisis listos para abundancia, comp especies y ocupancia
 
 modificacion de parametros de distintas funciones para su correcto uso
+
+
+
+Creacion de archivo **Comportamineto_Aves.R** para resumen de actividades
