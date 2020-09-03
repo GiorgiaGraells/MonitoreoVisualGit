@@ -37,6 +37,12 @@ ggplot(AvesInv_riq, aes(x=Sitio, y=Riqueza)) + geom_col(aes(fill=Habitat), posit
   scale_fill_manual(aesthetics = c("fill", "color"),values = c( '#5ab4ac','#d8b365')) +  theme_bw()+ ylab("Riqueza de especies invierno")+
   xlab("Sitios de muestreo")+   theme(axis.text.x=element_blank()) + geom_hline(data = Riqueza_Prom,aes(yintercept = Riqueza, color = Habitat), lty=2)
 
+
+ggplot(AvesInv_riq, aes(x=Habitat, y=Riqueza)) + geom_boxplot(aes(fill=Habitat), position="dodge", notch = T) + facet_wrap(~AMBIENTE, scales = "free_x", ncol=2)+
+  scale_fill_manual(aesthetics = c("fill", "color"),values = c( '#5ab4ac','#d8b365')) +  theme_bw()+ ylab("Riqueza de especies invierno")+
+  xlab("Sitios de muestreo")+   theme(axis.text.x=element_blank()) + geom_hline(data = Riqueza_Prom,aes(yintercept = Riqueza, color = Habitat), lty=2)
+
+
 # Riqueza primavera
 
 AMB_nombres <-read_rds("Occdata_occu.rds") %>% dplyr::select(Sitio, AMBIENTE)
@@ -60,7 +66,15 @@ AvesPrim_riq <- AvesPrim_riq %>% mutate(AMBIENTE=fct_relevel(AMBIENTE, "URBANO",
 
 Riqueza_Prom <- AvesPrim_riq %>% group_by(AMBIENTE, Habitat) %>% summarise(Riqueza = mean(Riqueza))
 
-ggplot(AvesPrim_riq, aes(x=Sitio, y=Riqueza)) + geom_col(aes(fill=Habitat), position="dodge") + facet_wrap(~AMBIENTE, scales = "free_x", ncol=2)+
+
+AvesRiqTotal <- bind_rows((AvesInv_riq %>% mutate(Temporada = "Invierno")),(AvesPrim_riq %>% mutate(Temporada = "Primavera"))) %>% mutate(AMBIENTE = fct_relevel(AMBIENTE,"PLAYA NATURAL", "PLAYA INTERVENIDA", "ROQUERIO NATURAL", "ROQUERIO INTERVENIDO", "VERDE"))
+
+
+ggplot(AvesRiqTotal, aes(x=Temporada, y=Riqueza)) + geom_boxplot(aes(fill=Habitat), position="dodge", notch = F) + facet_wrap(~AMBIENTE, scales = "free_x", ncol=2)+
+  scale_fill_manual(aesthetics = c("fill", "color"),values = c( '#5ab4ac','#d8b365')) +  theme_bw()+ ylab("Riqueza de especies invierno")+
+  xlab("Sitios de muestreo") + geom_hline(data = Riqueza_Prom,aes(yintercept = Riqueza, color = Habitat), lty=2)
+
+  ggplot(AvesPrim_riq, aes(x=Sitio, y=Riqueza)) + geom_col(aes(fill=Habitat), position="dodge") + facet_wrap(~AMBIENTE, scales = "free_x", ncol=2)+
   scale_fill_manual(aesthetics = c("fill", "color"),values = c( '#5ab4ac','#d8b365')) +  theme_bw()+ ylab("Riqueza de especies primavera")+
   xlab("Sitios de muestreo")+ theme(axis.text.x=element_blank()) + geom_hline(data = Riqueza_Prom,aes(yintercept = Riqueza, color = Habitat), lty=2)
 
@@ -105,9 +119,9 @@ Inv_nmds1_bray <- metaMDS(AvesInv, distance="bray", k=2, try=20, trymax=100, aut
 #autotransform: wisconsin double standarization para datos grandes de abundancia
 ##### stress= 0.2101384   
 
-#plot(Inv_nmds1_bray, type = "n")
-#points(Inv_nmds1_bray, display = "sites") #revisar para graficar con color por grupo
-#ordispider(Inv_nmds1_bray, groups = Amb$AMBIENTE, col=1:6, label = TRUE)
+plot(Inv_nmds1_bray, type = "n")
+points(Inv_nmds1_bray, display = "sites") #revisar para graficar con color por grupo
+ordispider(Inv_nmds1_bray, groups = Amb$AMBIENTE, col=1:6, label = FALSE)
 
 #########################################################
 #Función para sacar los datos y ocupar ggplot
@@ -220,6 +234,7 @@ TidyEnvFit <- function(ENVFit, alpha = 0.05){
 EnvfitInv <- envfit(Inv_nmds1_bray~ `Cobertura vegetal`+ `Distancia a río`+Altura+ `Bosque nativo`+ Cultivos+ Grava + Oceano +Pastizales+ Matorrales+`Superficies impermeables` + `Suelo arenoso`+ `Plantacion de arboles`, data=Amb, perm=9999)
 Tidy_EnvfitInv <- TidyEnvFit(EnvfitInv)
 
+library(ggplot2)
 ggplot(Tidy_Inv_nmds1_bray)+
   geom_segment(data=Tidy_EnvfitInv, x = 0, y = 0, aes(xend =NMDS1 , yend = NMDS2), arrow = arrow(length = unit(0.2, "cm")))+
   geom_text_repel(data=Tidy_EnvfitInv, aes(x=NMDS1, y=NMDS2, label=Factor), seed = 10)+
