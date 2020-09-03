@@ -403,6 +403,18 @@ ggplot(Tidy_Prim_nmds2_bray)+
 
 
 
+##############EXTRA EXTRA
+data(varespec)
+data(varechem)
+sol <- bioenv(wisconsin(varespec) ~ log(N) + P + K + Ca + pH + Al, varechem)
+sol
+summary(sol)
+
+
+Bioenv1prim <- bioenv(wisconsin(AvesPrim2)~ `Cobertura vegetal`+ `Distancia a río`+Altura+ `Bosque nativo`+ Cultivos+ Grava + Oceano +Pastizales+ Matorrales+`Superficies impermeables` + `Suelo arenoso`+ `Plantacion de arboles`, Amb)
+summary(Bioenv1prim)
+
+
 #############################################################################################################################################
 # OCUPANCIAS: ocupando probabilidad de presencia por sitio
 
