@@ -114,7 +114,7 @@ Amb <- Amb %>% dplyr::select(-Sitio)%>%
 #metaMDS: estandariza, genera matriz a partir de vegdist, genera monoMDS
 
 ### Invierno
-Inv_nmds1_bray <- metaMDS(AvesInv, distance="bray", k=2, try=20, trymax=100, autotransform=TRUE, wascores=FALSE, trace=1, plot=FALSE) 
+Inv_nmds1_bray <- metaMDS(AvesInv, distance="bray", k=2, try=20, trymax=100, autotransform=FALSE, wascores=FALSE, trace=1, plot=FALSE) 
 #try: num de randomizaciones para soluciones estable
 #autotransform: wisconsin double standarization para datos grandes de abundancia
 ##### stress= 0.2101384   
@@ -157,7 +157,7 @@ summary(Anosim_Diss_Inv1)
 plot(Anosim_Diss_Inv1) ##ojo con notchs
 
 ### Primavera
-Prim_nmds1_bray <- metaMDS(AvesPrim, distance="bray", k=2, try=20, trymax=100, autotransform=TRUE, wascores=FALSE, trace=1, plot=FALSE) 
+Prim_nmds1_bray <- metaMDS(AvesPrim, distance="bray", k=2, try=20, trymax=100, autotransform=FALSE, wascores=FALSE, trace=1, plot=FALSE) 
 #stress= 0.1947774
 
 #plot(Prim_nmds1_bray, type = "n")
@@ -199,6 +199,19 @@ for(i in 1:nrow(DF)){
 ResumenSimper_Inv1 <- Comp1 %>% reduce(bind_rows) %>% bind_cols(DF) %>% 
   mutate(Aporte_dif= round(average*100,0)) %>% 
   dplyr::select(Comparacion_amb, Especie,Aporte_dif ) ############modificar para el resto de los simper
+
+#
+DF <- data.frame(Comparacion_amb = names(Sum))
+Comp1 <- list()
+for(i in 1:nrow(DF)){
+  Comp1[[i]] <- Sum[[i]][,6] %>% mutate(Especie = rownames(Sum[[i]][1,])) %>%  mutate(Cumsum = rownames(Sum[[i]][1,]))
+}
+ResumenSimper_Inv1 <- Comp1 %>% reduce(bind_rows) %>% bind_cols(DF) %>% 
+  mutate(Aporte_dif= round(average*100,0)) %>% 
+  dplyr::select(Comparacion_amb, Especie,Aporte_dif ) ############modificar para el resto de los simper
+#
+
+
 
 write_csv(ResumenSimper_Inv1, "ResumenSimper_Inv1.csv")
 
@@ -284,7 +297,7 @@ Amb <- Amb %>% dplyr::select(-Sitio)%>%
 ##### METAMDS: Non-metric Multidimensional scaling- NMDS
 
 #Invierno
-Inv_nmds2_bray <- metaMDS(AvesInv2,autotransform = FALSE, distance="bray", k=2, try=20, trymax=100, 
+Inv_nmds2_bray <- metaMDS(AvesInv2,autotransform = TRUE, distance="bray", k=2, try=20, trymax=100, 
                           wascores=FALSE, trace=1, plot=FALSE) #stress= 0.1284733
 
 #plot(Inv_nmds2_bray, type = "n")
@@ -315,7 +328,7 @@ plot(Anosim_Diss_Inv2) ##ojo con notchs
 
 
 ##Primavera
-Prim_nmds2_bray <- metaMDS(AvesPrim2,autotransform = FALSE, distance="bray", k=2, try=20, trymax=100, 
+Prim_nmds2_bray <- metaMDS(AvesPrim2,autotransform = TRUE, distance="bray", k=2, try=20, trymax=100, 
                           wascores=FALSE, trace=1, plot=FALSE) #stress= 0.1284733
 
 #plot(Inv_nmds2_bray, type = "n")
