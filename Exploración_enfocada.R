@@ -194,24 +194,13 @@ Sum <-summary(Simper_Inv1, ordered = TRUE, digits = max(3,getOption("digits") - 
 DF <- data.frame(Comparacion_amb = names(Sum))
 Comp1 <- list()
 for(i in 1:nrow(DF)){
-  Comp1[[i]] <- Sum[[i]][1,] %>% mutate(Especie = rownames(Sum[[i]][1,]))
+  Comp1[[i]] <- Sum[[i]] %>% mutate(Next=lag(cumsum), Especie = rownames(Sum[[i]]), Next = ifelse(is.na(Next), 0, Next)) %>% dplyr::filter(Next < 0.15) %>% dplyr::select(Especie, average, cumsum)
+  Comp1[[i]]$Comparacion_amb <- DF$Comparacion_amb[i]
 }
-ResumenSimper_Inv1 <- Comp1 %>% reduce(bind_rows) %>% bind_cols(DF) %>% 
+
+ResumenSimper_Inv1 <- Comp1 %>% reduce(bind_rows) %>% 
   mutate(Aporte_dif= round(average*100,0)) %>% 
-  dplyr::select(Comparacion_amb, Especie,Aporte_dif ) ############modificar para el resto de los simper
-
-#
-DF <- data.frame(Comparacion_amb = names(Sum))
-Comp1 <- list()
-for(i in 1:nrow(DF)){
-  Comp1[[i]] <- Sum[[i]][,6] %>% mutate(Especie = rownames(Sum[[i]][1,])) %>%  mutate(Cumsum = rownames(Sum[[i]][1,]))
-}
-ResumenSimper_Inv1 <- Comp1 %>% reduce(bind_rows) %>% bind_cols(DF) %>% 
-  mutate(Aporte_dif= round(average*100,0)) %>% 
-  dplyr::select(Comparacion_amb, Especie,Aporte_dif ) ############modificar para el resto de los simper
-#
-
-
+  dplyr::select(Comparacion_amb, Especie,Aporte_dif, cumsum) 
 
 write_csv(ResumenSimper_Inv1, "ResumenSimper_Inv1.csv")
 
@@ -223,13 +212,16 @@ Sum <-summary(Simper_Prim1, ordered = TRUE, digits = max(3,getOption("digits") -
 DF <- data.frame(Comparacion_amb = names(Sum))
 Comp1 <- list()
 for(i in 1:nrow(DF)){
-  Comp1[[i]] <- Sum[[i]][1,] %>% mutate(Especie = rownames(Sum[[i]][1,]))
+  Comp1[[i]] <- Sum[[i]] %>% mutate(Next=lag(cumsum), Especie = rownames(Sum[[i]]), Next = ifelse(is.na(Next), 0, Next)) %>% dplyr::filter(Next < 0.15) %>% dplyr::select(Especie, average, cumsum)
+  Comp1[[i]]$Comparacion_amb <- DF$Comparacion_amb[i]
 }
-ResumenSimper_Prim1 <- Comp1 %>% reduce(bind_rows) %>% bind_cols(DF) %>% 
+
+ResumenSimper_Prim1 <- Comp1 %>% reduce(bind_rows) %>% 
   mutate(Aporte_dif= round(average*100,0)) %>% 
-  dplyr::select(Comparacion_amb, Especie,Aporte_dif ) ############modificar para el resto de los simper
+  dplyr::select(Comparacion_amb, Especie,Aporte_dif, cumsum) 
 
 write_csv(ResumenSimper_Prim1, "ResumenSimper_Prim1.csv")
+
 ##### ENVIT: Fits an Environmental Vector or Factor onto an Ordination
 # data= Amb
 # srt(Amb): 13 variables
@@ -369,11 +361,13 @@ Sum <-summary(Simper_Inv2, ordered = TRUE, digits = max(3,getOption("digits") - 
 DF <- data.frame(Comparacion_amb = names(Sum))
 Comp1 <- list()
 for(i in 1:nrow(DF)){
-  Comp1[[i]] <- Sum[[i]][1,] %>% mutate(Especie = rownames(Sum[[i]][1,]))
+  Comp1[[i]] <- Sum[[i]] %>% mutate(Next=lag(cumsum), Especie = rownames(Sum[[i]]), Next = ifelse(is.na(Next), 0, Next)) %>% dplyr::filter(Next < 0.15) %>% dplyr::select(Especie, average, cumsum)
+  Comp1[[i]]$Comparacion_amb <- DF$Comparacion_amb[i]
 }
-ResumenSimper_Inv2 <- Comp1 %>% reduce(bind_rows) %>% bind_cols(DF) %>% 
+
+ResumenSimper_Inv2 <- Comp1 %>% reduce(bind_rows) %>% 
   mutate(Aporte_dif= round(average*100,0)) %>% 
-  dplyr::select(Comparacion_amb, Especie,Aporte_dif ) ############modificar para el resto de los simper
+  dplyr::select(Comparacion_amb, Especie,Aporte_dif, cumsum) 
 
 write_csv(ResumenSimper_Inv2, "ResumenSimper_Inv2.csv")
 
@@ -385,11 +379,13 @@ Sum <-summary(Simper_Prim2,ordered = TRUE, digits = max(3,getOption("digits") - 
 DF <- data.frame(Comparacion_amb = names(Sum))
 Comp1 <- list()
 for(i in 1:nrow(DF)){
-  Comp1[[i]] <- Sum[[i]][1,] %>% mutate(Especie = rownames(Sum[[i]][1,]))
+  Comp1[[i]] <- Sum[[i]] %>% mutate(Next=lag(cumsum), Especie = rownames(Sum[[i]]), Next = ifelse(is.na(Next), 0, Next)) %>% dplyr::filter(Next < 0.15) %>% dplyr::select(Especie, average, cumsum)
+  Comp1[[i]]$Comparacion_amb <- DF$Comparacion_amb[i]
 }
-ResumenSimper_Prim2 <- Comp1 %>% reduce(bind_rows) %>% bind_cols(DF) %>% 
+
+ResumenSimper_Prim2 <- Comp1 %>% reduce(bind_rows) %>% 
   mutate(Aporte_dif= round(average*100,0)) %>% 
-  dplyr::select(Comparacion_amb, Especie,Aporte_dif ) ############modificar para el resto de los simper
+  dplyr::select(Comparacion_amb, Especie,Aporte_dif, cumsum) 
 
 write_csv(ResumenSimper_Prim2, "ResumenSimper_Prim2.csv")
 
@@ -518,11 +514,13 @@ Sum <-summary(Simper_Inv3, ordered = TRUE, digits = max(3,getOption("digits") - 
 DF <- data.frame(Comparacion_amb = names(Sum))
 Comp1 <- list()
 for(i in 1:nrow(DF)){
-  Comp1[[i]] <- Sum[[i]][1,] %>% mutate(Especie = rownames(Sum[[i]][1,]))
+  Comp1[[i]] <- Sum[[i]] %>% mutate(Next=lag(cumsum), Especie = rownames(Sum[[i]]), Next = ifelse(is.na(Next), 0, Next)) %>% dplyr::filter(Next < 0.15) %>% dplyr::select(Especie, average, cumsum)
+  Comp1[[i]]$Comparacion_amb <- DF$Comparacion_amb[i]
 }
-ResumenSimper_Inv3 <- Comp1 %>% reduce(bind_rows) %>% bind_cols(DF) %>% 
+
+ResumenSimper_Inv3 <- Comp1 %>% reduce(bind_rows) %>% 
   mutate(Aporte_dif= round(average*100,0)) %>% 
-  dplyr::select(Comparacion_amb, Especie,Aporte_dif ) ############modificar para el resto de los simper
+  dplyr::select(Comparacion_amb, Especie,Aporte_dif, cumsum) 
 
 write_csv(ResumenSimper_Inv3, "ResumenSimper_Inv3.csv")
 
@@ -534,11 +532,13 @@ Sum <-summary(Simper_Prim3)
 DF <- data.frame(Comparacion_amb = names(Sum))
 Comp1 <- list()
 for(i in 1:nrow(DF)){
-  Comp1[[i]] <- Sum[[i]][1,] %>% mutate(Especie = rownames(Sum[[i]][1,]))
+  Comp1[[i]] <- Sum[[i]] %>% mutate(Next=lag(cumsum), Especie = rownames(Sum[[i]]), Next = ifelse(is.na(Next), 0, Next)) %>% dplyr::filter(Next < 0.15) %>% dplyr::select(Especie, average, cumsum)
+  Comp1[[i]]$Comparacion_amb <- DF$Comparacion_amb[i]
 }
-ResumenSimper_Prim3 <- Comp1 %>% reduce(bind_rows) %>% bind_cols(DF) %>% 
+
+ResumenSimper_Prim3 <- Comp1 %>% reduce(bind_rows) %>% 
   mutate(Aporte_dif= round(average*100,0)) %>% 
-  dplyr::select(Comparacion_amb, Especie,Aporte_dif ) ############modificar para el resto de los simper
+  dplyr::select(Comparacion_amb, Especie,Aporte_dif, cumsum) 
 
 write_csv(ResumenSimper_Prim3, "ResumenSimper_Prim3.csv")
 
