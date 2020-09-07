@@ -367,7 +367,7 @@ for(i in 1:nrow(DF)){
 
 ResumenSimper_Inv2 <- Comp1 %>% reduce(bind_rows) %>% 
   mutate(Aporte_dif= round(average*100,0)) %>% 
-  dplyr::select(Comparacion_amb, Especie,Aporte_dif, cumsum) 
+  dplyr::select(Comparacion_amb, Especie,Aporte_dif, cumsum)
 
 write_csv(ResumenSimper_Inv2, "ResumenSimper_Inv2.csv")
 
@@ -520,7 +520,7 @@ for(i in 1:nrow(DF)){
 
 ResumenSimper_Inv3 <- Comp1 %>% reduce(bind_rows) %>% 
   mutate(Aporte_dif= round(average*100,0)) %>% 
-  dplyr::select(Comparacion_amb, Especie,Aporte_dif, cumsum) 
+  dplyr::select(Comparacion_amb, Especie,Aporte_dif, cumsum) %>% left_join(BirdNames)
 
 write_csv(ResumenSimper_Inv3, "ResumenSimper_Inv3.csv")
 
@@ -538,7 +538,7 @@ for(i in 1:nrow(DF)){
 
 ResumenSimper_Prim3 <- Comp1 %>% reduce(bind_rows) %>% 
   mutate(Aporte_dif= round(average*100,0)) %>% 
-  dplyr::select(Comparacion_amb, Especie,Aporte_dif, cumsum) 
+  dplyr::select(Comparacion_amb, Especie,Aporte_dif, cumsum)  %>% left_join(BirdNames)
 
 write_csv(ResumenSimper_Prim3, "ResumenSimper_Prim3.csv")
 
