@@ -21,7 +21,7 @@ ComportamientoInv <- ComportamientoInv %>% dplyr::select(AMBIENTE, Sitio, Especi
   mutate(Especie= str_replace(Especie, "PELICANO", "PELICANO COMÚN"),
          Especie= str_replace(Especie, "JOTE NEGRO", "JOTE CABEZA NEGRA"),
          Especie= str_replace(Especie, "LILEN", "LILE")) %>% 
-  group_by(AMBIENTE, Especie, Comportamiento) %>% summarise(Total_ind =n()) %>% ungroup() %>% 
+  group_by(AMBIENTE, Especie,  Comportamiento) %>% summarise(Total_ind =n()) %>% ungroup() %>% 
   dplyr::filter(Especie %in% c("CHURRETE COSTERO", "CORMORAN", "SCUA","BLANQUILLO","DIUCA","JOTE CABEZA ROJA","JOTE CABEZA NEGRA","PIQUERO", "PALOMA", "GAVIOTA" ))
    
 

@@ -178,4 +178,5 @@ analisis listos para abundancia, comp especies y ocupancia
 modificacion de parametros de distintas funciones para su correcto uso
 
 Creacion de archivo **Comportamineto\_Aves.R** para resumen de
-actividades
+actividades Creación de archivo **Graficos\_Aves.R** para diferencias
+entre ambientes, considerando media de sitios y sd
