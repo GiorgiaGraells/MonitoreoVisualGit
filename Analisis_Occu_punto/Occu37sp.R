@@ -443,11 +443,11 @@ PorSppTodo <- PorSppTodo %>% mutate(Origen= case_when(Especies %in% c("BLANQUILL
 #  facet_grid(cols=vars(Temporada)) +geom_vline(xintercept = 0, lty=3)+ theme_bw()
 
 ggplot(PorSppTodo, aes(x = Estimador, y = Parametro)) +  geom_boxplot(aes(color=Temporada))+
-  geom_vline(xintercept = 0, lty=3)+facet_grid(Origen~Temporada)+ theme_bw()
+  geom_vline(xintercept = 0, lty=3)+facet_grid(Origen~Temporada)+ theme_bw()+   ylab("Parametros")
 ###min
 
 ggplot(PorSppTodo, aes(x = Estimador, y = reorder(Parametro, Estimador, min))) +  geom_boxplot(aes(color=Temporada))+
-  geom_vline(xintercept = 0, lty=3)+facet_grid(Origen~Temporada)+ theme_bw()
+  geom_vline(xintercept = 0, lty=3)+facet_grid(Origen~Temporada)+ theme_bw()+ ylab("Variables ocupancia")
 
 ### Rango
 

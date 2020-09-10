@@ -125,3 +125,4 @@ modificacion de parametros de distintas funciones para su correcto uso
 
 
 Creacion de archivo **Comportamineto_Aves.R** para resumen de actividades
+Creación de archivo **Graficos_Aves.R** para diferencias entre ambientes, considerando media de sitios y sd
