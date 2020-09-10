@@ -22,7 +22,7 @@ ComportamientoInv <- ComportamientoInv %>% dplyr::select(AMBIENTE, Sitio, Especi
          Especie= str_replace(Especie, "JOTE NEGRO", "JOTE CABEZA NEGRA"),
          Especie= str_replace(Especie, "LILEN", "LILE")) %>% 
   group_by(AMBIENTE, Especie,  Comportamiento) %>% summarise(Total_ind =n()) %>% ungroup() %>% 
-  dplyr::filter(Especie %in% c("CHURRETE COSTERO", "CORMORAN", "SCUA","BLANQUILLO","DIUCA","JOTE CABEZA ROJA","JOTE CABEZA NEGRA","PIQUERO", "PALOMA", "GAVIOTA" ))
+  dplyr::filter(Especie %in% c("SCUA","JOTE CABEZA ROJA","DIUCA", "PALOMA","CORMORAN", "PIQUERO","QUELTEHUE", "GAVIOTA"))
    
 
 BirdNames <- read_csv("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/MonitoreoVisualGit/BirdNames.csv") %>% dplyr::select(-X1)
@@ -32,11 +32,11 @@ ComportamientoInv <- left_join(x=ComportamientoInv, y= BirdNames)
 
 ComportamientoInv <- ComportamientoInv %>% 
   mutate(AMBIENTE=fct_relevel(AMBIENTE, "URBANO","VERDE", "ROQUERIO INTERVENIDO","PLAYA INTERVENIDA",  "ROQUERIO NATURAL")) %>% 
-  mutate(Especie=fct_relevel(Especie,"PIQUERO","JOTE CABEZA NEGRA", "CORMORAN",  "BLANQUILLO", "SCUA", "GAVIOTA", "JOTE CABEZA ROJA","PALOMA","CHURRETE COSTERO" ,"DIUCA"))
+  mutate(Especie=fct_relevel(Especie, "SCUA","JOTE CABEZA ROJA","DIUCA", "PALOMA","CORMORAN", "PIQUERO","QUELTEHUE", "GAVIOTA"))
 
 ggplot(ComportamientoInv) + 
   geom_col(aes(x=AMBIENTE, y=Total_ind, fill=Comportamiento)) + 
-  facet_wrap(~Especie, ncol=5, scales = "free_y")+ theme_bw()+
+  facet_wrap(~Especie, ncol=4, scales = "free_y")+ theme_bw()+
   theme(legend.position = "bottom", axis.text.x = element_text(angle = 45, hjust = 1))+ ylab("Número individuos")
 
 ## Primavera
@@ -64,7 +64,7 @@ ComportamientoPrim <- ComportamientoPrim %>% dplyr::select(AMBIENTE, Nombre, Com
   mutate(AMBIENTE= str_replace(AMBIENTE, "ROCA INTERVENIDA", "ROQUERIO INTERVENIDO"),
          AMBIENTE= str_replace(AMBIENTE, "ROCA NATURAL", "ROQUERIO NATURAL")) %>% 
   group_by(AMBIENTE, Nombre, Comportamiento) %>% summarise(Total_ind =n()) %>% ungroup() %>% 
-  dplyr::filter(Nombre %in% c("GAVIOTA","PALOMA", "QUELTEHUE", "JOTE CABEZA ROJA","CHURRETE COMUN","CACHUDITO","FRANKLIN","GOLONDRINA DORSO NEGRO","ZARAPITO","CHERCAN","CHURRETE COSTERO" ))%>% 
+  dplyr::filter(Nombre %in% c("CHURRETE COMUN","CHURRETE COSTERO","FRANKLIN","PALOMA","CACHUDITO","MIRLO","ZARAPITO", "GAVIOTA"))%>% 
   rename(Especie =Nombre)
 
 #PARA AGREGAR NOMBRE CIENTIIFICO Y HABITAT ORIGEN
@@ -76,12 +76,12 @@ ComportamientoPrim <- ComportamientoPrim %>% dplyr::select(AMBIENTE, Nombre, Com
 
 ComportamientoPrim <- ComportamientoPrim %>% 
   mutate(AMBIENTE=fct_relevel(AMBIENTE, "URBANO","VERDE", "ROQUERIO INTERVENIDO","PLAYA INTERVENIDA",  "ROQUERIO NATURAL")) %>% 
-  mutate(Especie=fct_relevel(Especie,"QUELTEHUE", "ZARAPITO","FRANKLIN","JOTE CABEZA ROJA","CHURRETE COMUN","CHURRETE COSTERO","GAVIOTA","PALOMA","GOLONDRINA DORSO NEGRO","CHERCAN","CACHUDITO"))
-    
+  mutate(Especie=fct_relevel(Especie, "CHURRETE COMUN","CHURRETE COSTERO","FRANKLIN","PALOMA","CACHUDITO","MIRLO","ZARAPITO", "GAVIOTA"))
+
     
 ggplot(ComportamientoPrim) + 
   geom_col(aes(x=AMBIENTE, y=Total_ind, fill=Comportamiento)) + 
-  facet_wrap(~Especie, ncol=6,  scales = "free_y")+ theme_bw()+
+  facet_wrap(~Especie, ncol=4,  scales = "free_y")+ theme_bw()+
   theme(legend.position = "bottom", axis.text.x = element_text(angle = 45, hjust = 1))+ ylab("Número individuos")
 
 ggplot(ComportamientoPrim) + 
