@@ -30,6 +30,10 @@ library(ggplot2)
 ### Metodología
 
 0. La idea es hacer primero un GLM para ver el efecto de la estacion y ver cómo proceder
+
+de poner todos los datos juntos y estacion como  una variable extra, la ocupancia deberia hacerse multitemporada
+
+
 1. Hacer una descripcion del ensamble de especies (unidas las temporadas) y representar con un NMDS, ANOSIM y SIMPER.
 Utilizar las abundancias corregidas por ocupancia.
 Mostrar la comparacioón entre natural y urbano.
