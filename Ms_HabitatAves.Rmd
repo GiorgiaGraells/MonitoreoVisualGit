@@ -1,0 +1,43 @@
+---
+title: "Ms Habitat aves"
+author: "Giorgia Graells"
+date: "9/10/2020"
+output: word_document
+---
+
+```{r setup, include=FALSE, echo=FALSE, comment=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(readxl)
+library(tidyverse)
+library(vegan)
+library(MASS)
+library(ggplot2)
+
+```
+
+### Preguntas:
+
+- Cuáles son las especies y su composición en distintos lugares de las ciudades costeras. Existe interacción entre aves marinas y terrestres en espacios marinos y terrestres. 
+
+- Como afecta la urbanización en estos espacios, tanto marinos como terrestres?
+
+- Para especies icónicas, cómo se distribuyen en el área de estudio
+
+- Si el uso de espacio es diferenciado, su ubicación desntro de el también en términos de comportamiento?
+
+
+### Metodología
+
+0. La idea es hacer primero un GLM para ver el efecto de la estacion y ver cómo proceder
+1. Hacer una descripcion del ensamble de especies (unidas las temporadas) y representar con un NMDS, ANOSIM y SIMPER.
+Utilizar las abundancias corregidas por ocupancia.
+Mostrar la comparacioón entre natural y urbano.
+Sumar Envfit
+2. Realizar un mapa dde probabilidad de presencia para especies icónicas 1-100%
+3. Grafficar las barras de comportamiento para las mismas espcies icónicas
+
+```{r figura1}
+
+```
+
