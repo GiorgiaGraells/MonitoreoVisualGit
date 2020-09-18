@@ -1,8 +1,10 @@
 ---
 title: "Ms Habitat aves"
 author: "Giorgia Graells"
-date: "9/10/2020"
-output: word_document
+date: "`r Sys.Date()`"
+output:
+  word_document:
+    reference_docx: "template.docx"
 ---
 
 ```{r setup, include=FALSE, echo=FALSE, comment=FALSE, warning=FALSE}
@@ -16,32 +18,55 @@ library(ggplot2)
 
 ```
 
-### Preguntas:
+#### Introduction
 
-- Cuáles son las especies y su composición en distintos lugares de las ciudades costeras. Existe interacción entre aves marinas y terrestres en espacios marinos y terrestres. 
+##### objectives
 
-- Como afecta la urbanización en estos espacios, tanto marinos como terrestres?
-
-- Para especies icónicas, cómo se distribuyen en el área de estudio
-
-- Si el uso de espacio es diferenciado, su ubicación desntro de el también en términos de comportamiento?
+The aims of this study are: 1. Identify bird species assemble of habitats in coastal urban environments, specifically the interaction between marine and inland birds, 2. identify how urbanization affects those bird assembles, 3. Evaluate iconic bird species habitat ocupation, and 4. describe bird behavior in those habitats
 
 
-### Metodología
 
-0. La idea es hacer primero un GLM para ver el efecto de la estacion y ver cómo proceder
+#### Metodology
 
-de poner todos los datos juntos y estacion como  una variable extra, la ocupancia deberia hacerse multitemporada
+##### Study area
 
+Study area comprehends
+Six habitats were identify in coastal urban areas
+
+##### Bird surveys
+
+##### Environmental variables
+
+##### Seasonal GLMM
+
+Seasonality was tested with a mixed GLM with abundance as a response variable and a random effect of sample sites. We tested a model where seasonality has a interacttion with the habitats defined in this research .
+
+##### Occupancy modelling
+
+##### Bird comunnity
+
+Bird community was analysed by ordination methods with vegan package in R
 
 1. Hacer una descripcion del ensamble de especies (unidas las temporadas) y representar con un NMDS, ANOSIM y SIMPER.
-Utilizar las abundancias corregidas por ocupancia.
+Se utilizó las abundancias corregidas por ocupancia, lo que se obtiene corriendo los modelos de ocupancia para cada especie.
+
 Mostrar la comparacioón entre natural y urbano.
 Sumar Envfit
+
 2. Realizar un mapa dde probabilidad de presencia para especies icónicas 1-100%
+
 3. Grafficar las barras de comportamiento para las mismas espcies icónicas
 
-```{r figura1}
+
+
+#### Results
+
+0. El menor valor de AIC determina que la estacion si teiene una interaccion con las especies para definir la abundancia
+
+```{r tabla1}
+#Modelo 1= Abundancia ~ Estacion *Especie + AMBIENTE+ (1|Sitio), family = poisson, data =Aves ) #AIC 17716.1
+#Modelo 2= Abundancia ~ Especie + AMBIENTE+ (1|Sitio), family = poisson, data =Aves )           #AIC 18241.0
+
 
 ```
 

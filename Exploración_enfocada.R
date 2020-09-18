@@ -237,6 +237,10 @@ TidyEnvFit <- function(ENVFit, alpha = 0.05){
 }
 ###################################################
 EnvfitInv <- envfit(Inv_nmds1_bray~ `Cobertura vegetal`+ `Distancia a río`+Altura+ `Bosque nativo`+ Cultivos+ Grava + Oceano +Pastizales+ Matorrales+`Superficies impermeables` + `Suelo arenoso`+ `Plantacion de arboles`, data=Amb, perm=9999)
+
+#plot(Inv_nmds1_bray)
+#plot(EnvfitInv, p.max = 0.01)
+
 Tidy_EnvfitInv <- TidyEnvFit(EnvfitInv)
 
 library(ggplot2)
