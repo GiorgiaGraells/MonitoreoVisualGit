@@ -2,9 +2,7 @@
 title: "Ms Habitat aves"
 author: "Giorgia Graells"
 date: "`r Sys.Date()`"
-output:
-  word_document:
-    reference_docx: "template.docx"
+output: word_document
 ---
 
 ```{r setup, include=FALSE, echo=FALSE, comment=FALSE, warning=FALSE}
@@ -20,13 +18,82 @@ library(ggplot2)
 
 #### Introduction
 
-##### objectives
+1. Establish importance of the fild- provide background, keywords- present the problem
 
-The aims of this study are: 1. Identify bird species assemble of habitats in coastal urban environments, specifically the interaction between marine and inland birds, 2. identify how urbanization affects those bird assembles, 3. Evaluate iconic bird species habitat ocupation, and 4. describe bird behavior in those habitats
+[Stablish the importance of this research topic]
+Urbanization have been one of the mayor causes of species loss
+
+[Provide general background information]
+Urban areas presents species homogenization  
+
+[Stablish the importance of this research topic, more specific/detailed way]
+Urban homogenization represents...
+
+[Provide general background information, more specific/detailed way]
+
+2. Previous an current research and contributions
+
+[Describe general problem area or the current research focus of the field]
+Birds have been studied un urban areas and show this phenomena
+
+[Provide transition between the general problem area and the literature review]
+Birs comunities in urban areas depend of the perurban composition of species
+
+3. Locate the gap-describe the proble to address-present a prediction to be tested
+
+[Provide brief overview of key research projects in this area]
+More than the half of the cities in the world are coastal cities
+
+[Describe gaps in the research]
+However there is a gap in studies that focus in coastal ecotone and the influence of antrhopized areas
+
+[Decribe paper itself]
+This research describe ...
+with the aim of: 1. Identify bird species assemble of habitats in coastal urban environments, specifically the interaction between marine and inland birds, 2. identify how urbanization affects those bird assembles, 3. Evaluate iconic bird species habitat ocupation, and 4. describe bird behavior in those habitats
+
+
+4. Describe the present paper
+[Give details about the methodology reported in the paper]
+Bird surveys were carry out in the Gran Valparaíso, a metropolitan area that includes three municipalities in central Chile
+
+[Announces the findings]
+
+
 
 
 
 #### Metodology
+
+1. Overview-purpose of the work-give source of material/equipment used
+
+[General overview of this section]
+In this research we conducted bird survey in six coastal urban environments in the Gran Valparaíso, a metropolitan area that includes three municipalities in central Chile
+
+[Provide background information and justification]
+Each environment was defined in terms its proximity to the coast, level of anthropotization and land cover (Table 1)
+We used occupancy modeling to provide information about bird habitat use, taking into account probability of detection.
+
+[Provide an overview of the procedure/method itself]
+To compare bird commmunities and species identity in them, we used ordination models
+
+2. Details about materials and methods- justify choices
+
+[Provide details about what was done and used and shows that care was taken]
+
+[Continuing to describe what was done in detail, using languajge which comunicate that care was taken]
+
+3. Relate to other studies
+
+[Describe what was done by referring to existing mehods in the literature]
+
+[Provide more detailed information about the method and show that was a good choice]
+
+4. Indicate where problems occurred
+
+[Mention possible difficulty in the methodology]
+
+
+
 
 ##### Study area
 
@@ -59,9 +126,13 @@ Sumar Envfit
 
 
 
-#### Results
+### Results
 
-0. El menor valor de AIC determina que la estacion si teiene una interaccion con las especies para definir la abundancia
+1. Revisting the research aim/existing research
+
+2. General overview of results
+
+El menor valor de AIC determina que la estacion si teiene una interaccion con las especies para definir la abundancia
 
 ```{r tabla1}
 #Modelo 1= Abundancia ~ Estacion *Especie + AMBIENTE+ (1|Sitio), family = poisson, data =Aves ) #AIC 17716.1
@@ -69,4 +140,42 @@ Sumar Envfit
 
 
 ```
+
+
+3. Invitations to view results
+
+4. Specific/key results in details
+
+5. Comparisons with results in other research
+
+6. problems with results
+
+7. Possible impllications with results
+
+
+
+
+
+
+### Discussion/Conclusion
+
+1. Revisting previous research- summarise
+[Revisit previous research]
+[Revisit Introduction to recall specific weakness in methodology used in previous studies]
+
+2. Mapping 
+[Revisit methodology used in this study]
+[Revisit and summarise the results]
+[Show where and how the present work fits into the research "map" in this field]
+
+3. Achivements/contributions- refining implications
+[Recall an aspect of the results that represents a postitive achievement or contribution of this work]
+[Focus in the meaning and implications of the achievements in this work]
+[Note if one of the achievement or contributions of the work is a novelty]
+[Describe implications of the results, including possible applications]
+
+4. Limitations-current and future work-applications
+[Describe limitations which should direct future research]
+[Suggest a specific area to be addressed in future work]
+
 
