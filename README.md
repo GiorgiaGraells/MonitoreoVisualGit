@@ -180,3 +180,7 @@ modificacion de parametros de distintas funciones para su correcto uso
 Creacion de archivo **Comportamineto\_Aves.R** para resumen de
 actividades Creación de archivo **Graficos\_Aves.R** para diferencias
 entre ambientes, considerando media de sitios y sd
+
+\#Correccion de abundancia por deteccion
+
+Nuevo archivo **CorrecDetec\_Abundancias.R**
