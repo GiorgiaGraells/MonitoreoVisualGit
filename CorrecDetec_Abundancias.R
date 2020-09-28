@@ -155,59 +155,27 @@ batchoccu2 <- function(pres, sitecov, obscov, spp, form, SppNames = NULL, dredge
 }
 
 
+Spp <- data_reg %>% colnames() %>% str_remove_all("1")%>% str_remove_all("2") %>% str_remove_all("3") %>% unique()
 
-DetPrim <- batchoccu(pres = data_reg, sitecov = data_ocu, obscov = data_det, spp=48,  form= ~ Temperatura +Humedad+ DirViento +RapViento+ Agua ~ 1, dredge=TRUE, SppNames =c("BLANQUILLO", "CACHUDITO", "CAHUIL", "CHERCAN", "CHINCOL", "CHURRETE_CHICO", "CHURRETE_COMUN", "CHURRETE_COSTERO", "CODORNIZ",
-                                                                                                                                                                             "COLEGIAL", "COMETOCINO", "CORMORAN", "COTORRA_ARGENTINA","DIUCA", "FIOFIO",  
-                                                                                                                                                                             "GAVIOTA_FRANKLIN","GAVIOTA_GARUMA", "GARZA_GRANDE","GAVIOTA", "GAVIOTIN_ELEGANTE",
-                                                                                                                                                                             "GOLONDRINA_CHILENA",  "GOLONDRINA_DORSO_NEGRO",  "GORRION", 
-                                                                                                                                                                             "GUANAY",  "HUAIRAVO", "HUALA", "JOTE_CABEZA_NEGRA", "JOTE_CABEZA_ROJA", 
-                                                                                                                                                                             "LILE",  "MIRLO", "GAVIOTIN_MONJA",  "PALOMA", "PELICANO", "PERRITO",  "PICAFLOR_GIGANTE",  
-                                                                                                                                                                             "PILPILEN", "PILPILEN_NEGRO", "PIQUERO", "QUELTEHUE",  "RARA", 
-                                                                                                                                                                             "RAYADOR",  "TAGUA_COMUN", "TENCA",  "TIUQUE",  "TORDO",    "TORTOLA",  "ZARAPITO","ZORZAL"))
+DetPrim <- batchoccu2(pres = data_reg, sitecov = data_ocu, obscov = data_det, spp=48,  form= "~ Temperatura +Humedad+ DirViento +RapViento+ Agua ~ 1", dredge=TRUE, SppNames = Spp)
 
 
-Spp <- colnames(data_reg) %>% str_remove_all("\\d") %>% unique()
+Detecciones <- list()
 
-#Nuevos_Datos <- data_ocu %>% group_by(AMBIENTE) %>% summarise_all(mean) %>% mutate(Pred = NA, SE = NA, Spp = NA, Up = NA, Down = NA, Modelo = NA)
-#ResultadosPrim <- list()
-PorSitio <- data.frame(Sitio = read_rds("Occdata_occu.rds")$Sitio, Ambiente = data_ocu$AMBIENTE)
-
-
-for(i in 1:length(Spp)){
-  data_reg_temp <- data_reg %>% dplyr::select(starts_with(Spp[i]))
-  
-  data_reg_temp <- data_reg_temp[,1:3]
-  
-  message("Ajustando el modelo")
-  DetPrim_temp <- batchoccu2(pres = data_reg_temp, sitecov = data_ocu, obscov = data_det, spp=1,  form= "~ Temperatura +Humedad+DirViento ~1", dredge=TRUE, SppNames =Spp[i])
-  
-  Nuevos_Datos$Spp <- Spp[i]
-  
-  Nuevos_Datos_Temp <- as.data.frame(Nuevos_Datos)
-  
-  PorSitio <-  PorSitio %>% mutate(Spp = NA)
-  PorSitio$Spp <- DetPrim_temp$fit 
-  colnames(PorSitio)[i + 2] <- Spp[i]
-  
-  message(paste("Prediciendo occupancia", Spp[i]))
-  
-  Nuevos_Datos_Temp$Pred <- predict(OccuPrim_temp$models[[1]], type = "state", newdata = Nuevos_Datos_Temp)$Predicted
-  Nuevos_Datos_Temp$Modelo <- OccuPrim_temp$Mods[[1]]$Form[1]
-  
-  message("Prediciendo SE")
-  
-  Nuevos_Datos_Temp$SE <- predict(OccuPrim_temp$models[[1]], type = "state", newdata = Nuevos_Datos_Temp)$SE
-  
-  message("Prediciendo Limites")
-  
-  Nuevos_Datos_Temp$Up <- predict(OccuPrim_temp$models[[1]], type = "state", newdata = Nuevos_Datos_Temp)$upper
-  
-  Nuevos_Datos_Temp$Down <- predict(OccuPrim_temp$models[[1]], type = "state", newdata = Nuevos_Datos_Temp)$lower
-  ResultadosPrim[[i]] <- Nuevos_Datos_Temp
-  message(i)
+for(i in 1:length(DetPrim$models)){
+  Detecciones[[i]] <- DetPrim$models[[i]] %>% predict(type = "det") %>% pull(Predicted) %>% matrix(ncol = 3, byrow = T) %>% as.data.frame()
+  colnames(Detecciones[[i]]) <- paste0(names(DetPrim$models)[i],"_",c("Dia1", "Dia2", "Dia3"))
 }
-#
-ResultadosPrim <- ResultadosPrim %>% reduce(bind_rows)
-PorSitioPrim <- PorSitio
 
 
+
+Detecciones <- Detecciones %>% reduce(bind_cols)
+
+rownames(Detecciones) <- rownames(AbundPrim_dia)
+
+### Correccion de abundancias
+
+AbundPrim_dia <-read_rds("Occdata_regPRIM_abund.rds")
+
+AbundPrim_Corregido <- AbundPrim_dia/Detecciones
+saveRDS(AbundPrim_Corregido, "AbundPrim_Corregido.rds")

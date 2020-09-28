@@ -183,4 +183,8 @@ entre ambientes, considerando media de sitios y sd
 
 \#Correccion de abundancia por deteccion
 
-Nuevo archivo **CorrecDetec\_Abundancias.R**
+Nuevo archivo **CorrecDetec\_Abundancias.R** elemento exportado:
+AbundanciaPrim\_corregido.rds En el archivo Prep datos\_Occu\_punto.R se
+exportaron las abundancias en formato de sitios por dia para hacer el
+calculo de la correccion. Se debe modificar tambien la importacion de
+este nuevo dataframe para hacer los analisis de la comunidad

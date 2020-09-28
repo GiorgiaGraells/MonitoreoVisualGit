@@ -42,7 +42,7 @@ Birs comunities in urban areas depend of the perurban composition of species
 3. Locate the gap-describe the proble to address-present a prediction to be tested
 
 [Provide brief overview of key research projects in this area]
-More than the half of the cities in the world are coastal cities
+More than the half of the cities in the world are coastal cities and they lack of studies addressing marine. terrestrial interactions.
 
 [Describe gaps in the research]
 However there is a gap in studies that focus in coastal ecotone and the influence of antrhopized areas
@@ -67,26 +67,43 @@ Bird surveys were carry out in the Gran Valparaíso, a metropolitan area that in
 1. Overview-purpose of the work-give source of material/equipment used
 
 [General overview of this section]
-In this research we conducted bird survey in six coastal urban environments in the Gran Valparaíso, a metropolitan area that includes three municipalities in central Chile
+In this research we conducted bird surveys in six coastal urban environments in the Gran Valparaíso, a Metropolitan area that includes three municipalities in central Chile.
 
 [Provide background information and justification]
-Each environment was defined in terms its proximity to the coast, level of anthropotization and land cover (Table 1)
-We used occupancy modeling to provide information about bird habitat use, taking into account probability of detection.
+Coastal environments were defined in terms of its proximity to the coast, level of anthropotization and land cover: urban centre, green area, natural rocky shore, modified rocky shore, natural beach, and urbanized beach (Table 1)
+
 
 [Provide an overview of the procedure/method itself]
-To compare bird commmunities and species identity in them, we used ordination models
+Bird surveys were conducted in each sample site twice (winter (junio-jul) and spring (nov-dec)), 2019 given migratory species en this area, during sunrise and the three hours later for 10 minutes. 
+The total of birds seing and heard was registred, in addition with the position and behavior of the bird or group of birds observed.
+
+A characterization of environments were made throgh vegetational cover measurement and an spatial characterization with landcover information.
 
 2. Details about materials and methods- justify choices
 
 [Provide details about what was done and used and shows that care was taken]
 
+Seasonality was tested with a mixed GLM with abundance as a response variable and a random effect of sample sites. We tested a model where seasonality has a interacttion with the habitats defined in this research .
+
+To analyse the data, we used occupancy modeling to provide information about bird habitat use.
+Occupancy variables
+Detection variables
+Seasonal variables
+
+
 [Continuing to describe what was done in detail, using languajge which comunicate that care was taken]
+To compare bird commmunities and species identity in them, we used ordination methods with vegan package in R with species abundances corrected by occupancy.
+We tested significant differences among environments with an analysis of similarities (ANOSIM) 
+
+To determine species contribution to the differrence between environments we used Bray-Curtis dissimilaries with SIMPER analysis.
+
 
 3. Relate to other studies
 
 [Describe what was done by referring to existing mehods in the literature]
 
 [Provide more detailed information about the method and show that was a good choice]
+Occupancy models provide a correction using detection probability mong days and colonization-extinction probability between seasons which improve ordination models
 
 4. Indicate where problems occurred
 
@@ -95,24 +112,9 @@ To compare bird commmunities and species identity in them, we used ordination mo
 
 
 
-##### Study area
 
-Study area comprehends
-Six habitats were identify in coastal urban areas
 
-##### Bird surveys
-
-##### Environmental variables
-
-##### Seasonal GLMM
-
-Seasonality was tested with a mixed GLM with abundance as a response variable and a random effect of sample sites. We tested a model where seasonality has a interacttion with the habitats defined in this research .
-
-##### Occupancy modelling
-
-##### Bird comunnity
-
-Bird community was analysed by ordination methods with vegan package in R
+**Poner en paper**
 
 1. Hacer una descripcion del ensamble de especies (unidas las temporadas) y representar con un NMDS, ANOSIM y SIMPER.
 Se utilizó las abundancias corregidas por ocupancia, lo que se obtiene corriendo los modelos de ocupancia para cada especie.
@@ -123,6 +125,7 @@ Sumar Envfit
 2. Realizar un mapa dde probabilidad de presencia para especies icónicas 1-100%
 
 3. Grafficar las barras de comportamiento para las mismas espcies icónicas
+
 
 
 
