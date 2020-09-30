@@ -199,12 +199,12 @@ names(cov_det3) <- Variables
 cov_det3$Fecha_muestreo <- cov_det3$Fecha_muestreo %>% mutate_all(lubridate::dmy)
 cov_det3$Hora_muestreo <- cov_det3$Hora_muestreo %>% mutate_all(hms::as.hms)
 
-saveRDS(cov_det3, "Occdata_detInv.rds")
+saveRDS(cov_det3, "cov_det3Inv.rds")
 
 #######################################################
 #Agregando más datos historicos descargados de https://climatologia.meteochile.gob.cl
 
-deteccion <- read_rds("Occdata_detInv.rds")
+deteccion <- read_rds("cov_det3Inv.rds")
 
 
 
@@ -311,8 +311,8 @@ saveRDS(deteccion, "Occdata_detInv.rds")
 ## COVARIABLE DETECCION: PRIMAVERA 2019
 
 cov_occu <- read_rds("Occdata_ocu.rds")
-cov_det <- read_csv("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/Muestreo aves sep-oct 2019/Monitoreo punto/Registro_aves_veranoFINAL.csv") %>% 
-  select(Sitio, Observador, Fecha_muestreo, Nubosidad, Neblina, Lluvia, Hora_muestreo, Presencia_pescadores, Presencia_lobos, Presencia_perros, Nivel_trafico, Dia_muestreo) %>% 
+cov_det <- read_csv("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/MonitoreoVisualGit/Muestreo aves sep-oct 2019/Monitoreo punto/Registro_aves_veranoFINAL.csv") %>% 
+  dplyr::select(Sitio, Observador, Fecha_muestreo, Nubosidad, Neblina, Lluvia, Hora_muestreo, Presencia_pescadores, Presencia_lobos, Presencia_perros, Nivel_trafico, Dia_muestreo) %>% 
   distinct() %>% mutate(Hora_muestreo = as.character(Hora_muestreo), Fecha_muestreo = as.character(Fecha_muestreo)) %>% 
   filter(Sitio %in% cov_occu$Sitio)
 
@@ -326,10 +326,9 @@ Variables <- cov_det2 %>% purrr::map(~summarise(.x, Variable = unique(Variable))
 cov_det3 <- list()
 
 for(i in 1:length(cov_det2)){
-  temp <- cov_det2[[i]] %>% group_split(Sitio)
+  temp <- cov_det2[[i]] %>% group_split(Sitio) %>% map(~dplyr::select(.x,Valor))
   
   for(j in 1:length(temp)){
-    temp[[j]] <- temp[[j]] %>% dplyr::select(-Sitio, -Variable)
     temp[[j]] <- data.frame(Variables1 = temp[[j]][1,], Variables2 = temp[[j]][2,], Variables3 = temp[[j]][3,])
     colnames(temp[[j]]) <- paste0(Variables[i], c(1,2,3))
   }
@@ -340,17 +339,11 @@ names(cov_det3) <- Variables
 
 #Arreglado de hora y fecha en su formato para trabajar
 
-cov_det3$Fecha_muestreo$Fecha_muestreo1 <- lubridate::ymd(cov_det3$Fecha_muestreo$Fecha_muestreo1) 
-cov_det3$Fecha_muestreo$Fecha_muestreo2 <- lubridate::ymd(cov_det3$Fecha_muestreo$Fecha_muestreo2)
-cov_det3$Fecha_muestreo$Fecha_muestreo3 <- lubridate::ymd(cov_det3$Fecha_muestreo$Fecha_muestreo3) 
+cov_det3$Fecha_muestreo <- cov_det3$Fecha_muestreo %>% mutate_all(lubridate::ymd)
+cov_det3$Hora_muestreo <- cov_det3$Hora_muestreo %>% mutate_all(hms::as.hms)
 
-cov_det3$Hora_muestreo$Hora_muestreo1 <-hms::as.hms(cov_det3$Hora_muestreo$Hora_muestreo1)
-cov_det3$Hora_muestreo$Hora_muestreo1 <-hms::as.hms(cov_det3$Hora_muestreo$Hora_muestreo2)
-cov_det3$Hora_muestreo$Hora_muestreo1 <-hms::as.hms(cov_det3$Hora_muestreo$Hora_muestreo3)
 
-#setwd("G:/Mi unidad/Documentos Yoryi/Documents yoryi/Doctorado Tesis/Monitoreo aves/Analisis_Occu_punto")
-
-saveRDS(cov_det3, "cov_det3.rds")
+saveRDS(cov_det3, "cov_det3Prim.rds")
 
 #######################################################
 #Agregando datos historicos descargados de https://climatologia.meteochile.gob.cl
@@ -358,7 +351,7 @@ saveRDS(cov_det3, "cov_det3.rds")
 
 #setwd("G:/Mi unidad/Documentos Yoryi/Documents yoryi/Doctorado Tesis/Monitoreo aves/Analisis_Occu_punto")
 
-deteccion <- read_rds("cov_det3.rds")
+deteccion <- read_rds("cov_det3Prim.rds")
 
 Temperatura <- read_delim("320041_2019_Temperatura_.csv", ";", escape_double = FALSE, trim_ws = TRUE) %>% dplyr::mutate(momento = lubridate::dmy_hms(momento), Fecha = lubridate::date(momento))
 
