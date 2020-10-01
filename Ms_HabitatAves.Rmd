@@ -13,6 +13,9 @@ library(tidyverse)
 library(vegan)
 library(MASS)
 library(ggplot2)
+```
+
+```{r}
 
 ```
 
@@ -118,6 +121,10 @@ Occupancy models provide a correction using detection probability mong days and 
 
 1. Hacer una descripcion del ensamble de especies (unidas las temporadas) y representar con un NMDS, ANOSIM y SIMPER.
 Se utilizó las abundancias corregidas por ocupancia, lo que se obtiene corriendo los modelos de ocupancia para cada especie.
+
+
+
+
 
 Mostrar la comparacioón entre natural y urbano.
 Sumar Envfit

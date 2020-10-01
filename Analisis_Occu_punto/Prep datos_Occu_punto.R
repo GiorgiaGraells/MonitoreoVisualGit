@@ -60,6 +60,7 @@ for(x in 1:length(Datos)){
 OccData <- bind_cols(OccData)
 row.names(OccData) <- SITIOS
 
+saveRDS(OccData, "Occdata_regInv_abund.rds")############################ aca quedde
 
 ## Cambiando para ocupacia/solo presencia y ausencias
 
