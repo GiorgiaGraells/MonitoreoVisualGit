@@ -60,7 +60,7 @@ for(x in 1:length(Datos)){
 OccData <- bind_cols(OccData)
 row.names(OccData) <- SITIOS
 
-saveRDS(OccData, "Occdata_regInv_abund.rds")############################ aca quedde
+#saveRDS(OccData, "Occdata_regInv_abund.rds") #datos abundancia invierno para hacer analisis con abundancia corregida por deteccion
 
 ## Cambiando para ocupacia/solo presencia y ausencias
 
@@ -122,7 +122,7 @@ for(x in 1:length(Datos)){
 OccDatav <- bind_cols(OccDatav)
 row.names(OccDatav) <- SITIOS
 
-#saveRDS(OccDatav, "Occdata_regPRIM_abund.rds")
+#saveRDS(OccDatav, "Occdata_regPRIM_abund.rds")#para hacer analisis de abundancias corregidas por deteccion
 
 ## Cambiando para ocupacia/solo presencia y ausencias
 

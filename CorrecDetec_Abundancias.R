@@ -6,7 +6,6 @@ library(unmarked)
 library(MuMIn)
 library(caret)
 
-
 ####DATOS PRIMAVERA
 #Ocupancia para todas las especies en primavera
 
@@ -174,10 +173,19 @@ rownames(Detecciones) <- rownames(data_reg)
 
 ### Correccion de abundancias
 
-AbundPrim_dia <-read_rds("Occdata_regPRIM_abund.rds")
+AbundPrim_dia <-read_rds("Occdata_regPRIM_abund.rds") #se debe considerar la abundancia de cada sp por sitio
 
 AbundPrim_Corregido <- AbundPrim_dia/Detecciones
-saveRDS(AbundPrim_Corregido, "AbundPrim_Corregido.rds")
+  
+AbundPrim_Corregido2 <- AbundPrim_Corregido %>% 
+  mutate(Sitio = row.names(AbundPrim_Corregido)) %>% 
+  pivot_longer(cols = -Sitio, names_to = "Especie", values_to = "Abundancia") %>% 
+  mutate(Especie = str_remove_all(Especie, "1"), Especie = str_remove_all(Especie, "2"), Especie = str_remove_all(Especie, "3")) %>% 
+  group_by(Sitio, Especie) %>% 
+  summarise(Abundancia = mean(Abundancia, na.rm = T)) %>% 
+  pivot_wider(names_from = Especie, values_from = Abundancia)
+
+saveRDS(AbundPrim_Corregido2, "AbundPrim_Corregido.rds")
 ################################################################
 
 ####DATOS INVIERNO
@@ -341,15 +349,23 @@ for(i in 1:length(DetInv$models)){
   colnames(Detecciones[[i]]) <- paste0(names(DetInv$models)[i],"_",c("Dia1", "Dia2", "Dia3"))
 }
 
-
-
 Detecciones <- Detecciones %>% reduce(bind_cols)
 
 rownames(Detecciones) <- rownames(data_reg)
 
 ### Correccion de abundancias
 
-AbundInv_dia <-read_rds("Occdata_regInv.rds")
-
+AbundInv_dia <-read_rds("Occdata_regInv_abund.rds")
 AbundInv_Corregido <- AbundInv_dia/Detecciones
+
+AbundInv_Corregido[14,seq(3,ncol(AbundInv_Corregido), by = 3)] <- NA #solo para invierno
+
+AbundInv_Corregido2 <- AbundInv_Corregido %>% 
+  mutate(Sitio = row.names(AbundInv_Corregido)) %>% 
+  pivot_longer(cols = -Sitio, names_to = "Especie", values_to = "Abundancia") %>% 
+  mutate(Especie = str_remove_all(Especie, "1"), Especie = str_remove_all(Especie, "2"), Especie = str_remove_all(Especie, "3")) %>% 
+  group_by(Sitio, Especie) %>% 
+  summarise(Abundancia = mean(Abundancia, na.rm = T)) %>% 
+  pivot_wider(names_from = Especie, values_from = Abundancia)
+
 saveRDS(AbundInv_Corregido, "AbundInv_Corregido.rds")
