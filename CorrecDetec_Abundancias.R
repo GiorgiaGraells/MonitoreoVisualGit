@@ -368,4 +368,4 @@ AbundInv_Corregido2 <- AbundInv_Corregido %>%
   summarise(Abundancia = mean(Abundancia, na.rm = T)) %>% 
   pivot_wider(names_from = Especie, values_from = Abundancia)
 
-saveRDS(AbundInv_Corregido, "AbundInv_Corregido.rds")
+saveRDS(AbundInv_Corregido2, "AbundInv_Corregido.rds")

@@ -13,11 +13,38 @@ library(tidyverse)
 library(vegan)
 library(MASS)
 library(ggplot2)
+library(ggrepel)
+
 ```
 
 ```{r}
+#preparacion de datos registro aves
 
+AvesInv2 <- read_rds("AbundInv_Corregido.rds") 
+AvesInv2 <-AvesInv2 %>% ungroup() %>% dplyr::select(-Sitio) %>% mutate_all(~replace(., is.na(.), 0)) %>% sqrt()
+
+AvesPrim2 <- read_rds("AbundPrim_Corregido.rds")
+AvesPrim2 <-AvesPrim2 %>% ungroup() %>% dplyr::select(-Sitio)%>% mutate_all(~replace(., is.na(.), 0)) %>% sqrt()
+
+#Datos ambientales  incluidos buffers
+
+Amb<- read_rds("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/MonitoreoVisualGit/Occdata_occu.rds")
+Amb <- Amb %>% 
+  dplyr::select(Sitio,CobVeg, AMBIENTE, Distancia_rio, Altura, `Buffer_2200_Bosque Nativo`, `Buffer_2200_Cultivos`, `Buffer_2200_Grava`, `Buffer_2200_Oceano`, `Buffer_2200_Pastizales`, `Buffer_2200_Matorrales`, `Buffer_2200_Sup impermeables`, `Buffer_2200_Suelo arenoso`, `Buffer_2200_Plantación de árboles`) %>% 
+  rename( `Cobertura vegetal` =CobVeg) %>% rename( `Distancia a río` =Distancia_rio) %>% 
+  rename( `Bosque nativo` =`Buffer_2200_Bosque Nativo`) %>% rename( Cultivos =`Buffer_2200_Cultivos`) %>% 
+  rename( Grava =`Buffer_2200_Grava`) %>% rename( Oceano =`Buffer_2200_Oceano`) %>% 
+  rename( Pastizales =`Buffer_2200_Pastizales`) %>% rename( `Matorrales` =`Buffer_2200_Matorrales`) %>% 
+  rename( `Superficies impermeables` =`Buffer_2200_Sup impermeables`) %>% rename( `Suelo arenoso` =`Buffer_2200_Suelo arenoso`) %>% 
+  rename( `Plantacion de arboles` =`Buffer_2200_Plantación de árboles`)
+
+rownames(Amb) <- Amb$Sitio
+
+Amb <- Amb %>% dplyr::select(-Sitio)
 ```
+
+
+
 
 #### Introduction
 
@@ -141,6 +168,7 @@ Sumar Envfit
 1. Revisting the research aim/existing research
 
 2. General overview of results
+A partir del nmds
 
 El menor valor de AIC determina que la estacion si teiene una interaccion con las especies para definir la abundancia
 
@@ -153,8 +181,11 @@ El menor valor de AIC determina que la estacion si teiene una interaccion con la
 
 
 3. Invitations to view results
+variabilidad entre ambientes segun anosim
 
 4. Specific/key results in details
+que contribuye mas al cambio
+que determina las diferencias
 
 5. Comparisons with results in other research
 
