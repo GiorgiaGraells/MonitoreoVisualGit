@@ -2,11 +2,12 @@
 title: "Ms Habitat aves"
 author: "Giorgia Graells"
 date: "`r Sys.Date()`"
-output: word_document
----
+output:
+  word_document: default
+  ---
 
-```{r setup, include=FALSE, echo=FALSE, comment=FALSE, warning=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,	message = FALSE,warning = FALSE,cache = TRUE,comment = FALSE)
 
 library(readxl)
 library(tidyverse)
@@ -14,8 +15,11 @@ library(vegan)
 library(MASS)
 library(ggplot2)
 library(ggrepel)
+library(patchwork)
+library(kableExtra)
 
 ```
+
 
 ```{r}
 #preparacion de datos registro aves
@@ -31,12 +35,13 @@ AvesPrim2 <-AvesPrim2 %>% ungroup() %>% dplyr::select(-Sitio)%>% mutate_all(~rep
 Amb<- read_rds("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/MonitoreoVisualGit/Occdata_occu.rds")
 Amb <- Amb %>% 
   dplyr::select(Sitio,CobVeg, AMBIENTE, Distancia_rio, Altura, `Buffer_2200_Bosque Nativo`, `Buffer_2200_Cultivos`, `Buffer_2200_Grava`, `Buffer_2200_Oceano`, `Buffer_2200_Pastizales`, `Buffer_2200_Matorrales`, `Buffer_2200_Sup impermeables`, `Buffer_2200_Suelo arenoso`, `Buffer_2200_Plantación de árboles`) %>% 
-  rename( `Cobertura vegetal` =CobVeg) %>% rename( `Distancia a río` =Distancia_rio) %>% 
-  rename( `Bosque nativo` =`Buffer_2200_Bosque Nativo`) %>% rename( Cultivos =`Buffer_2200_Cultivos`) %>% 
-  rename( Grava =`Buffer_2200_Grava`) %>% rename( Oceano =`Buffer_2200_Oceano`) %>% 
-  rename( Pastizales =`Buffer_2200_Pastizales`) %>% rename( `Matorrales` =`Buffer_2200_Matorrales`) %>% 
-  rename( `Superficies impermeables` =`Buffer_2200_Sup impermeables`) %>% rename( `Suelo arenoso` =`Buffer_2200_Suelo arenoso`) %>% 
-  rename( `Plantacion de arboles` =`Buffer_2200_Plantación de árboles`)
+  rename( `Vegetation cover` =CobVeg) %>% rename( `Distance to river` =Distancia_rio) %>% 
+  rename( `Native forest` =`Buffer_2200_Bosque Nativo`) %>% rename(Crops =`Buffer_2200_Cultivos`) %>% 
+  rename( Gravel =`Buffer_2200_Grava`) %>% rename( Ocean =`Buffer_2200_Oceano`) %>% 
+  rename( Grassland =`Buffer_2200_Pastizales`) %>% rename( `Shrublands` =`Buffer_2200_Matorrales`) %>% 
+  rename( `Paved surface` =`Buffer_2200_Sup impermeables`) %>% rename( `Sand` =`Buffer_2200_Suelo arenoso`) %>% 
+  rename( `Tree plantation` =`Buffer_2200_Plantación de árboles`) %>% 
+  rename( Altitude = Altura)
 
 rownames(Amb) <- Amb$Sitio
 
@@ -220,3 +225,121 @@ que determina las diferencias
 [Suggest a specific area to be addressed in future work]
 
 
+```{r, results='hide'}
+##### METAMDS: Non-metric Multidimensional scaling- NMDS
+
+#########################################################
+#Función para sacar los datos y ocupar ggplot
+TidyNMDS <- function(MDS, COVS){
+  DF <- COVS
+  DF2 <- MDS$points %>% as.data.frame()
+  DF <- bind_cols(DF2, DF)
+  return(DF = DF)
+}
+#########################################################
+#Invierno
+Inv_nmds2_bray <- suppressMessages(metaMDS(AvesInv2, autotransform = FALSE, distance="bray", k=2, try=20, trymax=100,  wascores=FALSE, trace=1, plot=FALSE))
+#Primavera
+Prim_nmds2_bray <-suppressMessages(metaMDS(AvesPrim2,autotransform = FALSE, distance="bray", k=2, try=20, trymax=100, wascores=FALSE, trace=1, plot=FALSE)) 
+```
+
+
+```{r, fig.width=9, fig.height=4}
+#Funcion para grafico NMDS en ggplot Invierno
+Tidy_Inv_nmds2_bray <- TidyNMDS(MDS = Inv_nmds2_bray, COVS = Amb)
+
+Inv <- ggplot(Tidy_Inv_nmds2_bray)+geom_point(aes(x=MDS1, y=MDS2, color=AMBIENTE))+theme_classic()+ 
+  scale_color_manual(name="Coastal habitats", labels=c("Urbanized beach", "Natural beach", "Modified rocky shore", "Natural rocky shore","Urban centre", "Green area") , values = c('#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33')) + 
+  ggtitle('A')
+
+#Funcion para grafico NMDS en ggplot Primavera
+Tidy_Prim_nmds2_bray <- TidyNMDS(MDS = Prim_nmds2_bray, COVS = Amb)
+
+Prim <-ggplot(Tidy_Prim_nmds2_bray)+geom_point(aes(x=MDS1, y=MDS2, color=AMBIENTE))+theme_classic()+ 
+  scale_color_manual(name="Coastal habitats", labels=c("Urbanized beach", "Natural beach", "Modified rocky shore", "Natural rocky shore","Urban centre", "Green area"), values = c('#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33')) + 
+  ggtitle('B')
+
+#Ambos graficos con patchwork
+Inv+Prim + plot_layout(guides = 'collect')
+```
+
+```{r, results='hide'}
+## test: ANOSIM
+
+#Invierno
+Diss_Inv2 <- vegdist(AvesInv2, method="bray", binary=FALSE, diag=TRUE, upper=TRUE, na.rm = FALSE)
+#con base de datos por abundancia
+Anosim_Diss_Inv2<-anosim(Diss_Inv2, grouping=Amb$AMBIENTE, permutations = 9999, distance = "bray", strata = NULL, parallel = getOption("mc.cores"))
+Summ_AnosimInv <-summary(Anosim_Diss_Inv2)
+
+#Primavera
+Diss_Prim2 <- vegdist(AvesPrim2, method="bray", binary=FALSE, diag=TRUE, upper=TRUE, na.rm = FALSE)
+#con base de datos por abundancia
+Anosim_Diss_Prim2<-anosim(Diss_Prim2, grouping=Amb$AMBIENTE, permutations = 9999, distance = "bray",strata = NULL, parallel = getOption("mc.cores")) 
+summary(Anosim_Diss_Prim2)
+
+```
+
+
+```{r, fig.width=9}
+Inv <- ggplot()+ geom_boxplot(aes(x=Anosim_Diss_Inv2$class.vec, y=Anosim_Diss_Inv2$dis.rank), notch = TRUE, varwidth=TRUE)+theme_classic()+
+  xlab("Variables")+ ylab("Dissimmilarity rank")+
+  ggtitle('A')
+
+Prim <- ggplot()+ geom_boxplot(aes(Anosim_Diss_Prim2$class.vec, y=Anosim_Diss_Prim2$dis.rank), notch = TRUE, varwidth=TRUE)+theme_classic()+
+ xlab("Variables")+ ylab("Dissimmilarity rank")+
+   ggtitle('B')
+
+Inv / Prim
+```
+
+
+
+
+```{r, results='hide'}
+##### ENVFIT: Fits an Environmental Vector or Factor onto an Ordination
+###################################################
+TidyEnvFit <- function(ENVFit, alpha = 0.05){
+  DF <- ENVFit$vectors$arrows %>% as.data.frame()
+  DF$Factor <- rownames(DF)
+  DF$Pval <-ENVFit$vectors$pvals
+  DF <- DF %>% dplyr::filter(Pval < alpha)
+  return(DF = DF)
+}
+###################################################
+EnvfitInv2 <- envfit(Inv_nmds2_bray~  `Vegetation cover`+ `Distance to river`+Altitude+ `Native forest`+ Crops+ Gravel + Ocean +Grassland+ Shrublands+`Paved surface` + `Sand`+ `Tree plantation` , data=Amb, perm=9999)
+Tidy_EnvfitInv2 <- TidyEnvFit(EnvfitInv2)
+
+EnvfitPrim2 <- envfit(Prim_nmds2_bray~  `Vegetation cover`+ `Distance to river`+Altitude+ `Native forest`+ Crops+ Gravel + Ocean +Grassland+ Shrublands+`Paved surface` + `Sand`+ `Tree plantation`, data=Amb, perm=9999)
+Tidy_EnvfitPrim2 <- TidyEnvFit(EnvfitPrim2)
+```
+
+
+```{r,  fig.width=9, fig.height=4}
+Inv <- ggplot(Tidy_Inv_nmds2_bray)+
+  geom_segment(data=Tidy_EnvfitInv2, x = 0, y = 0, aes(xend =NMDS1 , yend = NMDS2), arrow = arrow(length = unit(0.2, "cm")))+
+  geom_point(aes(x=MDS1, y=MDS2, color=AMBIENTE))+
+  geom_text_repel(data=Tidy_EnvfitInv2, aes(x=NMDS1, y=NMDS2, label=Factor), seed = 10)+
+  
+  theme_classic()+ scale_color_manual(name="Coastal habitats", labels=c("Urbanized beach", "Natural beach", "Modified rocky shore", "Natural rocky shore","Urban centre", "Green area"),values = c('#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33'))+
+  ggtitle('A')
+
+Prim <- ggplot(Tidy_Prim_nmds2_bray)+
+  geom_segment(data=Tidy_EnvfitPrim2, x = 0, y = 0, aes(xend =NMDS1 , yend = NMDS2), arrow = arrow(length = unit(0.2, "cm")))+
+  geom_point(aes(x=MDS1, y=MDS2, color=AMBIENTE))+
+  geom_text_repel(data=Tidy_EnvfitPrim2, aes(x=NMDS1, y=NMDS2, label=Factor), seed = 10)+
+    theme_classic()+ scale_color_manual(name="Coastal habitats", labels=c("Urbanized beach", "Natural beach", "Modified rocky shore", "Natural rocky shore","Urban centre", "Green area"),values = c('#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33'))+
+  ggtitle('B')
+
+Inv+Prim + plot_layout(guides = 'collect')
+
+```
+
+
+
+
+
+
+
+
+### References

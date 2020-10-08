@@ -3,8 +3,6 @@ Monitoreo visual
 
 #### Documentación
 
-Revisar para completar
-
 ### Analisis comunitario de especies preliminar
 
 Analisis preliminar: solo reagrupacion de datos **exploracion datos,
@@ -189,3 +187,5 @@ archivo Prep datos\_Occu\_punto.R se exportaron las abundancias en
 formato de sitios por dia para hacer el calculo de la correccion. Se
 modifica tambien la importacion de este nuevo dataframe para hacer los
 analisis de la comunidad
+
+Escritura de manuscrito en ingles **Ms\_HabitatAves.Rmd**
