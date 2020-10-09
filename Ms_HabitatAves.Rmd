@@ -1,10 +1,12 @@
 ---
-title: "Ms Habitat aves"
+title: "Ms Habitat aves. Species composition in coastal urban habitats"
 author: "Giorgia Graells"
-date: "`r Sys.Date()`"
-output:
-  word_document: default
-  ---
+  date: "`r Sys.Date()`"
+  output:
+    bookdown::word_document2:
+      fig_caption: true 
+bibliography: tesis_ref_2020.bib
+---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE,	message = FALSE,warning = FALSE,cache = TRUE,comment = FALSE)
@@ -17,6 +19,7 @@ library(ggplot2)
 library(ggrepel)
 library(patchwork)
 library(kableExtra)
+library(knitr)
 
 ```
 
@@ -49,96 +52,99 @@ Amb <- Amb %>% dplyr::select(-Sitio)
 ```
 
 
-
-
 #### Introduction
 
 1. Establish importance of the fild- provide background, keywords- present the problem
 
 [Stablish the importance of this research topic]
-Urbanization have been one of the mayor causes of species loss
+
+Urbanization have been growing rapidly ...
+and is one of the mayor causes of species loss [@czech2000economic].
 
 [Provide general background information]
-Urban areas presents species homogenization  
+Urban modificacion over natural environments has promoted loss of native species and their replacement by non-native species [@mckinney2006urbanization]. This is called biotic homogenization, where few species are adapted to urban and suburban conditions [@mckinney1999biotic]. 
+Biotic homogenization affects variety of ecosystems [grassland: @zeeman2017biotic], climates [temperate: @zeeman2017biotic],taxonomic groups [mainly in birds and plants, but also insects: @knop2016biotic] 
 
 [Stablish the importance of this research topic, more specific/detailed way]
-Urban homogenization represents...
+This urban homogenization has effects: 
+a. more homogenized biosfera with lower diversity, where there will be many species losers and few winners [@mckinney1999biotic].
+which has been studied mostly in birds and plants
 
 [Provide general background information, more specific/detailed way]
+In birds, urban homogenization in more specific: has a nonrandom filtering effect on birds, they show guildsresponse to urbanization [@silva2016nonrandom].
+Composición de aves urbanas depende más de la composición de aves urbanas aledañas que de los ambientes naturales que los rodean
+Rural birds
+According to @clergeau2001urban, urban  bird  communities  are  independent of the bird diversity of adjacent landscapes, and that local features are more important than surrounding landscapes. 
 
 2. Previous an current research and contributions
 
 [Describe general problem area or the current research focus of the field]
-Birds have been studied un urban areas and show this phenomena
+half of population live in coastal cities, however urbanization has been msotly focus in terrestiral aspects.
 
 [Provide transition between the general problem area and the literature review]
-Birs comunities in urban areas depend of the perurban composition of species
+More than the half of the cities in the world are coastal cities and they lack of studies addressing marine and terrestrial interactions.
 
 3. Locate the gap-describe the proble to address-present a prediction to be tested
 
 [Provide brief overview of key research projects in this area]
-More than the half of the cities in the world are coastal cities and they lack of studies addressing marine. terrestrial interactions.
+Urban homogenization has been studied in cities, focused in terrestrial variables
+Considering Birs comunities in urban areas depend of the perurban composition of species, there are no studies in the effects of marine habitats
 
 [Describe gaps in the research]
-However there is a gap in studies that focus in coastal ecotone and the influence of antrhopized areas
+There is a gap in studies that focus in coastal ecotone and the influence of antrhopized areas
+focusing on marine and terrestrial interaction of species in an urbanized area and how birds use this as habitats
 
 [Decribe paper itself]
-This research describe ...
+This research aim to identified the use of coastal urban habitats by birds describing the composition of species in differrent environments, considering bird species origin (marine and terrestrial).
 with the aim of: 1. Identify bird species assemble of habitats in coastal urban environments, specifically the interaction between marine and inland birds, 2. identify how urbanization affects those bird assembles, 3. Evaluate iconic bird species habitat ocupation, and 4. describe bird behavior in those habitats
-
 
 4. Describe the present paper
 [Give details about the methodology reported in the paper]
-Bird surveys were carry out in the Gran Valparaíso, a metropolitan area that includes three municipalities in central Chile
+The present study was carried out in the Gran Valparaíso, a metropolitan area that includes three municipalities in central Chile
 
 [Announces the findings]
-
-
-
-
+Urban habitats in coastal areas present the conditions that allow specific species composition, cohabiting marine and inlsnd bird species
 
 #### Metodology
 
 1. Overview-purpose of the work-give source of material/equipment used
 
 [General overview of this section]
-In this research we conducted bird surveys in six coastal urban environments in the Gran Valparaíso, a Metropolitan area that includes three municipalities in central Chile.
+In this research we conducted bird surveys in six coastal urban environments in the Gran Valparaíso, a Metropolitan area in Central Chile. We estimated species composition based on bird presence analised using occupancy models.
 
 [Provide background information and justification]
-Coastal environments were defined in terms of its proximity to the coast, level of anthropotization and land cover: urban centre, green area, natural rocky shore, modified rocky shore, natural beach, and urbanized beach (Table 1)
-
+Coastal central chile present a rapid urbanization growth since the last... years, endengering natural habitats. 
+The area is near by the chilean capital which has close to 6 million inhabitants.
+This area is inmerse ina a natural-rural matrix composed ... in a grographic Coastal mountain chain-- papers bahi concon y viña
 
 [Provide an overview of the procedure/method itself]
-Bird surveys were conducted in each sample site twice (winter (junio-jul) and spring (nov-dec)), 2019 given migratory species en this area, during sunrise and the three hours later for 10 minutes. 
-The total of birds seing and heard was registred, in addition with the position and behavior of the bird or group of birds observed.
-
-A characterization of environments were made throgh vegetational cover measurement and an spatial characterization with landcover information.
-
+species composition were analised with the package vegan for RStudio using corrected abundance of species. Bird abundance was corrected by detection capacity using occupancy models. 
+  
 2. Details about materials and methods- justify choices
 
 [Provide details about what was done and used and shows that care was taken]
+Six coastal habitat were defined in terms of its proximity to the coast, level of anthropotization and land cover: urban centre, green area, natural rocky shore, modified rocky shore, natural beach, and urbanized beach (Table 1). 
+Six replicas of theses habitats were sampled by visual bird surveys in south hemisfer winter and spring of 2019. Surveys were conducted randomly during sunrise and the three hours later for 10 minutes, registering species and behaviour.
 
-Seasonality was tested with a mixed GLM with abundance as a response variable and a random effect of sample sites. We tested a model where seasonality has a interacttion with the habitats defined in this research .
-
-To analyse the data, we used occupancy modeling to provide information about bird habitat use.
-Occupancy variables
-Detection variables
-Seasonal variables
+Seasonality was tested with a mixed GLM with abundance as a response variable and a random effect of sample sites. We tested a model where seasonality has a interacttion with the habitats defined in this research.
 
 
 [Continuing to describe what was done in detail, using languajge which comunicate that care was taken]
-To compare bird commmunities and species identity in them, we used ordination methods with vegan package in R with species abundances corrected by occupancy.
-We tested significant differences among environments with an analysis of similarities (ANOSIM) 
+Bird commmunities were analised using ordination methods with vegan package in R with species abundances corrected by detection capacity, using occupancy models (see table) [].
+We  determined dissimilarity distances among sample sites and tested significant differences among habitat with analysis of similarities (ANOSIM).  To determine species contribution to the differrence between habitats we used Bray-Curtis dissimilaries with SIMPER analysis.
+Fit of environmental variables on species ordination was also tested. 
+Bird behabiour was counted for each habitat.
 
-To determine species contribution to the differrence between environments we used Bray-Curtis dissimilaries with SIMPER analysis.
 
 
 3. Relate to other studies
 
 [Describe what was done by referring to existing mehods in the literature]
+To independize us from habitats already defined, ocupancy models of eight species were analize. Same species' presences were related to its behaviour detected in those habitats
 
 [Provide more detailed information about the method and show that was a good choice]
-Occupancy models provide a correction using detection probability mong days and colonization-extinction probability between seasons which improve ordination models
+Occupancy models provide a correction using detection probability mong days and colonization-extinction probability between seasons which improve ordination models, we used corrected abundance from probability of detection for comunity analissi
+
 
 4. Indicate where problems occurred
 
@@ -149,23 +155,6 @@ Occupancy models provide a correction using detection probability mong days and 
 
 
 
-**Poner en paper**
-
-1. Hacer una descripcion del ensamble de especies (unidas las temporadas) y representar con un NMDS, ANOSIM y SIMPER.
-Se utilizó las abundancias corregidas por ocupancia, lo que se obtiene corriendo los modelos de ocupancia para cada especie.
-
-
-
-
-
-Mostrar la comparacioón entre natural y urbano.
-Sumar Envfit
-
-2. Realizar un mapa dde probabilidad de presencia para especies icónicas 1-100%
-
-3. Grafficar las barras de comportamiento para las mismas espcies icónicas
-
-
 
 
 ### Results
@@ -173,7 +162,9 @@ Sumar Envfit
 1. Revisting the research aim/existing research
 
 2. General overview of results
-A partir del nmds
+Bird surveys in the study area detected 
+
+A partir del nmds \@ref(Figure:NMDS)
 
 El menor valor de AIC determina que la estacion si teiene una interaccion con las especies para definir la abundancia
 
@@ -244,7 +235,7 @@ Prim_nmds2_bray <-suppressMessages(metaMDS(AvesPrim2,autotransform = FALSE, dist
 ```
 
 
-```{r, fig.width=9, fig.height=4}
+```{r, fig.width=9, fig.height=4, fig.cap="NMDS"}
 #Funcion para grafico NMDS en ggplot Invierno
 Tidy_Inv_nmds2_bray <- TidyNMDS(MDS = Inv_nmds2_bray, COVS = Amb)
 
@@ -259,7 +250,7 @@ Prim <-ggplot(Tidy_Prim_nmds2_bray)+geom_point(aes(x=MDS1, y=MDS2, color=AMBIENT
   scale_color_manual(name="Coastal habitats", labels=c("Urbanized beach", "Natural beach", "Modified rocky shore", "Natural rocky shore","Urban centre", "Green area"), values = c('#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33')) + 
   ggtitle('B')
 
-#Ambos graficos con patchwork
+#Ambos graficos con paquete patchwork
 Inv+Prim + plot_layout(guides = 'collect')
 ```
 
@@ -294,6 +285,40 @@ Inv / Prim
 ```
 
 
+```{r}
+#Tabla Simper Inv
+
+Inv <-  read.csv("ResumenSimper_Inv2.csv")
+
+knitr::kable(
+  list(Inv[1:28, ], longtable = TRUE, booktabs = TRUE
+       ))
+
+```
+
+```{r}
+#Tabla Simper Inv
+Prim <-  read.csv("ResumenSimper_Prim2.csv")
+
+knitr::kable(
+  list(Prim[1:30, ], longtable = TRUE, booktabs = TRUE
+       ))
+```
+
+```{r}
+# set pander table-layout options
+library(pander)
+Prim <-  read.csv("ResumenSimper_Prim2.csv")
+Prim<- as.data.frame(Prim)
+panderOptions('table.alignment.default', function(Prim)
+    ifelse(sapply(Prim, is.numeric), 'right', 'left'))
+panderOptions('table.split.table', Inf)
+panderOptions('big.mark', ",")
+panderOptions('keep.trailing.zeros', TRUE)
+
+pander(Prim)
+
+```
 
 
 ```{r, results='hide'}
