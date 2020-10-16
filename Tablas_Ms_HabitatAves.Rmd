@@ -1,0 +1,32 @@
+---
+title: "Tablas_Ms_ HabitatAves"
+author: "Giorgia Graells"
+date: "10/16/2020"
+output: 
+  pdf_document: 
+    keep_tex: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(kableExtra)
+library(tidyverse)
+```
+
+```{r, results='asis'}
+DF_occu <- tibble( Species= c("Columba livia", "Larus dominicanus", "Leucophaeus pipixcan", "Pelecanus_thagus", "Phalacrocorax_bougainvillii"), 
+                   Equation= c("$\\psi_{Cl} = e^{-39.76 + 45.23 \\times native forest - 21.04 \\times gravel + 44.82 \\times sand}$", "$\\psi_{Cl} = e^{12.45}$", "$\\psi_{Cl} = e^{	47.82 -5.09 \\times altitude -231.04 \\times gravel + 5.74 \\times ocean + 	4.40 \\times paved surface}$", "$\\psi_{Cl} = e^{104.91 -0.59 \\times altitude +	6.56\\times native forest 	-2.93 \\times shrublands -18.98\\times sand}$", "$\\psi_{Cl} = e^{-82.05 + 	12.46 \\times crops -15.13 \\times gravel + 	1.38 \\times ocean}$"))
+
+kable(DF_occu, booktabs=T, escape = F) %>% kable_styling(latex_options = "basic")
+
+```
+
+
+
+```{r, results='asis'}
+DF_occu <- tibble( Species= c("Columba livia", "Larus dominicanus", "Leucophaeus pipixcan", "Pelecanus_thagus", "Phalacrocorax_bougainvillii"), 
+                   Equation= c("$\\psi_{Cl} = e^{-39.76 + 45.23 \\times native forest - 21.04 \\times gravel + 44.82 \\times sand}$", "$\\psi_{Cl} = e^{12.45}$", "$\\psi_{Cl} = e^{	47.82 -5.09 \\times altitude -231.04 \\times gravel + 5.74 \\times ocean + 	4.40 \\times paved surface}$", "$\\psi_{Cl} = e^{104.91 -0.59 \\times altitude +	6.56\\times native forest 	-2.93 \\times shrublands -18.98\\times sand}$", "$\\psi_{Cl} = e^{-82.05 + 	12.46 \\times crops -15.13 \\times gravel + 	1.38 \\times ocean}$"))
+
+kable(DF_occu, booktabs=T, escape = F) %>% kable_styling(latex_options = "basic")
+
+```

@@ -302,6 +302,9 @@ Occupancy model map show
 ```
 
 
+
+
+
 5. Comparisons with results in other research
 
 Occupancy models for specific species 
