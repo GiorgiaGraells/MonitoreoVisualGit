@@ -6,9 +6,7 @@ library(unmarked)
 library(MuMIn)
 library(caret)
 
-
-####DATOS INVIERNO
-#Ocupancia para todas las especies en invierno
+#### INVIERNO
 
 data_det <-read_rds("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/MonitoreoVisualGit/Analisis_Occu_punto/Occdata_detInv.rds")
 
@@ -16,8 +14,9 @@ data_ocu <-read_rds("Occdata_occu.rds")
 data_ocu <- data_ocu %>% dplyr::select(-Sitio)
 colnames(data_ocu) <- str_replace_all(colnames(data_ocu), pattern = " ", "_")
 
-data_reg <-read_rds("Occdata_regInv.rds")
-
+Simper <-read_csv("ResumenSimper_Inv2.csv")
+Simper <- Simper$Especie %>% as.character %>% unique()
+data_reg <-read_rds("Occdata_regInv.rds") %>% dplyr::select(starts_with(Simper))
 
 batchoccu2 <- function(pres, sitecov, obscov, spp, form, SppNames = NULL, dredge = FALSE) {
   if(is.null(SppNames)){
@@ -157,44 +156,33 @@ batchoccu2 <- function(pres, sitecov, obscov, spp, form, SppNames = NULL, dredge
 }
 
 
-Spp <- data_reg %>% colnames() %>% str_remove_all("1")%>% str_remove_all("2") %>% str_remove_all("3") %>% unique()
+Spp <- data_reg %>% dplyr::select(starts_with(Simper)) %>% 
+  colnames() %>% str_remove_all("1")%>% str_remove_all("2") %>% str_remove_all("3") %>% unique()
 
-DetInv <- batchoccu2(pres = data_reg, sitecov = data_ocu, obscov = data_det, spp=45,  form= "~ Temperatura +Humedad+ DirViento +RapViento+ Agua ~ 1", dredge=TRUE, SppNames = Spp)
+OccuInv <- batchoccu2(pres = data_reg, sitecov = data_ocu, obscov = data_det, spp=8,  
+                       form= "~ Temperatura +Humedad+ DirViento +RapViento+ Agua ~ CobVeg + AMBIENTE+ Distancia_rio+ Altura + Buffer_2200_Bosque_Nativo+ Buffer_2200_Cultivos + Buffer_2200_Grava+ Buffer_2200_Oceano + Buffer_2200_Pastizales + Buffer_2200_Matorrales + Buffer_2200_Sup_impermeables+ Buffer_2200_Suelo_arenoso +  Buffer_2200_Plantación_de_árboles", 
+                       dredge=TRUE, SppNames = Spp)
 
-Detecciones <- list()
+##############
+SppNames = OccuInv$models %>% names()
+Mods <- OccuInv$models
+PorSpp <- list()
 
-for(i in 1:length(DetInv$models)){
-  Detecciones[[i]] <- DetInv$models[[i]] %>% predict(type = "det") %>% pull(Predicted) %>% matrix(ncol = 3, byrow = T) %>% as.data.frame()
-  colnames(Detecciones[[i]]) <- paste0(names(DetInv$models)[i],"_",c("Dia1", "Dia2", "Dia3"))
+for(j in 1:length(SppNames)){
+  Temp2 <- Mods[[SppNames[j]]]
+  Temp3 <- data.frame(Especies=rep(NA,length(Mods[[SppNames[j]]]@estimates@estimates$state@estimates)), Parametro=rep(NA,length(Mods[[SppNames[j]]]@estimates@estimates$state@estimates)), Estimador=rep(NA,length(Mods[[SppNames[j]]]@estimates@estimates$state@estimates)), SE=rep(NA,length(Mods[[SppNames[j]]]@estimates@estimates$state@estimates)), p = NA, AICc = NA)
+  Temp3$Especies <- SppNames[j]
+  Temp3$Parametro <- Mods[[SppNames[j]]]@estimates@estimates$state@estimates %>% names() %>% str_remove_all(pattern = paste0("Buffer_",2200, "_"))
+  Temp3$Estimador <- Mods[[SppNames[j]]]@estimates@estimates$state@estimates %>% as.numeric() 
+  try({Temp3$AICc <- AICc(Temp2)})
+  PorSpp[[j]] <- Temp3
 }
+Resultado_OccuInv_Ms <- PorSpp %>% purrr::reduce(bind_rows)
+saveRDS(Resultado_OccuInv_Ms, "Resultado_OccuInv_Ms.rds")
 
-Detecciones <- Detecciones %>% reduce(bind_cols)
+###############################################################
 
-rownames(Detecciones) <- rownames(data_reg)
-
-### Correccion de abundancias
-
-AbundInv_dia <-read_rds("Occdata_regInv_abund.rds")
-AbundInv_Corregido <- AbundInv_dia/Detecciones
-
-AbundInv_Corregido[14,seq(3,ncol(AbundInv_Corregido), by = 3)] <- NA #solo para invierno
-
-AbundInv_Corregido2 <- AbundInv_Corregido %>% 
-  mutate(Sitio = row.names(AbundInv_Corregido)) %>% 
-  pivot_longer(cols = -Sitio, names_to = "Especie", values_to = "Abundancia") %>% 
-  mutate(Especie = str_remove_all(Especie, "1"), Especie = str_remove_all(Especie, "2"), Especie = str_remove_all(Especie, "3")) %>% 
-  group_by(Sitio, Especie) %>% 
-  summarise(Abundancia = mean(Abundancia, na.rm = T)) %>% 
-  pivot_wider(names_from = Especie, values_from = Abundancia)
-
-saveRDS(AbundInv_Corregido2, "AbundInv_Corregido.rds")
-
-
-#########################################################
-
-
-####DATOS PRIMAVERA
-#Ocupancia para todas las especies en primavera
+#### PRIMAVERA
 
 data_det <-read_rds("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/MonitoreoVisualGit/Analisis_Occu_punto/Occdata_detPrim.rds")
 
@@ -202,7 +190,9 @@ data_ocu <-read_rds("Occdata_occu.rds")
 data_ocu <- data_ocu %>% dplyr::select(-Sitio)
 colnames(data_ocu) <- str_replace_all(colnames(data_ocu), pattern = " ", "_")
 
-data_reg <-read_rds("Occdata_regPRIM.rds")
+Simper <-read_csv("ResumenSimper_Prim2.csv")
+Simper <- Simper$Especie %>% as.character %>% unique()
+data_reg <-read_rds("Occdata_regPRIM.rds")%>% dplyr::select(starts_with(Simper))
 
 batchoccu2 <- function(pres, sitecov, obscov, spp, form, SppNames = NULL, dredge = FALSE) {
   if(is.null(SppNames)){
@@ -342,36 +332,29 @@ batchoccu2 <- function(pres, sitecov, obscov, spp, form, SppNames = NULL, dredge
 }
 
 
-Spp <- data_reg %>% colnames() %>% str_remove_all("1")%>% str_remove_all("2") %>% str_remove_all("3") %>% unique()
+Spp <- data_reg %>% dplyr::select(starts_with(Simper)) %>% 
+  colnames() %>% str_remove_all("1")%>% str_remove_all("2") %>% str_remove_all("3") %>% unique()
 
-DetPrim <- batchoccu2(pres = data_reg, sitecov = data_ocu, obscov = data_det, spp=48,  form= "~ Temperatura +Humedad+ DirViento +RapViento+ Agua ~ 1", dredge=TRUE, SppNames = Spp)
+OccuPrim <- batchoccu2(pres = data_reg, sitecov = data_ocu, obscov = data_det, spp=6,  
+                      form= "~ Temperatura +Humedad+ DirViento +RapViento+ Agua ~ CobVeg + AMBIENTE+ Distancia_rio+ Altura + Buffer_2200_Bosque_Nativo+ Buffer_2200_Cultivos + Buffer_2200_Grava+ Buffer_2200_Oceano + Buffer_2200_Pastizales + Buffer_2200_Matorrales + Buffer_2200_Sup_impermeables+ Buffer_2200_Suelo_arenoso +  Buffer_2200_Plantación_de_árboles", 
+                      dredge=TRUE, SppNames = Spp)
 
-Detecciones <- list()
+  ##############
+SppNames = OccuPrim$models %>% names()
+Mods <- OccuPrim$models
+PorSpp <- list()
 
-for(i in 1:length(DetPrim$models)){
-  Detecciones[[i]] <- DetPrim$models[[i]] %>% predict(type = "det") %>% pull(Predicted) %>% matrix(ncol = 3, byrow = T) %>% as.data.frame()
-  colnames(Detecciones[[i]]) <- paste0(names(DetPrim$models)[i],"_",c("Dia1", "Dia2", "Dia3"))
+for(j in 1:length(SppNames)){
+  Temp2 <- Mods[[SppNames[j]]]
+  Temp3 <- data.frame(Especies=rep(NA,length(Mods[[SppNames[j]]]@estimates@estimates$state@estimates)), Parametro=rep(NA,length(Mods[[SppNames[j]]]@estimates@estimates$state@estimates)), Estimador=rep(NA,length(Mods[[SppNames[j]]]@estimates@estimates$state@estimates)), SE=rep(NA,length(Mods[[SppNames[j]]]@estimates@estimates$state@estimates)), p = NA, AICc = NA)
+  Temp3$Especies <- SppNames[j]
+  Temp3$Parametro <- Mods[[SppNames[j]]]@estimates@estimates$state@estimates %>% names() %>% str_remove_all(pattern = paste0("Buffer_",2200, "_"))
+  Temp3$Estimador <- Mods[[SppNames[j]]]@estimates@estimates$state@estimates %>% as.numeric() 
+  try({Temp3$AICc <- AICc(Temp2)})
+  PorSpp[[j]] <- Temp3
 }
+Resultado_OccuPrim_Ms <- PorSpp %>% purrr::reduce(bind_rows)
+saveRDS(Resultado_OccuPrim_Ms, "Resultado_OccuPrim_Ms.rds")
 
 
-Detecciones <- Detecciones %>% reduce(bind_cols)
-
-rownames(Detecciones) <- rownames(data_reg)
-
-### Correccion de abundancias
-
-AbundPrim_dia <-read_rds("Occdata_regPRIM_abund.rds") #se debe considerar la abundancia de cada sp por sitio
-
-AbundPrim_Corregido <- AbundPrim_dia/Detecciones
-  
-AbundPrim_Corregido2 <- AbundPrim_Corregido %>% 
-  mutate(Sitio = row.names(AbundPrim_Corregido)) %>% 
-  pivot_longer(cols = -Sitio, names_to = "Especie", values_to = "Abundancia") %>% 
-  mutate(Especie = str_remove_all(Especie, "1"), Especie = str_remove_all(Especie, "2"), Especie = str_remove_all(Especie, "3")) %>% 
-  group_by(Sitio, Especie) %>% 
-  summarise(Abundancia = mean(Abundancia, na.rm = T)) %>% 
-  pivot_wider(names_from = Especie, values_from = Abundancia)
-
-saveRDS(AbundPrim_Corregido2, "AbundPrim_Corregido.rds")
-################################################################
-
+##########################

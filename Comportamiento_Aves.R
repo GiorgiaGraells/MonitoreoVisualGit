@@ -4,6 +4,9 @@ library(readxl)
 library(tidyverse)
 library(ggplot2)
 
+#There is just few species that contribute to differences between habitats. 
+#During winter: Pelecanus thagus, *Larus dominicanus*, *Coragyps atratus*, *Larosterna inca*, *Leucophaeus modestus*, *Columba livia*, *Turdus falcklandii*, and Sephanoides sephaniodes. 
+#And spring: *Leucophaeus pipixcan*, *Larus dominicanus*, *Columba livia*, *Larosterna inca*, *Phalacrocorax bougainvillii*, and *Pelecanus thagus*, 
 
 ## Invierno
 

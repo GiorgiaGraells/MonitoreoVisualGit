@@ -9,9 +9,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 #### Documentación
 
-Revisar para completar
-
-
 ### Analisis comunitario de especies preliminar
 
 Analisis preliminar: solo reagrupacion de datos **exploracion datos, analisis preliminar.R**
@@ -134,3 +131,6 @@ Creación de archivo **Graficos_Aves.R** para diferencias entre ambientes, consi
 Nuevo archivo **CorrecDetec_Abundancias.R** elementos exportados: AbundanciaPrim_corregido.rds y AbundanciaInv_corregido.rds
 En el archivo Prep datos_Occu_punto.R se exportaron las abundancias en formato de sitios por dia para hacer el calculo de la correccion.
 Se modifica tambien la importacion de este nuevo dataframe para hacer los analisis de la comunidad
+
+Escritura de manuscrito en ingles **Ms_HabitatAves.Rmd**
+Analisis para manuscrito en **Analisis_HabitatAves.R**. Para manuscritos see realiza ocupancia de ls especies obtenidas de simper para invierno y primavera en **Occu_especifica_Ms.R**, resultados en **Resultado_OccuPrim_Ms.rds** y **Resultado_OccuInv_Ms.rds**

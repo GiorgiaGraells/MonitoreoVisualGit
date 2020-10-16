@@ -1,10 +1,8 @@
 ---
 title: "Ms Habitat aves. Species composition in coastal urban habitats"
-author: "Giorgia Graells"
-  date: "`r Sys.Date()`"
-  output:
-    bookdown::word_document2:
-      fig_caption: true 
+output:
+  bookdown::word_document2:
+    reference_docx: "Para_Template.docx"
 bibliography: tesis_ref_2020.bib
 ---
 
@@ -52,7 +50,7 @@ Amb <- Amb %>% dplyr::select(-Sitio)
 ```
 
 
-#### Introduction
+### Introduction
 
 1. Establish importance of the fild- provide background, keywords- present the problem
 
@@ -105,7 +103,26 @@ The present study was carried out in the Gran Valparaíso, a metropolitan area t
 [Announces the findings]
 Urban habitats in coastal areas present the conditions that allow specific species composition, cohabiting marine and inlsnd bird species
 
-#### Metodology
+### Metodology
+
+
+```{r, results='hide'}
+##### METAMDS: Non-metric Multidimensional scaling- NMDS
+
+#########################################################
+#Función para sacar los datos y ocupar ggplot
+TidyNMDS <- function(MDS, COVS){
+  DF <- COVS
+  DF2 <- MDS$points %>% as.data.frame()
+  DF <- bind_cols(DF2, DF)
+  return(DF = DF)
+}
+#########################################################
+#Invierno
+Inv_nmds2_bray <- suppressMessages(metaMDS(AvesInv2, autotransform = FALSE, distance="bray", k=2, try=20, trymax=100,  wascores=FALSE, trace=1, plot=FALSE))
+#Primavera
+Prim_nmds2_bray <-suppressMessages(metaMDS(AvesPrim2,autotransform = FALSE, distance="bray", k=2, try=20, trymax=100, wascores=FALSE, trace=1, plot=FALSE)) 
+```
 
 1. Overview-purpose of the work-give source of material/equipment used
 
@@ -123,14 +140,14 @@ species composition were analised with the package vegan for RStudio using corre
 2. Details about materials and methods- justify choices
 
 [Provide details about what was done and used and shows that care was taken]
-Six coastal habitat were defined in terms of its proximity to the coast, level of anthropotization and land cover: urban centre, green area, natural rocky shore, modified rocky shore, natural beach, and urbanized beach (Table 1). 
+Six coastal habitat were defined in terms of its proximity to the coast, level of anthropotization and land cover: urban centre, green area, natural rocky shore, modified rocky shore, natural beach, and urbanized beach (Figura 1). 
 Six replicas of theses habitats were sampled by visual bird surveys in south hemisfer winter and spring of 2019. Surveys were conducted randomly during sunrise and the three hours later for 10 minutes, registering species and behaviour.
 
 Seasonality was tested with a mixed GLM with abundance as a response variable and a random effect of sample sites. We tested a model where seasonality has a interacttion with the habitats defined in this research.
 
 
 [Continuing to describe what was done in detail, using languajge which comunicate that care was taken]
-Bird commmunities were analised using ordination methods with vegan package in R with species abundances corrected by detection capacity, using occupancy models (see table) [].
+Bird commmunities were analised using ordination methods with vegan package in R with species abundances corrected by detection capacity, using occupancy models (see table 1).
 We  determined dissimilarity distances among sample sites and tested significant differences among habitat with analysis of similarities (ANOSIM).  To determine species contribution to the differrence between habitats we used Bray-Curtis dissimilaries with SIMPER analysis.
 Fit of environmental variables on species ordination was also tested. 
 Bird behabiour was counted for each habitat.
@@ -140,50 +157,156 @@ Bird behabiour was counted for each habitat.
 3. Relate to other studies
 
 [Describe what was done by referring to existing mehods in the literature]
-To independize us from habitats already defined, ocupancy models of eight species were analize. Same species' presences were related to its behaviour detected in those habitats
+To independize our analysis from habitats already defined, ocupancy models of eight species were developed and projected over the study area 
 
 [Provide more detailed information about the method and show that was a good choice]
-Occupancy models provide a correction using detection probability mong days and colonization-extinction probability between seasons which improve ordination models, we used corrected abundance from probability of detection for comunity analissi
+Covariables of detection and occupation are describedd in table 1.
 
 
 4. Indicate where problems occurred
 
 [Mention possible difficulty in the methodology]
 
+```{r}
+#figura 1 con los 6 ambientes costeros estudiados
+```
 
 
-
-
+```{r}
+#Covariables de deteccion y ocupaciono ocupadas para los modelos
+```
 
 
 
 ### Results
 
 1. Revisting the research aim/existing research
+Coastal cities in central Chile probed to allow habitats were marine and terrestrial bird species can cohabitat. Urbanization is a big factor in bird assemblages.
 
 2. General overview of results
-Bird surveys in the study area detected 
+The six coastal urban habitats shows distingible birs species assembles where only a few species contribute to the difference between them. For these habitats, bird assemblages differ between winter and spring seasons.
 
-A partir del nmds \@ref(Figure:NMDS)
-
-El menor valor de AIC determina que la estacion si teiene una interaccion con las especies para definir la abundancia
-
-```{r tabla1}
+```{r tabla3}
 #Modelo 1= Abundancia ~ Estacion *Especie + AMBIENTE+ (1|Sitio), family = poisson, data =Aves ) #AIC 17716.1
 #Modelo 2= Abundancia ~ Especie + AMBIENTE+ (1|Sitio), family = poisson, data =Aves )           #AIC 18241.0
 
+```
+
+3. Invitations to view results
+
+Coastal urban habitats show specific composition of species abundances for winter and spring seassons (Tabla 3). Distribution of sites in graphical NMDS (Fig. \@ref(fig:NMDS)) showed both seassons presented differences in abundance of species mostly in the inland sites. Additionally, coastal modified sites, as those in urbanized beach and modified rocky shore habitats, are closer to urban centres than coastal natural sites. 
+
+```{r NMDS, fig.width=9, fig.height=4, fig.cap="Sites distribution in A winter and B spring"}
+#Funcion para grafico NMDS en ggplot Invierno
+Tidy_Inv_nmds2_bray <- TidyNMDS(MDS = Inv_nmds2_bray, COVS = Amb)
+
+Inv <- ggplot(Tidy_Inv_nmds2_bray)+geom_point(aes(x=MDS1, y=MDS2, color=AMBIENTE))+theme_classic()+ 
+  scale_color_manual(name="Coastal habitats", labels=c("Urbanized beach", "Natural beach", "Modified rocky shore", "Natural rocky shore","Urban centre", "Green area") , values = c('#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33')) + 
+  ggtitle('A')
+
+#Funcion para grafico NMDS en ggplot Primavera
+Tidy_Prim_nmds2_bray <- TidyNMDS(MDS = Prim_nmds2_bray, COVS = Amb)
+
+Prim <-ggplot(Tidy_Prim_nmds2_bray)+geom_point(aes(x=MDS1, y=MDS2, color=AMBIENTE))+theme_classic()+ 
+  scale_color_manual(name="Coastal habitats", labels=c("Urbanized beach", "Natural beach", "Modified rocky shore", "Natural rocky shore","Urban centre", "Green area"), values = c('#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33')) + 
+  ggtitle('B')
+
+#Ambos graficos con paquete patchwork
+Inv+Prim + plot_layout(guides = 'collect')
+```
+
+Dissimilary rank shows with an 95% confidence interval that dissimilarities withing habitat are lower than between habitats. There is one exception shown by natural beach habitat during winter, here variability of species in the habitat is as high as we consider all habitats together (Fig. \@ref(fig:ANOSIM))
+
+```{r, results='hide'}
+## test: ANOSIM
+
+#Invierno
+Diss_Inv2 <- vegdist(AvesInv2, method="bray", binary=FALSE, diag=TRUE, upper=TRUE, na.rm = FALSE)
+#con base de datos por abundancia
+Anosim_Diss_Inv2<-anosim(Diss_Inv2, grouping=Amb$AMBIENTE, permutations = 9999, distance = "bray", strata = NULL, parallel = getOption("mc.cores"))
+Summ_AnosimInv <-summary(Anosim_Diss_Inv2)
+
+#Primavera
+Diss_Prim2 <- vegdist(AvesPrim2, method="bray", binary=FALSE, diag=TRUE, upper=TRUE, na.rm = FALSE)
+#con base de datos por abundancia
+Anosim_Diss_Prim2<-anosim(Diss_Prim2, grouping=Amb$AMBIENTE, permutations = 9999, distance = "bray",strata = NULL, parallel = getOption("mc.cores")) 
+summary(Anosim_Diss_Prim2)
 
 ```
 
 
-3. Invitations to view results
-variabilidad entre ambientes segun anosim
+```{r ANOSIM, fig.width=9, fig.cap="Dissimilarity ranking between an within the habitats in A winter and B spring"}
+Inv <- ggplot()+ geom_boxplot(aes(x=Anosim_Diss_Inv2$class.vec, y=Anosim_Diss_Inv2$dis.rank), notch = TRUE, varwidth=TRUE)+theme_classic()+
+  xlab("Variables")+ ylab("Dissimmilarity rank")+
+  ggtitle('A')
+
+Prim <- ggplot()+ geom_boxplot(aes(Anosim_Diss_Prim2$class.vec, y=Anosim_Diss_Prim2$dis.rank), notch = TRUE, varwidth=TRUE)+theme_classic()+
+ xlab("Variables")+ ylab("Dissimmilarity rank")+
+   ggtitle('B')
+
+Inv / Prim
+```
+
 
 4. Specific/key results in details
-que contribuye mas al cambio
-que determina las diferencias
+
+There is just few species that contribute to differences between habitats. During winter: *Pelecanus thagus*, *Larus dominicanus*, *Coragyps atratus*, *Larosterna inca*, *Leucophaeus modestus*, *Columba livia*, *Turdus falcklandii*, and *Sephanoides sephaniodes*. And spring: *Leucophaeus pipixcan*, *Larus dominicanus*, *Columba livia*, *Larosterna inca*, *Phalacrocorax bougainvillii*, and *Pelecanus thagus*, according to simper analysis (Fig. \@ref(fig:SIMPER1), Fig. \@ref(fig:SIMPER2)).
+
+
+```{r SIMPER1, fig.cap="Simper analysis for winter"}
+# set pander table-layout options
+library(pander)
+Inv <-  read.csv("ResumenSimper_Inv2.csv")
+Inv<- as.data.frame(Inv)
+panderOptions('table.alignment.default', function(Inv)
+    ifelse(sapply(Inv, is.numeric), 'right', 'left'))
+panderOptions('table.split.table', Inf)
+panderOptions('big.mark', ",")
+panderOptions('keep.trailing.zeros', TRUE)
+
+pander(Inv)
+#Inv$Especie
+```
+
+
+
+```{r SIMPER2, fig.cap="Simper analysis for spring"}
+# set pander table-layout options
+library(pander)
+Prim <-  read.csv("ResumenSimper_Prim2.csv")
+Prim<- as.data.frame(Prim)
+panderOptions('table.alignment.default', function(Prim)
+    ifelse(sapply(Prim, is.numeric), 'right', 'left'))
+panderOptions('table.split.table', Inf)
+panderOptions('big.mark', ",")
+panderOptions('keep.trailing.zeros', TRUE)
+
+pander(Prim)
+
+```
+
+During winter, community assemblages were explain by three environmental variables: coastal urban habitats, crops and tree plantations. 
+In spring, variables were coastal urban habitats and native forest.
+
+species for each habitat
+Occupancy model map show
+```{r}
+#ORDISTEP
+
+#Invierno
+#Step: AvesInv2 ~ AMBIENTE + Cultivos + `Plantacion de arboles`
+
+#Primavera
+#Step: AvesPrim2 ~ AMBIENTE + `Bosque nativo` 
+
+```
+
 
 5. Comparisons with results in other research
+
+Occupancy models for specific species 
+
+
 
 6. problems with results
 
@@ -216,149 +339,14 @@ que determina las diferencias
 [Suggest a specific area to be addressed in future work]
 
 
-```{r, results='hide'}
-##### METAMDS: Non-metric Multidimensional scaling- NMDS
-
-#########################################################
-#Función para sacar los datos y ocupar ggplot
-TidyNMDS <- function(MDS, COVS){
-  DF <- COVS
-  DF2 <- MDS$points %>% as.data.frame()
-  DF <- bind_cols(DF2, DF)
-  return(DF = DF)
-}
-#########################################################
-#Invierno
-Inv_nmds2_bray <- suppressMessages(metaMDS(AvesInv2, autotransform = FALSE, distance="bray", k=2, try=20, trymax=100,  wascores=FALSE, trace=1, plot=FALSE))
-#Primavera
-Prim_nmds2_bray <-suppressMessages(metaMDS(AvesPrim2,autotransform = FALSE, distance="bray", k=2, try=20, trymax=100, wascores=FALSE, trace=1, plot=FALSE)) 
-```
 
 
-```{r, fig.width=9, fig.height=4, fig.cap="NMDS"}
-#Funcion para grafico NMDS en ggplot Invierno
-Tidy_Inv_nmds2_bray <- TidyNMDS(MDS = Inv_nmds2_bray, COVS = Amb)
-
-Inv <- ggplot(Tidy_Inv_nmds2_bray)+geom_point(aes(x=MDS1, y=MDS2, color=AMBIENTE))+theme_classic()+ 
-  scale_color_manual(name="Coastal habitats", labels=c("Urbanized beach", "Natural beach", "Modified rocky shore", "Natural rocky shore","Urban centre", "Green area") , values = c('#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33')) + 
-  ggtitle('A')
-
-#Funcion para grafico NMDS en ggplot Primavera
-Tidy_Prim_nmds2_bray <- TidyNMDS(MDS = Prim_nmds2_bray, COVS = Amb)
-
-Prim <-ggplot(Tidy_Prim_nmds2_bray)+geom_point(aes(x=MDS1, y=MDS2, color=AMBIENTE))+theme_classic()+ 
-  scale_color_manual(name="Coastal habitats", labels=c("Urbanized beach", "Natural beach", "Modified rocky shore", "Natural rocky shore","Urban centre", "Green area"), values = c('#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33')) + 
-  ggtitle('B')
-
-#Ambos graficos con paquete patchwork
-Inv+Prim + plot_layout(guides = 'collect')
-```
-
-```{r, results='hide'}
-## test: ANOSIM
-
-#Invierno
-Diss_Inv2 <- vegdist(AvesInv2, method="bray", binary=FALSE, diag=TRUE, upper=TRUE, na.rm = FALSE)
-#con base de datos por abundancia
-Anosim_Diss_Inv2<-anosim(Diss_Inv2, grouping=Amb$AMBIENTE, permutations = 9999, distance = "bray", strata = NULL, parallel = getOption("mc.cores"))
-Summ_AnosimInv <-summary(Anosim_Diss_Inv2)
-
-#Primavera
-Diss_Prim2 <- vegdist(AvesPrim2, method="bray", binary=FALSE, diag=TRUE, upper=TRUE, na.rm = FALSE)
-#con base de datos por abundancia
-Anosim_Diss_Prim2<-anosim(Diss_Prim2, grouping=Amb$AMBIENTE, permutations = 9999, distance = "bray",strata = NULL, parallel = getOption("mc.cores")) 
-summary(Anosim_Diss_Prim2)
-
-```
 
 
-```{r, fig.width=9}
-Inv <- ggplot()+ geom_boxplot(aes(x=Anosim_Diss_Inv2$class.vec, y=Anosim_Diss_Inv2$dis.rank), notch = TRUE, varwidth=TRUE)+theme_classic()+
-  xlab("Variables")+ ylab("Dissimmilarity rank")+
-  ggtitle('A')
-
-Prim <- ggplot()+ geom_boxplot(aes(Anosim_Diss_Prim2$class.vec, y=Anosim_Diss_Prim2$dis.rank), notch = TRUE, varwidth=TRUE)+theme_classic()+
- xlab("Variables")+ ylab("Dissimmilarity rank")+
-   ggtitle('B')
-
-Inv / Prim
-```
 
 
-```{r}
-#Tabla Simper Inv
-
-Inv <-  read.csv("ResumenSimper_Inv2.csv")
-
-knitr::kable(
-  list(Inv[1:28, ], longtable = TRUE, booktabs = TRUE
-       ))
-
-```
-
-```{r}
-#Tabla Simper Inv
-Prim <-  read.csv("ResumenSimper_Prim2.csv")
-
-knitr::kable(
-  list(Prim[1:30, ], longtable = TRUE, booktabs = TRUE
-       ))
-```
-
-```{r}
-# set pander table-layout options
-library(pander)
-Prim <-  read.csv("ResumenSimper_Prim2.csv")
-Prim<- as.data.frame(Prim)
-panderOptions('table.alignment.default', function(Prim)
-    ifelse(sapply(Prim, is.numeric), 'right', 'left'))
-panderOptions('table.split.table', Inf)
-panderOptions('big.mark', ",")
-panderOptions('keep.trailing.zeros', TRUE)
-
-pander(Prim)
-
-```
 
 
-```{r, results='hide'}
-##### ENVFIT: Fits an Environmental Vector or Factor onto an Ordination
-###################################################
-TidyEnvFit <- function(ENVFit, alpha = 0.05){
-  DF <- ENVFit$vectors$arrows %>% as.data.frame()
-  DF$Factor <- rownames(DF)
-  DF$Pval <-ENVFit$vectors$pvals
-  DF <- DF %>% dplyr::filter(Pval < alpha)
-  return(DF = DF)
-}
-###################################################
-EnvfitInv2 <- envfit(Inv_nmds2_bray~  `Vegetation cover`+ `Distance to river`+Altitude+ `Native forest`+ Crops+ Gravel + Ocean +Grassland+ Shrublands+`Paved surface` + `Sand`+ `Tree plantation` , data=Amb, perm=9999)
-Tidy_EnvfitInv2 <- TidyEnvFit(EnvfitInv2)
-
-EnvfitPrim2 <- envfit(Prim_nmds2_bray~  `Vegetation cover`+ `Distance to river`+Altitude+ `Native forest`+ Crops+ Gravel + Ocean +Grassland+ Shrublands+`Paved surface` + `Sand`+ `Tree plantation`, data=Amb, perm=9999)
-Tidy_EnvfitPrim2 <- TidyEnvFit(EnvfitPrim2)
-```
-
-
-```{r,  fig.width=9, fig.height=4}
-Inv <- ggplot(Tidy_Inv_nmds2_bray)+
-  geom_segment(data=Tidy_EnvfitInv2, x = 0, y = 0, aes(xend =NMDS1 , yend = NMDS2), arrow = arrow(length = unit(0.2, "cm")))+
-  geom_point(aes(x=MDS1, y=MDS2, color=AMBIENTE))+
-  geom_text_repel(data=Tidy_EnvfitInv2, aes(x=NMDS1, y=NMDS2, label=Factor), seed = 10)+
-  
-  theme_classic()+ scale_color_manual(name="Coastal habitats", labels=c("Urbanized beach", "Natural beach", "Modified rocky shore", "Natural rocky shore","Urban centre", "Green area"),values = c('#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33'))+
-  ggtitle('A')
-
-Prim <- ggplot(Tidy_Prim_nmds2_bray)+
-  geom_segment(data=Tidy_EnvfitPrim2, x = 0, y = 0, aes(xend =NMDS1 , yend = NMDS2), arrow = arrow(length = unit(0.2, "cm")))+
-  geom_point(aes(x=MDS1, y=MDS2, color=AMBIENTE))+
-  geom_text_repel(data=Tidy_EnvfitPrim2, aes(x=NMDS1, y=NMDS2, label=Factor), seed = 10)+
-    theme_classic()+ scale_color_manual(name="Coastal habitats", labels=c("Urbanized beach", "Natural beach", "Modified rocky shore", "Natural rocky shore","Urban centre", "Green area"),values = c('#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33'))+
-  ggtitle('B')
-
-Inv+Prim + plot_layout(guides = 'collect')
-
-```
 
 
 
