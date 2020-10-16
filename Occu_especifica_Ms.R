@@ -160,7 +160,7 @@ Spp <- data_reg %>% dplyr::select(starts_with(Simper)) %>%
   colnames() %>% str_remove_all("1")%>% str_remove_all("2") %>% str_remove_all("3") %>% unique()
 
 OccuInv <- batchoccu2(pres = data_reg, sitecov = data_ocu, obscov = data_det, spp=8,  
-                       form= "~ Temperatura +Humedad+ DirViento +RapViento+ Agua ~ CobVeg + AMBIENTE+ Distancia_rio+ Altura + Buffer_2200_Bosque_Nativo+ Buffer_2200_Cultivos + Buffer_2200_Grava+ Buffer_2200_Oceano + Buffer_2200_Pastizales + Buffer_2200_Matorrales + Buffer_2200_Sup_impermeables+ Buffer_2200_Suelo_arenoso +  Buffer_2200_Plantación_de_árboles", 
+                       form= "~ Temperatura +Humedad+ DirViento +RapViento+ Agua ~ CobVeg + Distancia_rio+ Altura + Buffer_2200_Bosque_Nativo+ Buffer_2200_Cultivos + Buffer_2200_Grava+ Buffer_2200_Oceano + Buffer_2200_Pastizales + Buffer_2200_Matorrales + Buffer_2200_Sup_impermeables+ Buffer_2200_Suelo_arenoso +  Buffer_2200_Plantación_de_árboles", 
                        dredge=TRUE, SppNames = Spp)
 
 ##############
@@ -336,7 +336,7 @@ Spp <- data_reg %>% dplyr::select(starts_with(Simper)) %>%
   colnames() %>% str_remove_all("1")%>% str_remove_all("2") %>% str_remove_all("3") %>% unique()
 
 OccuPrim <- batchoccu2(pres = data_reg, sitecov = data_ocu, obscov = data_det, spp=6,  
-                      form= "~ Temperatura +Humedad+ DirViento +RapViento+ Agua ~ CobVeg + AMBIENTE+ Distancia_rio+ Altura + Buffer_2200_Bosque_Nativo+ Buffer_2200_Cultivos + Buffer_2200_Grava+ Buffer_2200_Oceano + Buffer_2200_Pastizales + Buffer_2200_Matorrales + Buffer_2200_Sup_impermeables+ Buffer_2200_Suelo_arenoso +  Buffer_2200_Plantación_de_árboles", 
+                      form= "~ Temperatura +Humedad+ DirViento +RapViento+ Agua ~ CobVeg + Distancia_rio+ Altura + Buffer_2200_Bosque_Nativo+ Buffer_2200_Cultivos + Buffer_2200_Grava+ Buffer_2200_Oceano + Buffer_2200_Pastizales + Buffer_2200_Matorrales + Buffer_2200_Sup_impermeables+ Buffer_2200_Suelo_arenoso +  Buffer_2200_Plantación_de_árboles", 
                       dredge=TRUE, SppNames = Spp)
 
   ##############
