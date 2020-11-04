@@ -1,5 +1,5 @@
 ---
-title: "Ms Habitat aves. Species composition in coastal urban habitats"
+title: "Bird species composition in coastal urban habitats"
 output:
   bookdown::word_document2:
     reference_docx: "Para_Template.docx"
@@ -18,8 +18,10 @@ library(ggrepel)
 library(patchwork)
 library(kableExtra)
 library(knitr)
+library(rasterVis)
 
 ```
+
 
 
 ```{r}
@@ -60,23 +62,23 @@ Urbanization have been growing rapidly ...
 and is one of the mayor causes of species loss [@czech2000economic].
 
 [Provide general background information]
-Urban modificacion over natural environments has promoted loss of native species and their replacement by non-native species [@mckinney2006urbanization]. This is called biotic homogenization, where few species are adapted to urban and suburban conditions [@mckinney1999biotic]. 
-Biotic homogenization affects variety of ecosystems [grassland: @zeeman2017biotic], climates [temperate: @zeeman2017biotic],taxonomic groups [mainly in birds and plants, but also insects: @knop2016biotic] 
+Urban modificacion over natural environments has promoted loss of native species and their replacement by non-native species [@mckinney2006urbanization]. This scenario shows how few species can adapt better to urban and suburban conditions [@mckinney1999biotic], however it affects to ecosystems [grassland: @zeeman2017biotic], biomes [temperate: @zeeman2017biotic], and taxonomic groups [mainly in birds and plants, but also insects: @knop2016biotic].
 
 [Stablish the importance of this research topic, more specific/detailed way]
-This urban homogenization has effects: 
-a. more homogenized biosfera with lower diversity, where there will be many species losers and few winners [@mckinney1999biotic].
+This urban homogenization is projected to lower diversity, where there will be many species losers and few winners [@mckinney1999biotic].
 which has been studied mostly in birds and plants
 
 [Provide general background information, more specific/detailed way]
-In birds, urban homogenization in more specific: has a nonrandom filtering effect on birds, they show guildsresponse to urbanization [@silva2016nonrandom].
+Bird species comunnities in cities are more similar to urban communities nearby than to communities in sorroundinng natural environments. However, local features seems to be mportant in those assembles.
 Composición de aves urbanas depende más de la composición de aves urbanas aledañas que de los ambientes naturales que los rodean
 Rural birds
 According to @clergeau2001urban, urban  bird  communities  are  independent of the bird diversity of adjacent landscapes, and that local features are more important than surrounding landscapes. 
 
+
 2. Previous an current research and contributions
 
 [Describe general problem area or the current research focus of the field]
+By 2019
 half of population live in coastal cities, however urbanization has been msotly focus in terrestiral aspects.
 
 [Provide transition between the general problem area and the literature review]
@@ -127,15 +129,15 @@ Prim_nmds2_bray <-suppressMessages(metaMDS(AvesPrim2,autotransform = FALSE, dist
 1. Overview-purpose of the work-give source of material/equipment used
 
 [General overview of this section]
-In this research we conducted bird surveys in six coastal urban environments in the Gran Valparaíso, a Metropolitan area in Central Chile. We estimated species composition based on bird presence analised using occupancy models.
+In this research we conducted bird surveys in six coastal urban environments in the Gran Valparaíso, estimated species composition based on bird presence analised using occupancy models and analized bird assembles in those environment. 
 
 [Provide background information and justification]
-Coastal central chile present a rapid urbanization growth since the last... years, endengering natural habitats. 
-The area is near by the chilean capital which has close to 6 million inhabitants.
+The Gran Valparaíso, a Metropolitan coastal area in Central Chile, is formed by the conection of three cities: Valparaíso, a mayor port in the country, Viña del Mar, a big beach city since xxx and today one of the xx cities in ,  and Concón, a small area that growth from a rural beach to a one of place of mayor urban growth in the las txx years. The area is near by the chilean capital, Santiago, which has close to 6 million inhabitants.
 This area is inmerse ina a natural-rural matrix composed ... in a grographic Coastal mountain chain-- papers bahi concon y viña
 
 [Provide an overview of the procedure/method itself]
-species composition were analised with the package vegan for RStudio using corrected abundance of species. Bird abundance was corrected by detection capacity using occupancy models. 
+To estimate species composition and assembles, occupancy models were developed with package DiversityOcuppancy [@divoccu] and 
+species composition were analised with the package vegan [@Vegan] for RStudio using corrected abundance of species. Bird abundance was corrected by detection capacity using occupancy models. 
   
 2. Details about materials and methods- justify choices
 
@@ -186,11 +188,6 @@ Coastal cities in central Chile probed to allow habitats were marine and terrest
 2. General overview of results
 The six coastal urban habitats shows distingible birs species assembles where only a few species contribute to the difference between them. For these habitats, bird assemblages differ between winter and spring seasons.
 
-```{r tabla3}
-#Modelo 1= Abundancia ~ Estacion *Especie + AMBIENTE+ (1|Sitio), family = poisson, data =Aves ) #AIC 17716.1
-#Modelo 2= Abundancia ~ Especie + AMBIENTE+ (1|Sitio), family = poisson, data =Aves )           #AIC 18241.0
-
-```
 
 3. Invitations to view results
 
@@ -215,7 +212,7 @@ Prim <-ggplot(Tidy_Prim_nmds2_bray)+geom_point(aes(x=MDS1, y=MDS2, color=AMBIENT
 Inv+Prim + plot_layout(guides = 'collect')
 ```
 
-Dissimilary rank shows with an 95% confidence interval that dissimilarities withing habitat are lower than between habitats. There is one exception shown by natural beach habitat during winter, here variability of species in the habitat is as high as we consider all habitats together (Fig. \@ref(fig:ANOSIM))
+Dissimilary rank shows with an 95% confidence interval that dissimilarities withing habitat are lower than between habitats, this demonstrate that group of species for each habitat are different. There is one exception shown by natural beach habitat during winter, here variability of species in the habitat is as high as we consider all habitats together (Fig. \@ref(fig:ANOSIM))
 
 ```{r, results='hide'}
 ## test: ANOSIM
@@ -250,46 +247,54 @@ Inv / Prim
 
 4. Specific/key results in details
 
-There is just few species that contribute to differences between habitats. During winter: *Pelecanus thagus*, *Larus dominicanus*, *Coragyps atratus*, *Larosterna inca*, *Leucophaeus modestus*, *Columba livia*, *Turdus falcklandii*, and *Sephanoides sephaniodes*. And spring: *Leucophaeus pipixcan*, *Larus dominicanus*, *Columba livia*, *Larosterna inca*, *Phalacrocorax bougainvillii*, and *Pelecanus thagus*, according to simper analysis (Fig. \@ref(fig:SIMPER1), Fig. \@ref(fig:SIMPER2)).
+There is just few species that contribute to differences between habitats. During winter: *Pelecanus thagus*, *Larus dominicanus*, *Coragyps atratus*, *Larosterna inca*, *Leucophaeus modestus*, *Columba livia*, *Turdus falcklandii*, and *Sephanoides sephaniodes*. And spring: *Leucophaeus pipixcan*, *Larus dominicanus*, *Columba livia*, *Larosterna inca*, *Phalacrocorax bougainvillii*, and *Pelecanus thagus*, according to simper analysis (see Suplementary material for complete species list of SIMPER).
+
+```{r OccuInv}
+Pelecanus <-read_rds("PredInv_Pelecanus_thagus.rds")
+Larus <-read_rds("PredInv_Larus_dominicanus.rds") 
+Coragyps <-read_rds("PredInv_Coragyps_atratus.rds")
+Larosterna <-read_rds("PredInv_Larosterna_inca.rds")
+Leucophaeus <-read_rds("PredInv_Leucophaeus_modestus.rds")
+Columba <-read_rds("PredInv_Columba_livia.rds")
+Turdus <-read_rds("PredInv_Turdus_falcklandii.rds")
+Sephanoides <-read_rds("PredInv_Sephanoides_sephaniodes.rds")
+
+Especies <- stack(Pelecanus,Larus,Coragyps, Larosterna, Leucophaeus,  Columba, Turdus, Sephanoides)
+names(Especies) <- c("Pelecanus thagus", "Larus dominicanus", "Coragyps atratus", "Larosterna inca", "Leucophaeus modestus", "Columba livia", "Turdus falcklandii", "Sephanoides sephaniodes")
+
+Mytheme <- YlOrRdTheme()
+Mytheme$panel.background$col <- "black"
+
+levelplot(Especies, par.settings=Mytheme)
 
 
-```{r SIMPER1, fig.cap="Simper analysis for winter"}
-# set pander table-layout options
-library(pander)
-Inv <-  read.csv("ResumenSimper_Inv2.csv")
-Inv<- as.data.frame(Inv)
-panderOptions('table.alignment.default', function(Inv)
-    ifelse(sapply(Inv, is.numeric), 'right', 'left'))
-panderOptions('table.split.table', Inf)
-panderOptions('big.mark', ",")
-panderOptions('keep.trailing.zeros', TRUE)
-
-pander(Inv)
-#Inv$Especie
 ```
 
 
+```{r OccuPrim}
+Leucophaeus <-read_rds("PredPrim_Leucophaeus_pipixcan.rds")
+Larus <-read_rds("PredPrim_Larus_dominicanus.rds")
+Columba <-read_rds("PredPrim_Columba_livia.rds")
+Larosterna <-read_rds("PredPrim_Larosterna_inca.rds")
+Phalacrocorax <-read_rds("PredPrim_Phalacrocorax_bougainvillii.rds")
+Pelecanus <-read_rds("PredPrim_Pelecanus_thagus.rds")
 
-```{r SIMPER2, fig.cap="Simper analysis for spring"}
-# set pander table-layout options
-library(pander)
-Prim <-  read.csv("ResumenSimper_Prim2.csv")
-Prim<- as.data.frame(Prim)
-panderOptions('table.alignment.default', function(Prim)
-    ifelse(sapply(Prim, is.numeric), 'right', 'left'))
-panderOptions('table.split.table', Inf)
-panderOptions('big.mark', ",")
-panderOptions('keep.trailing.zeros', TRUE)
+Especies <- stack(Leucophaeus, Larus, Columba, Larosterna, Phalacrocorax,  Pelecanus)
+names(Especies) <- c("Leucophaeus pipixcan", "Larus dominicanus", "Columba livia", "Larosterna inca", "Phalacrocorax bougainvillii", "Pelecanus thagus")
 
-pander(Prim)
+Mytheme <- YlOrRdTheme()
+Mytheme$panel.background$col <- "black"
+
+levelplot(Especies, par.settings=Mytheme)
 
 ```
+
+
 
 During winter, community assemblages were explain by three environmental variables: coastal urban habitats, crops and tree plantations. 
 In spring, variables were coastal urban habitats and native forest.
 
-species for each habitat
-Occupancy model map show
+
 ```{r}
 #ORDISTEP
 
@@ -301,6 +306,15 @@ Occupancy model map show
 
 ```
 
+species for each habitat
+Occupancy model map show
+
+
+```{r}
+#Resultados occupancia para especies dde Simper
+ModelosOccuPrim <- read_rds("ModelosOccuPrim_Ms.rds")
+#Para generar las ecuaciones **Resultado_OccuPrim_Ms.rds** y **Resultado_OccuInv_Ms.rds**
+```
 
 
 

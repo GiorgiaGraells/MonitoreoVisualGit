@@ -188,4 +188,16 @@ formato de sitios por dia para hacer el calculo de la correccion. Se
 modifica tambien la importacion de este nuevo dataframe para hacer los
 analisis de la comunidad
 
-Escritura de manuscrito en ingles **Ms\_HabitatAves.Rmd**
+# Escritura manuscrito, arreglo de figuras y analisis especificos
+
+Escritura de manuscrito en ingles **Ms\_HabitatAves.Rmd** El manuscrito
+cuenta con imput desde: - Algunos analisis ubicados en
+**Analisis\_HabitatAves.R**. - Ocupancia de las especies obtenidas de
+simper para invierno y primavera en **Occu\_especifica\_Ms.R**,
+resultados en **Resultado\_OccuPrim\_Ms.rds** y
+**Resultado\_OccuInv\_Ms.rds**. - En la segunda parte del script
+**Occu\_especifica\_Ms.R** se encuentra las predicciones realizadas para
+las especies seleccionadas antariormente, utilizando la capa
+**Capas\_Proporcion\_small.rds** creada desde los buffers y la altura.
+Cada especie (8 de invierno y6 de primavera) tienen sus resultados
+exportados por separado **PredEstacio\_Especie.rds**

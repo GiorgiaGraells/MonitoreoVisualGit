@@ -132,5 +132,11 @@ Nuevo archivo **CorrecDetec_Abundancias.R** elementos exportados: AbundanciaPrim
 En el archivo Prep datos_Occu_punto.R se exportaron las abundancias en formato de sitios por dia para hacer el calculo de la correccion.
 Se modifica tambien la importacion de este nuevo dataframe para hacer los analisis de la comunidad
 
+# Escritura manuscrito, arreglo de figuras y analisis especificos
+
 Escritura de manuscrito en ingles **Ms_HabitatAves.Rmd**
-Analisis para manuscrito en **Analisis_HabitatAves.R**. Para manuscritos see realiza ocupancia de ls especies obtenidas de simper para invierno y primavera en **Occu_especifica_Ms.R**, resultados en **Resultado_OccuPrim_Ms.rds** y **Resultado_OccuInv_Ms.rds**
+El manuscrito cuenta con imput desde: 
+- Algunos analisis ubicados en **Analisis_HabitatAves.R**. 
+- Ocupancia de las especies obtenidas de simper para invierno y primavera en **Occu_especifica_Ms.R**, resultados en **Resultado_OccuPrim_Ms.rds** y **Resultado_OccuInv_Ms.rds**.
+- En la segunda parte del script **Occu_especifica_Ms.R** se encuentra las predicciones realizadas para las especies seleccionadas antariormente, utilizando la capa **Capas_Proporcion_small.rds** creada desde los buffers y la altura. Cada especie (8 de invierno y6 de primavera) tienen sus resultados exportados por separado **PredEstacio_Especie.rds**
+
