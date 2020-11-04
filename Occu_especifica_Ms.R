@@ -1,4 +1,7 @@
-#Correccion abundancias aves por modelos de deteccion
+#Occupancia Especifica para especies 
+
+#prediccion a partir de varibales ambientales
+#se sacó del modelo la cob vegetal porque no pudoo ser 
 
 library(tidyverse)
 library(stringr)
@@ -160,9 +163,9 @@ Spp <- data_reg %>% dplyr::select(starts_with(Simper)) %>%
   colnames() %>% str_remove_all("1")%>% str_remove_all("2") %>% str_remove_all("3") %>% unique()
 
 OccuInv <- batchoccu2(pres = data_reg, sitecov = data_ocu, obscov = data_det, spp=8,  
-                       form= "~ Temperatura +Humedad+ DirViento +RapViento+ Agua ~ CobVeg + Distancia_rio+ Altura + Buffer_2200_Bosque_Nativo+ Buffer_2200_Cultivos + Buffer_2200_Grava+ Buffer_2200_Oceano + Buffer_2200_Pastizales + Buffer_2200_Matorrales + Buffer_2200_Sup_impermeables+ Buffer_2200_Suelo_arenoso +  Buffer_2200_Plantación_de_árboles", 
+                       form= "~ Temperatura +Humedad+ DirViento +RapViento+ Agua ~  Distancia_rio+ Altura + Buffer_2200_Bosque_Nativo+ Buffer_2200_Cultivos + Buffer_2200_Grava+ Buffer_2200_Oceano + Buffer_2200_Pastizales + Buffer_2200_Matorrales + Buffer_2200_Sup_impermeables+ Buffer_2200_Suelo_arenoso +  Buffer_2200_Plantación_de_árboles", 
                        dredge=TRUE, SppNames = Spp)
-
+saveRDS(OccuInv, "ModelosOccuInv_Ms.rds")
 ##############
 SppNames = OccuInv$models %>% names()
 Mods <- OccuInv$models
@@ -338,7 +341,7 @@ Spp <- data_reg %>% dplyr::select(starts_with(Simper)) %>%
 OccuPrim <- batchoccu2(pres = data_reg, sitecov = data_ocu, obscov = data_det, spp=6,  
                       form= "~ Temperatura +Humedad+ DirViento +RapViento+ Agua ~ CobVeg + Distancia_rio+ Altura + Buffer_2200_Bosque_Nativo+ Buffer_2200_Cultivos + Buffer_2200_Grava+ Buffer_2200_Oceano + Buffer_2200_Pastizales + Buffer_2200_Matorrales + Buffer_2200_Sup_impermeables+ Buffer_2200_Suelo_arenoso +  Buffer_2200_Plantación_de_árboles", 
                       dredge=TRUE, SppNames = Spp)
-
+saveRDS(OccuPrim, "ModelosOccuPrim_Ms.rds")
   ##############
 SppNames = OccuPrim$models %>% names()
 Mods <- OccuPrim$models
@@ -358,3 +361,71 @@ saveRDS(Resultado_OccuPrim_Ms, "Resultado_OccuPrim_Ms.rds")
 
 
 ##########################
+# PREDICCIONES
+# Con capas ambientales de buffers, más altura y distancia a rios, que fueron capas seleccionadas para la ocupancia.
+
+library(raster)
+
+CapaAmb <- read_rds("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/Capas respaldo/Capas_Proporcion_small.rds")
+#plot(CapaAmb)
+
+#cambio de crs de Alt al mismo de CapaAmb
+Alt <- read_rds("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/MonitoreoVisualGit/Analisis_Occu_punto/Alt.rds")
+Alt <- raster::projectRaster(Alt, CapaAmb)
+Alt <- Alt %>% crop(CapaAmb[[1]]) %>%  mask(CapaAmb[[1]])
+
+Variables <- CapaAmb
+
+Variables <- addLayer(Variables, Alt)
+names(Variables) <- c("Buffer_2200_Oceano", "Buffer_2200_Cultivos", "Buffer_2200_Bosque_Nativo", "Buffer_2200_Plantación_de_árboles", 
+                      "Buffer_2200_Pastizales", "Buffer_2200_Matorrales", "Buffer_2200_Humedales", "Buffer_2200_Lagos", "Buffer_2200_Reservorios", 
+                      "Buffer_2200_Ríos", "Buffer_2200_Sup_impermeables", "Buffer_2200_Suelo_arenoso", "Buffer_2200_Rocas", 
+                      "Buffer_2200_Grava", "Buffer_2200_Nieve", "Buffer_2200_Nubes", "Buffer_2200_Salar", "Buffer_2200_Hielo", "Altura")
+
+##### Predicciones Invierno a partir de especies seleccionadas por simper
+PredInv_Pelecanus_thagus <- predict(Variables, OccuInv$models$Pelecanus_thagus, type = "state")
+saveRDS(PredInv_Pelecanus_thagus, "PredInv_Pelecanus_thagus.rds")
+
+PredInv_Larus_dominicanus <- predict(Variables, OccuInv$models$Larus_dominicanus, type = "state")
+saveRDS(PredInv_Larus_dominicanus, "PredInv_Larus_dominicanus.rds")
+
+PredInv_Coragyps_atratus <- predict(Variables, OccuInv$models$Coragyps_atratus, type = "state")
+saveRDS(PredInv_Coragyps_atratus, "PredInv_Coragyps_atratus.rds")
+
+PredInv_Larosterna_inca <- predict(Variables, OccuInv$models$Larosterna_inca, type = "state")
+saveRDS(PredInv_Larosterna_inca, "PredInv_Larosterna_inca.rds")
+
+PredInv_Leucophaeus_modestus <- predict(Variables, OccuInv$models$Leucophaeus_modestus, type = "state")
+saveRDS(PredInv_Leucophaeus_modestus, "PredInv_Leucophaeus_modestus.rds")
+
+PredInv_Columba_livia <- predict(Variables, OccuInv$models$Columba_livia, type = "state")
+saveRDS(PredInv_Columba_livia, "PredInv_Columba_livia.rds")
+
+PredInv_Turdus_falcklandii <- predict(Variables, OccuInv$models$Turdus_falcklandii, type = "state") 
+saveRDS(PredInv_Turdus_falcklandii, "PredInv_Turdus_falcklandii.rds")
+
+PredInv_Sephanoides_sephaniodes <- predict(Variables, OccuInv$models$Sephanoides_sephaniodes, type = "state")
+saveRDS(PredInv_Sephanoides_sephaniodes, "PredInv_Sephanoides_sephaniodes.rds")
+
+
+##### Predicciones Primavera a partir de especies seleccionadas por simper
+
+PredPrim_Leucophaeus_pipixcan <- predict(Variables, OccuPrim$models$Leucophaeus_pipixcan, type = "state")
+saveRDS(PredPrim_Leucophaeus_pipixcan, "PredPrim_Leucophaeus_pipixcan.rds")
+
+PredPrim_Larus_dominicanus <- predict(Variables, OccuPrim$models$Larus_dominicanus, type = "state")
+saveRDS(PredPrim_Larus_dominicanus, "PredPrim_Larus_dominicanus.rds")
+
+PredPrim_Columba_livia <- predict(Variables, OccuPrim$models$Columba_livia, type = "state")
+saveRDS(PredPrim_Columba_livia, "PredPrim_Columba_livia.rds")
+
+PredPrim_Larosterna_inca <- predict(Variables, OccuPrim$models$Larosterna_inca, type = "state")
+saveRDS(PredPrim_Larosterna_inca, "PredPrim_Larosterna_inca.rds")
+
+PredPrim_Phalacrocorax_bougainvillii <- predict(Variables, OccuPrim$models$Phalacrocorax_bougainvillii, type = "state")
+saveRDS(PredPrim_Phalacrocorax_bougainvillii, "PredPrim_Phalacrocorax_bougainvillii.rds")
+
+PredPrim_Pelecanus_thagus <- predict(Variables, OccuPrim$models$Pelecanus_thagus, type = "state")
+saveRDS(PredPrim_Pelecanus_thagus, "PredPrim_Pelecanus_thagus.rds")
+
+
