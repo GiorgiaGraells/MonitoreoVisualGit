@@ -18,7 +18,6 @@ Utilización del paquete vegan, archivo **AnalisisVegan.R**
 
 ### Ocupancia monitoreo visual
 
-
 #### Preparación de capas de trabajo
 
 Cada capa de trabajo para ocupancia se realizó de forma independiente y fueron determinadas en base a las preguntas de investigación. El archivo Prep_capas muestra este trabajo tomando como referencia la capa "altura" que determina la resolucion del raster.
@@ -55,10 +54,9 @@ El análisis de ocupancia se realizó para los datos de invierno y primavera por
 
 En esos mismo archivos se determinó la ocupancia y deteccion de las 6 especies usadas en las encuestas para cada ambiente
 
-
 Existe un archivo llamado Prueba_funcion_nueva.R que armó Derek para ocupancia de varias especies, en donde se continua con la siguiente especies aun cuando la anterior no haya convergido en un modelo.
 
-#### Junio
+### Junio
 Se realiza ocupancia con función nueva utilizando nuevas variables ambientales generadas en **MapaYuryi.R** que corresponde a capas de cobertura vegetal en buffers (distancia desde los puntos de muestreo), archivo de salida que incluye variables ambientales y buffers por distancia: **Occdata_ocu.rds** y un leaflet al final del código para ver las capas por cada sitio en el mapa.
 La ocupancia se realiza en el archivo **Occu37sp.R** utilizando las 37 especies primero para la temporada de invierno. Se genera un data frame con el resumen de los modelos, el cual se exporta como csv **Resumen_ocuInv_buffer.csv** ubicado en la carpeta de ocupancia.
 Se determinó a mano los modelos con valores significativos y se incluyó el valor de SE en **Resumen_ocuInv_buffer.csv** mediante excel.
@@ -71,15 +69,13 @@ Para poder comparar el efecto de los estimadores por igual se estandarizaron las
 
 existe el archivo **Prueba_Funcion_Nueva.R** que contiene otros analisis de ocupancia realizados
 
-
-
 Se genera un nuevo archivo llamado **PredOccuAmb_37sp.R** donde se rescatan los datos de predicciones de la ocupancia realizada y se arman graficos de todas las especies para mostrar el rango de ocupancia dde las especies para cada ambiente para primavera e invierno.
 Se modificó la funcion de ocupancia, ahora llamada DiversityOccupancy::batchoccu3, en donde se fuerza a generar un modelo con el AMBIENTE para cada especie. Se ve la oacupancia por sitio
 Ocupancia con ambiente como variable forzada. Se corrio ocupancia con forzamiento de ambiente y todas las otras variables definidas en el ppt seleccionadas con anteriorirdad (incluidos los buffers de 2200 (prim e inv). Se obtienen dos resultados: para cada ambiente (considerando el promedio de cada variable para cada ambiente) y para cada sitio considerando el valor de cada variable, se saca tb el mejor modelo y queda en una columna. Se guardan los resultados como **ResultadosInv.rds**, **ResultadosPrim.rds**, **PorSitioInv.rds** y **PorSitioPrim.rds** y **PredOccuSitio.rds**
 
 Se corre nmsd en vegan y se hacen varios graficos bacanes
 
-#### Ordenando los resultados y buscando una explicacion: 1. Marco conceptual rasgos funcionales
+### Ordenando los resultados y buscando una explicacion: 1. Marco conceptual rasgos funcionales
 
 Se crearon distintos archivos: 
 **Funcionales aves.R** 
@@ -89,8 +85,8 @@ Se toman los nombres de todas las especies desde el archivo  Bird_guilts.xlsx, s
 
 Archivo **Ensamble_func.R** con graficos y analisis exploratorios de ensamble de aves y su posible explicacion con rasgos funcionales. Resumen de modelos e importancia de variables.- se obtiene el df Resumen_Modelos (para inv y prim) 
 
-
---- analisis exploraorios con rasgos funcionales, pero se presentan errores desde informaciond e ocupancia por nombre comun de especies (ademas dde elevados valores de ocupancia para mas de 42 sp)
+### Extras
+Analisis exploraorios con rasgos funcionales, pero se presentan errores desde informaciond e ocupancia por nombre comun de especies (ademas dde elevados valores de ocupancia para mas de 42 sp)
 14 agoosto: Modificacion de codigo para trabajar ocupancias con nombre de especies en vez de nombre comun de aves.
 Modificacion enarcihvo de preparacion de cpas ocupancia y cambio de elementos Occdata_regPRIM.rds y Occdata_regInv.rds guardados en MonitoreoVisualGit
 
@@ -98,14 +94,15 @@ Se cambio el nombre de las especies por los nombres cientificos y se corrio ocup
 Tmabien se vio analisis NMDS y ensambles con nuevos y mejores colores
 
 
-### Exploración de datos en base a reunion 18 agosto
+### Exploración de datos en base a reunion 18 agosto 2020
 
 Se acuerda generar una grafico de riqueza de especies por ambiente, separado en marino-terrestre
 Para Presencia especies, abundancia y probabilidad de ocupancia realizar:
 - NMDS + ANOSIM
-- SIMPER
-- BIOENV
 
+- SIMPER
+
+- BIOENV
 
 Se borró script de exploración de datos en donde se habia comenzado con la exploración, pero fue cocntinuada en el script AnalisisVegan
 Se geneó un nuevo script llamado **Exploracion_enfocada.R**, en donde se resuelve lo conversado en reunion del 18 agosto con stefan. 
@@ -116,27 +113,23 @@ vegan para abundancia por especie invierno y primavera: NMDS, Anosim, Simper
 vegan para abundancia por especie invierno y primaveera: envfit
 
 analisis listos para abundancia, comp especies y ocupancia
-
 modificacion de parametros de distintas funciones para su correcto uso
-
-
 
 Creacion de archivo **Comportamineto_Aves.R** para resumen de actividades
 Creación de archivo **Graficos_Aves.R** para diferencias entre ambientes, considerando media de sitios y sd
 
-
-
-#Correccion de abundancia por deteccion
+### Correccion de abundancia por deteccion
 
 Nuevo archivo **CorrecDetec_Abundancias.R** elementos exportados: AbundanciaPrim_corregido.rds y AbundanciaInv_corregido.rds
 En el archivo Prep datos_Occu_punto.R se exportaron las abundancias en formato de sitios por dia para hacer el calculo de la correccion.
 Se modifica tambien la importacion de este nuevo dataframe para hacer los analisis de la comunidad
 
-# Escritura manuscrito, arreglo de figuras y analisis especificos
+
+## Escritura manuscrito, arreglo de figuras y analisis especificos
 
 Escritura de manuscrito en ingles **Ms_HabitatAves.Rmd**
 El manuscrito cuenta con imput desde: 
 - Algunos analisis ubicados en **Analisis_HabitatAves.R**. 
 - Ocupancia de las especies obtenidas de simper para invierno y primavera en **Occu_especifica_Ms.R**, resultados en **Resultado_OccuPrim_Ms.rds** y **Resultado_OccuInv_Ms.rds**.
-- En la segunda parte del script **Occu_especifica_Ms.R** se encuentra las predicciones realizadas para las especies seleccionadas antariormente, utilizando la capa **Capas_Proporcion_small.rds** creada desde los buffers y la altura. Cada especie (8 de invierno y6 de primavera) tienen sus resultados exportados por separado **PredEstacio_Especie.rds**
-
+- En la segunda parte del script **Occu_especifica_Ms.R** se encuentra las predicciones realizadas para las especies seleccionadas antariormente, utilizando la capa **Capas_Proporcion_small.rds** creada desde los buffers y la altura. Cada especie (8 de invierno y6 de primavera) tienen sus resultados exportados por separado **PredEstacionX_EspecieX.rds**
+- graficos de comportamiento desde archivo **Comportamineto_Aves.R**, con abundancia corregida de invierno de **AbundInv_Corregido.rds** y **AbundPrim_Corregido.rds**

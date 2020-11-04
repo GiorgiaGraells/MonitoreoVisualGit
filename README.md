@@ -69,7 +69,7 @@ Existe un archivo llamado Prueba\_funcion\_nueva.R que armó Derek para
 ocupancia de varias especies, en donde se continua con la siguiente
 especies aun cuando la anterior no haya convergido en un modelo.
 
-#### Junio
+### Junio
 
 Se realiza ocupancia con función nueva utilizando nuevas variables
 ambientales generadas en **MapaYuryi.R** que corresponde a capas de
@@ -127,7 +127,7 @@ guardan los resultados como **ResultadosInv.rds**,
 Se corre nmsd en vegan y se hacen varios graficos
 bacanes
 
-#### Ordenando los resultados y buscando una explicacion: 1. Marco conceptual rasgos funcionales
+### Ordenando los resultados y buscando una explicacion: 1. Marco conceptual rasgos funcionales
 
 Se crearon distintos archivos: **Funcionales aves.R** Se toman los
 nombres de todas las especies desde el archivo Bird\_guilts.xlsx, se
@@ -143,9 +143,11 @@ ensamble de aves y su posible explicacion con rasgos funcionales.
 Resumen de modelos e importancia de variables.- se obtiene el df
 Resumen\_Modelos (para inv y prim)
 
-— analisis exploraorios con rasgos funcionales, pero se presentan
-errores desde informaciond e ocupancia por nombre comun de especies
-(ademas dde elevados valores de ocupancia para mas de 42 sp) 14 agoosto:
+### Extras
+
+Analisis exploraorios con rasgos funcionales, pero se presentan errores
+desde informaciond e ocupancia por nombre comun de especies (ademas dde
+elevados valores de ocupancia para mas de 42 sp) 14 agoosto:
 Modificacion de codigo para trabajar ocupancias con nombre de especies
 en vez de nombre comun de aves. Modificacion enarcihvo de preparacion de
 cpas ocupancia y cambio de elementos Occdata\_regPRIM.rds y
@@ -155,7 +157,7 @@ Se cambio el nombre de las especies por los nombres cientificos y se
 corrio ocupancia para todas las sp nuevamente. Graficos Tmabien se vio
 analisis NMDS y ensambles con nuevos y mejores colores
 
-### Exploración de datos en base a reunion 18 agosto
+### Exploración de datos en base a reunion 18 agosto 2020
 
 Se acuerda generar una grafico de riqueza de especies por ambiente,
 separado en marino-terrestre Para Presencia especies, abundancia y
@@ -171,15 +173,14 @@ grafico de riqueza por ambiente, estacional
 vegan para abundancia por especie invierno y primavera: NMDS, Anosim,
 Simper vegan para abundancia por especie invierno y primaveera: envfit
 
-analisis listos para abundancia, comp especies y ocupancia
-
-modificacion de parametros de distintas funciones para su correcto uso
+analisis listos para abundancia, comp especies y ocupancia modificacion
+de parametros de distintas funciones para su correcto uso
 
 Creacion de archivo **Comportamineto\_Aves.R** para resumen de
 actividades Creación de archivo **Graficos\_Aves.R** para diferencias
 entre ambientes, considerando media de sitios y sd
 
-\#Correccion de abundancia por deteccion
+### Correccion de abundancia por deteccion
 
 Nuevo archivo **CorrecDetec\_Abundancias.R** elementos exportados:
 AbundanciaPrim\_corregido.rds y AbundanciaInv\_corregido.rds En el
@@ -188,7 +189,7 @@ formato de sitios por dia para hacer el calculo de la correccion. Se
 modifica tambien la importacion de este nuevo dataframe para hacer los
 analisis de la comunidad
 
-# Escritura manuscrito, arreglo de figuras y analisis especificos
+## Escritura manuscrito, arreglo de figuras y analisis especificos
 
 Escritura de manuscrito en ingles **Ms\_HabitatAves.Rmd** El manuscrito
 cuenta con imput desde: - Algunos analisis ubicados en
@@ -200,4 +201,7 @@ resultados en **Resultado\_OccuPrim\_Ms.rds** y
 las especies seleccionadas antariormente, utilizando la capa
 **Capas\_Proporcion\_small.rds** creada desde los buffers y la altura.
 Cada especie (8 de invierno y6 de primavera) tienen sus resultados
-exportados por separado **PredEstacio\_Especie.rds**
+exportados por separado **PredEstacionX\_EspecieX.rds** - graficos de
+comportamiento desde archivo **Comportamineto\_Aves.R**, con abundancia
+corregida de invierno de **AbundInv\_Corregido.rds** y
+**AbundPrim\_Corregido.rds**
