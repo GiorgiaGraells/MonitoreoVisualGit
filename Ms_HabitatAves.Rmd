@@ -48,28 +48,35 @@ Amb <- Amb %>%
 
 rownames(Amb) <- Amb$Sitio
 
-Amb <- Amb %>% dplyr::select(-Sitio)
+Amb <- Amb %>% dplyr::select(-Sitio) %>%
+  mutate(AMBIENTE= str_replace(AMBIENTE, "URBANO", "Urban"),
+         AMBIENTE= str_replace(AMBIENTE, "VERDE", "Green area"),
+         AMBIENTE= str_replace(AMBIENTE, "ROCA INTERVENIDA", "Modified rocky shore"),
+         AMBIENTE= str_replace(AMBIENTE, "PLAYA INTERVENIDA", "Urbanized beach"),
+         AMBIENTE= str_replace(AMBIENTE, "ROCA NATURAL", "Natural rocky shore"),
+         AMBIENTE= str_replace(AMBIENTE,"PLAYA NATURAL", "Natural beach"))
 ```
 
 
 ### Introduction
 
-1. Establish importance of the fild- provide background, keywords- present the problem
+1. Establish importance of the field- provide background, keywords- present the problem
 
-[Stablish the importance of this research topic]
+[Establish the importance of this research topic]
 
-Urbanization have been growing rapidly ...
-and is one of the mayor causes of species loss [@czech2000economic].
+Urbanization has been growing rapidly. During 2018, more than half of world’s population  lived  in  urban  settlements.   
+Cities are growing in both size and number, by  2018  the  number  of  cities  with  at  least  1  million  inhabitants  had  grown  to 548 [@UN_WorldCities2018].
+and 
 
 [Provide general background information]
-Urban modificacion over natural environments has promoted loss of native species and their replacement by non-native species [@mckinney2006urbanization]. This scenario shows how few species can adapt better to urban and suburban conditions [@mckinney1999biotic], however it affects to ecosystems [grassland: @zeeman2017biotic], biomes [temperate: @zeeman2017biotic], and taxonomic groups [mainly in birds and plants, but also insects: @knop2016biotic].
+Urban modification over natural environments is one of the mayor causes of species loss [@czech2000economic]. Some of these loss of native species have promoted the replacement by non-native species [@mckinney2006urbanization]. This scenario shows how few species can adapt better to urban and suburban conditions [@mckinney1999biotic], however it affects to ecosystems [grassland: @zeeman2017biotic], biome [temperate: @zeeman2017biotic], and taxonomic groups [mainly in birds and plants, but also insects: @knop2016biotic].
 
-[Stablish the importance of this research topic, more specific/detailed way]
+[Establish the importance of this research topic, more specific/detailed way]
 This urban homogenization is projected to lower diversity, where there will be many species losers and few winners [@mckinney1999biotic].
 which has been studied mostly in birds and plants
 
 [Provide general background information, more specific/detailed way]
-Bird species comunnities in cities are more similar to urban communities nearby than to communities in sorroundinng natural environments. However, local features seems to be mportant in those assembles.
+Bird species communities in cities are more similar to urban communities nearby than to communities in surrounding natural environments. However, local features seems to be important in those assembles.
 Composición de aves urbanas depende más de la composición de aves urbanas aledañas que de los ambientes naturales que los rodean
 Rural birds
 According to @clergeau2001urban, urban  bird  communities  are  independent of the bird diversity of adjacent landscapes, and that local features are more important than surrounding landscapes. 
@@ -78,34 +85,39 @@ According to @clergeau2001urban, urban  bird  communities  are  independent of t
 2. Previous an current research and contributions
 
 [Describe general problem area or the current research focus of the field]
-By 2019
-half of population live in coastal cities, however urbanization has been msotly focus in terrestiral aspects.
+Cities  in  coastal  areas  are the  most affected  by natural  and human  generated  disasters while  are  alsoattractive  for  private  investments, and often located in  ecologically  sensitive  areas.  Generally coasts  are  more  densely  populated compared toin-land areas due  to the many  keyeconomic  activities takingplace in coastal areas,  including  marine  transport,  shipping  of  goods,  fishing,  recreation,  tourism,  offshore gas and oil drilling. Coastal areas are also home to species and habitats that provide  many benefits  to  the  societybut  might  often  be  threatened.  Coastal  areas  biomes  are  rich  in biodiversity but at the same time extremely vulnerable.
+
+By 2017, about 40%  of the world’s population live within 100 km of the coast [@UNocean_fact2017]. many  key economic  activities taking place in coastal areas,  including  marine  transport,  shipping  of  goods,  fishing,  recreation,  tourism,  offshore gas and oil drilling.
+
+coasta como area vulnerable y hay poca investigacion
+, however urbanization has been mostly focus in terrestrial aspects.
+
 
 [Provide transition between the general problem area and the literature review]
 More than the half of the cities in the world are coastal cities and they lack of studies addressing marine and terrestrial interactions.
 
-3. Locate the gap-describe the proble to address-present a prediction to be tested
+3. Locate the gap-describe the problem to address-present a prediction to be tested
 
 [Provide brief overview of key research projects in this area]
 Urban homogenization has been studied in cities, focused in terrestrial variables
-Considering Birs comunities in urban areas depend of the perurban composition of species, there are no studies in the effects of marine habitats
+Considering bird communities in urban areas depend of the peri-urban composition of species, there are no studies in the effects of marine habitats
 
 [Describe gaps in the research]
-There is a gap in studies that focus in coastal ecotone and the influence of antrhopized areas
+There is a gap in studies that focus in coastal ecotone and the influence of urban areas
 focusing on marine and terrestrial interaction of species in an urbanized area and how birds use this as habitats
 
-[Decribe paper itself]
-This research aim to identified the use of coastal urban habitats by birds describing the composition of species in differrent environments, considering bird species origin (marine and terrestrial).
-with the aim of: 1. Identify bird species assemble of habitats in coastal urban environments, specifically the interaction between marine and inland birds, 2. identify how urbanization affects those bird assembles, 3. Evaluate iconic bird species habitat ocupation, and 4. describe bird behavior in those habitats
+[Describe paper itself]
+This research aim to identified the use of coastal urban habitats by birds describing the composition of species in different environments, considering bird species origin (marine and terrestrial).
+with the aim of: 1. Identify bird species assemble of habitats in coastal urban environments, specifically the interaction between marine and inland birds, 2. identify how urbanization affects those bird assembles, 3. Evaluate iconic bird species habitat occupation, and 4. describe bird behavior in those habitats
 
 4. Describe the present paper
 [Give details about the methodology reported in the paper]
 The present study was carried out in the Gran Valparaíso, a metropolitan area that includes three municipalities in central Chile
 
 [Announces the findings]
-Urban habitats in coastal areas present the conditions that allow specific species composition, cohabiting marine and inlsnd bird species
+Urban habitats in coastal areas present the conditions that allow specific species composition, cohabiting marine and inland bird species
 
-### Metodology
+### Methodology
 
 
 ```{r, results='hide'}
@@ -129,37 +141,39 @@ Prim_nmds2_bray <-suppressMessages(metaMDS(AvesPrim2,autotransform = FALSE, dist
 1. Overview-purpose of the work-give source of material/equipment used
 
 [General overview of this section]
-In this research we conducted bird surveys in six coastal urban environments in the Gran Valparaíso, estimated species composition based on bird presence analised using occupancy models and analized bird assembles in those environment. 
+In this research, we conducted bird surveys in six coastal urban environments in the Greater Valparaíso, estimated species composition based on bird presence analysed using occupancy models and analysed bird assembles in those environment. 
 
 [Provide background information and justification]
-The Gran Valparaíso, a Metropolitan coastal area in Central Chile, is formed by the conection of three cities: Valparaíso, a mayor port in the country, Viña del Mar, a big beach city since xxx and today one of the xx cities in ,  and Concón, a small area that growth from a rural beach to a one of place of mayor urban growth in the las txx years. The area is near by the chilean capital, Santiago, which has close to 6 million inhabitants.
-This area is inmerse ina a natural-rural matrix composed ... in a grographic Coastal mountain chain-- papers bahi concon y viña
+The Greater Valparaíso is the largest metropolitan coastal area in Central Chile and the second most populated urban area in the country (935,602 people according to Censo 2017). The three coastal cities: Valparaíso, the mayor port in the country; Viña del Mar, with high touristic infrastructure; and Concón, a small area that growth from a rural beach to a one of place of mayor urban growth in the las txx years. 
+The area is near by the chilean capital, Santiago, which has more than 7 million inhabitants.
+This area is immerse in a natural-rural matrix composed ... in a geographic Coastal mountain chain-- papers bahi concon y viña
 
 [Provide an overview of the procedure/method itself]
-To estimate species composition and assembles, occupancy models were developed with package DiversityOcuppancy [@divoccu] and 
-species composition were analised with the package vegan [@Vegan] for RStudio using corrected abundance of species. Bird abundance was corrected by detection capacity using occupancy models. 
+To estimate species composition and assembles, occupancy models were developed with DiversityOcuppancy package [@divoccu] and 
+species composition were analysed with the vegan package [@Vegan] for RStudio using corrected abundance of species. Bird abundance was corrected by detection capacity using occupancy models. 
   
 2. Details about materials and methods- justify choices
 
 [Provide details about what was done and used and shows that care was taken]
-Six coastal habitat were defined in terms of its proximity to the coast, level of anthropotization and land cover: urban centre, green area, natural rocky shore, modified rocky shore, natural beach, and urbanized beach (Figura 1). 
+Six coastal habitat were defined in terms of its proximity to the coast, level of urbanization and land cover: urban centre, green area, natural rocky shore, modified rocky shore, natural beach, and urbanized beach (Figura 1). 
 Six replicas of theses habitats were sampled by visual bird surveys in south hemisfer winter and spring of 2019. Surveys were conducted randomly during sunrise and the three hours later for 10 minutes, registering species and behaviour.
 
 Seasonality was tested with a mixed GLM with abundance as a response variable and a random effect of sample sites. We tested a model where seasonality has a interacttion with the habitats defined in this research.
 
 
 [Continuing to describe what was done in detail, using languajge which comunicate that care was taken]
-Bird commmunities were analised using ordination methods with vegan package in R with species abundances corrected by detection capacity, using occupancy models (see table 1).
+Bird commmunities were analised using ordination methods with vegan package [@Vegan] in R with species abundances corrected by detection capacity, using occupancy models with  DiversityOcuppancy package [@divoccu](see table 1).
 We  determined dissimilarity distances among sample sites and tested significant differences among habitat with analysis of similarities (ANOSIM).  To determine species contribution to the differrence between habitats we used Bray-Curtis dissimilaries with SIMPER analysis.
-Fit of environmental variables on species ordination was also tested. 
-Bird behabiour was counted for each habitat.
 
+In order to understand habitat use by birds, bird activities were counted by each habitat
+
+Fit of environmental variables on species ordination was also tested. 
 
 
 3. Relate to other studies
 
 [Describe what was done by referring to existing mehods in the literature]
-To independize our analysis from habitats already defined, ocupancy models of eight species were developed and projected over the study area 
+To independize our analysis from habitats already defined, ocupancy models of SIMPER selected species were developed and projected over the study area.
 
 [Provide more detailed information about the method and show that was a good choice]
 Covariables of detection and occupation are describedd in table 1.
@@ -187,25 +201,26 @@ Coastal cities in central Chile probed to allow habitats were marine and terrest
 
 2. General overview of results
 The six coastal urban habitats shows distingible birs species assembles where only a few species contribute to the difference between them. For these habitats, bird assemblages differ between winter and spring seasons.
+Environmental variables can be responsible of both community identities and use of habitat idiviualy
 
 
 3. Invitations to view results
 
-Coastal urban habitats show specific composition of species abundances for winter and spring seassons (Tabla 3). Distribution of sites in graphical NMDS (Fig. \@ref(fig:NMDS)) showed both seassons presented differences in abundance of species mostly in the inland sites. Additionally, coastal modified sites, as those in urbanized beach and modified rocky shore habitats, are closer to urban centres than coastal natural sites. 
+Coastal urban habitats show specific composition of species abundances for winter and spring seassons (Tabla 3). Distribution of sites in graphical NMDS (Fig. \@ref(fig:NMDS)) showedthat both seassons presented differences in abundance of species mostly in the inland sites. Additionally, coastal modified sites, as those in urbanized beach and modified rocky shore habitats, are closer to urban centres than coastal natural sites. 
 
 ```{r NMDS, fig.width=9, fig.height=4, fig.cap="Sites distribution in A winter and B spring"}
 #Funcion para grafico NMDS en ggplot Invierno
 Tidy_Inv_nmds2_bray <- TidyNMDS(MDS = Inv_nmds2_bray, COVS = Amb)
 
-Inv <- ggplot(Tidy_Inv_nmds2_bray)+geom_point(aes(x=MDS1, y=MDS2, color=AMBIENTE))+theme_classic()+ 
-  scale_color_manual(name="Coastal habitats", labels=c("Urbanized beach", "Natural beach", "Modified rocky shore", "Natural rocky shore","Urban centre", "Green area") , values = c('#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33')) + 
+Inv <- ggplot(Tidy_Inv_nmds2_bray)+geom_point(aes(x=MDS1, y=MDS2, color=AMBIENTE))+theme_classic() + 
+  scale_color_manual(name="Coastal habitats",  values = c('#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33')) + 
   ggtitle('A')
 
 #Funcion para grafico NMDS en ggplot Primavera
 Tidy_Prim_nmds2_bray <- TidyNMDS(MDS = Prim_nmds2_bray, COVS = Amb)
 
-Prim <-ggplot(Tidy_Prim_nmds2_bray)+geom_point(aes(x=MDS1, y=MDS2, color=AMBIENTE))+theme_classic()+ 
-  scale_color_manual(name="Coastal habitats", labels=c("Urbanized beach", "Natural beach", "Modified rocky shore", "Natural rocky shore","Urban centre", "Green area"), values = c('#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33')) + 
+Prim <-ggplot(Tidy_Prim_nmds2_bray)+geom_point(aes(x=MDS1, y=MDS2, color=AMBIENTE))+theme_classic() + 
+  scale_color_manual(name="Coastal habitats", values = c('#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33')) + 
   ggtitle('B')
 
 #Ambos graficos con paquete patchwork
@@ -232,7 +247,7 @@ summary(Anosim_Diss_Prim2)
 ```
 
 
-```{r ANOSIM, fig.width=9, fig.cap="Dissimilarity ranking between an within the habitats in A winter and B spring"}
+```{r ANOSIM, fig.width=9, fig.cap="Dissimilarity ranking between an within the habitats in A winter (R=0.584, P<0.001) and B spring (R=0.573, P< 0.001)"}
 Inv <- ggplot()+ geom_boxplot(aes(x=Anosim_Diss_Inv2$class.vec, y=Anosim_Diss_Inv2$dis.rank), notch = TRUE, varwidth=TRUE)+theme_classic()+
   xlab("Variables")+ ylab("Dissimmilarity rank")+
   ggtitle('A')
@@ -247,9 +262,16 @@ Inv / Prim
 
 4. Specific/key results in details
 
-There is just few species that contribute to differences between habitats. During winter: *Pelecanus thagus*, *Larus dominicanus*, *Coragyps atratus*, *Larosterna inca*, *Leucophaeus modestus*, *Columba livia*, *Turdus falcklandii*, and *Sephanoides sephaniodes*. And spring: *Leucophaeus pipixcan*, *Larus dominicanus*, *Columba livia*, *Larosterna inca*, *Phalacrocorax bougainvillii*, and *Pelecanus thagus*, according to simper analysis (see Suplementary material for complete species list of SIMPER).
+Both sampled seasons showed that few species contribute to differences between habitats. Acccording to simper analysis, during winter species were *Pelecanus thagus*, *Larus dominicanus*, *Coragyps atratus*, *Larosterna inca*, *Leucophaeus modestus*, *Columba livia*, *Turdus falcklandii*, and *Sephanoides sephaniodes*; and during spring, *Leucophaeus pipixcan*, *Larus dominicanus*, *Columba livia*, *Larosterna inca*, *Phalacrocorax bougainvillii*, and *Pelecanus thagus*.  (For a complete species list of SIMPER, see Suplementary material).
 
-```{r OccuInv}
+
+Predictions in the studied area indicates differences of habitat use (Fig. \@ref(fig:OccuInv) and \@ref(fig:OccuPrim))
+
+Species such as xxx, showed differernces in habitat use between seasons.
+(Fig. \@ref(fig:OccuInv)), (Fig. \@ref(fig:OccuPrim))
+
+
+```{r OccuInv, fig.width=9.5, fig.height=6.5}
 Pelecanus <-read_rds("PredInv_Pelecanus_thagus.rds")
 Larus <-read_rds("PredInv_Larus_dominicanus.rds") 
 Coragyps <-read_rds("PredInv_Coragyps_atratus.rds")
@@ -271,7 +293,7 @@ levelplot(Especies, par.settings=Mytheme)
 ```
 
 
-```{r OccuPrim}
+```{r OccuPrim, fig.width=7, fig.height=6.5}
 Leucophaeus <-read_rds("PredPrim_Leucophaeus_pipixcan.rds")
 Larus <-read_rds("PredPrim_Larus_dominicanus.rds")
 Columba <-read_rds("PredPrim_Columba_livia.rds")
@@ -317,6 +339,28 @@ ModelosOccuPrim <- read_rds("ModelosOccuPrim_Ms.rds")
 ```
 
 
+Finally, use of these habitats can be seen with the activity record of bird species.
+
+```{r Comportamineto, fig.height=10}
+ComportamientoInv <- read_rds("ComportamientoInv.rds")
+I <-ggplot(ComportamientoInv) + 
+  geom_col(aes(x=AMBIENTE, y=Total_ind, fill=Comportamiento), color="black") + theme_classic()+ facet_wrap(~Cientifico, ncol=4, scales = "free_y")+  
+  theme(legend.position = "right", axis.text.x = element_text(angle = 45, hjust = 1))+ ylab("Número individuos") +xlab(" ")+
+  scale_fill_manual(aesthetics = "fill", values = c('#a6cee3','#1f78b4','#33a02c','#e31a1c','#fdbf6f','#ff7f00'), name="Bird behavior")
+
+ComportamientoPrim <- read_rds( "ComportamientoPrim.rds")
+
+P <-ggplot(ComportamientoPrim) + 
+  geom_col(aes(x=AMBIENTE, y=Total_ind, fill=Comportamiento), color="black") + theme_classic()+ facet_wrap(~Cientifico, ncol=3, scales = "free_y")+  
+  theme(legend.position = "right", axis.text.x = element_text(angle = 45, hjust = 1))+ ylab("Número individuos") +xlab(" ")+
+  scale_fill_manual(aesthetics = "fill", values = c('#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00'), name="Bird behavior")
+
+I/P
+  
+```
+
+
+
 
 
 5. Comparisons with results in other research
@@ -327,7 +371,7 @@ Occupancy models for specific species
 
 6. problems with results
 
-7. Possible impllications with results
+7. Possible implications with results
 
 
 
@@ -336,17 +380,17 @@ Occupancy models for specific species
 
 ### Discussion/Conclusion
 
-1. Revisting previous research- summarise
+1. Revising previous research- summaries
 [Revisit previous research]
 [Revisit Introduction to recall specific weakness in methodology used in previous studies]
 
 2. Mapping 
 [Revisit methodology used in this study]
-[Revisit and summarise the results]
+[Revisit and summaries the results]
 [Show where and how the present work fits into the research "map" in this field]
 
-3. Achivements/contributions- refining implications
-[Recall an aspect of the results that represents a postitive achievement or contribution of this work]
+3. Achievements/contributions- refining implications
+[Recall an aspect of the results that represents a positive achievement or contribution of this work]
 [Focus in the meaning and implications of the achievements in this work]
 [Note if one of the achievement or contributions of the work is a novelty]
 [Describe implications of the results, including possible applications]

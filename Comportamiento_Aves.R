@@ -48,6 +48,8 @@ ComportamientoInv <- ComportamientoInv %>%
   mutate(Cientifico=fct_relevel(Cientifico, "Leucophaeus_modestus","Larus_dominicanus","Coragyps_atratus","Larosterna_inca","Columba_livia","Pelecanus_thagus",       
                                  "Sephanoides_sephaniodes", "Turdus_falcklandii" ))
 
+saveRDS(ComportamientoInv, "ComportamientoInv.rds")
+
 ggplot(ComportamientoInv) + 
   geom_col(aes(x=AMBIENTE, y=Total_ind, fill=Comportamiento), color="black") + theme_classic()+ facet_wrap(~Cientifico, ncol=4, scales = "free_y")+  
   theme(legend.position = "bottom", axis.text.x = element_text(angle = 45, hjust = 1))+ ylab("Número individuos") +xlab(" ")+
@@ -98,6 +100,8 @@ ComportamientoPrim <- ComportamientoPrim %>%
   mutate(AMBIENTE=fct_relevel(AMBIENTE, "Urban", "Green area", "Modified rocky shore", "Urbanized beach", "Natural rocky shore")) #%>% 
   #mutate(Cientifico=fct_relevel(Cientifico, "Leucophaeus_modestus","Larus_dominicanus","Coragyps_atratus","Larosterna_inca","Columba_livia","Pelecanus_thagus",       
          #                       "Sephanoides_sephaniodes", "Turdus_falcklandii" ))
+
+saveRDS(ComportamientoPrim, "ComportamientoPrim.rds")
 
 ggplot(ComportamientoPrim) + 
   geom_col(aes(x=AMBIENTE, y=Total_ind, fill=Comportamiento), color="black") + theme_classic()+ facet_wrap(~Cientifico, ncol=3, scales = "free_y")+  
