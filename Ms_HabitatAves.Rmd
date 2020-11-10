@@ -64,37 +64,35 @@ Amb <- Amb %>% dplyr::select(-Sitio) %>%
 
 [Establish the importance of this research topic]
 
-Urbanization has been growing rapidly. During 2018, more than half of world’s population  lived  in  urban  settlements.   
-Cities are growing in both size and number, by  2018  the  number  of  cities  with  at  least  1  million  inhabitants  had  grown  to 548 [@UN_WorldCities2018].
-and 
+Urbanization has been growing rapidly. During 2018, more than half of world’s population lived in urban settlements with cities growing in both size and number [@UN_WorldCities2018].
 
 [Provide general background information]
-Urban modification over natural environments is one of the mayor causes of species loss [@czech2000economic]. Some of these loss of native species have promoted the replacement by non-native species [@mckinney2006urbanization]. This scenario shows how few species can adapt better to urban and suburban conditions [@mckinney1999biotic], however it affects to ecosystems [grassland: @zeeman2017biotic], biome [temperate: @zeeman2017biotic], and taxonomic groups [mainly in birds and plants, but also insects: @knop2016biotic].
+
+Urbanization is a complex process that causes profound changes in the ecological functioning of the landscapeand gradually results in a changing spatial structure [@antrop2000changing] being one of the mayor causes of species loss [@czech2000economic].
+
 
 [Establish the importance of this research topic, more specific/detailed way]
-This urban homogenization is projected to lower diversity, where there will be many species losers and few winners [@mckinney1999biotic].
-which has been studied mostly in birds and plants
+
+In this environment, some of these loss of native species have promoted the replacement by non-native species [@mckinney2006urbanization] because few species can adapt better to urban and suburban conditions [@mckinney1999biotic], affecting at ecosystemic level [grassland: @zeeman2017biotic], biomes [temperate: @zeeman2017biotic], and taxonomic groups [insects: @knop2016biotic, but mainly studies in birds and plants].
 
 [Provide general background information, more specific/detailed way]
-Bird species communities in cities are more similar to urban communities nearby than to communities in surrounding natural environments. However, local features seems to be important in those assembles.
-Composición de aves urbanas depende más de la composición de aves urbanas aledañas que de los ambientes naturales que los rodean
-Rural birds
-According to @clergeau2001urban, urban  bird  communities  are  independent of the bird diversity of adjacent landscapes, and that local features are more important than surrounding landscapes. 
+
+Studies suggest that bird communities in cities are more similar to urban communities nearby than to communities in surrounding natural environments. To bird assembles local features are more important than surrounding landscapes @clergeau2001urban, 
 
 
 2. Previous an current research and contributions
 
 [Describe general problem area or the current research focus of the field]
-Cities  in  coastal  areas  are the  most affected  by natural  and human  generated  disasters while  are  alsoattractive  for  private  investments, and often located in  ecologically  sensitive  areas.  Generally coasts  are  more  densely  populated compared toin-land areas due  to the many  keyeconomic  activities takingplace in coastal areas,  including  marine  transport,  shipping  of  goods,  fishing,  recreation,  tourism,  offshore gas and oil drilling. Coastal areas are also home to species and habitats that provide  many benefits  to  the  societybut  might  often  be  threatened.  Coastal  areas  biomes  are  rich  in biodiversity but at the same time extremely vulnerable.
 
-By 2017, about 40%  of the world’s population live within 100 km of the coast [@UNocean_fact2017]. many  key economic  activities taking place in coastal areas,  including  marine  transport,  shipping  of  goods,  fishing,  recreation,  tourism,  offshore gas and oil drilling.
 
-coasta como area vulnerable y hay poca investigacion
-, however urbanization has been mostly focus in terrestrial aspects.
+Cities in coastal areas combine many key economic activities such as marine transport, shipping of goods, fishing, recreation, and tourism. These areas are attractive for people to settle and by 2017, about 40%  of the world’s population live within 100 km of the coast [@UNocean_fact2017].
+Species and ecosystems of coastal areas are often threatened by the growing urbanization, the landscape change, and also by the vulnerable that this area is naturally
+
 
 
 [Provide transition between the general problem area and the literature review]
-More than the half of the cities in the world are coastal cities and they lack of studies addressing marine and terrestrial interactions.
+
+Even this scenario, urbanization has been mostly focus in terrestrial aspects, and even when more than the half of the cities in the world rise on the coast, there is a lack of studies addressing marine and terrestrial interactions.
 
 3. Locate the gap-describe the problem to address-present a prediction to be tested
 
@@ -141,16 +139,14 @@ Prim_nmds2_bray <-suppressMessages(metaMDS(AvesPrim2,autotransform = FALSE, dist
 1. Overview-purpose of the work-give source of material/equipment used
 
 [General overview of this section]
-In this research, we conducted bird surveys in six coastal urban environments in the Greater Valparaíso, estimated species composition based on bird presence analysed using occupancy models and analysed bird assembles in those environment. 
+In this research, we conducted bird surveys in six coastal urban environments in the Greater Valparaíso, estimated species composition based on corrected bird presences, and analysed bird assembles in those environment. 
 
 [Provide background information and justification]
-The Greater Valparaíso is the largest metropolitan coastal area in Central Chile and the second most populated urban area in the country (935,602 people according to Censo 2017). The three coastal cities: Valparaíso, the mayor port in the country; Viña del Mar, with high touristic infrastructure; and Concón, a small area that growth from a rural beach to a one of place of mayor urban growth in the las txx years. 
-The area is near by the chilean capital, Santiago, which has more than 7 million inhabitants.
-This area is immerse in a natural-rural matrix composed ... in a geographic Coastal mountain chain-- papers bahi concon y viña
+The Greater Valparaíso is the largest metropolitan coastal area in Central Chile and the second most populated urban area in the country (935,602 people according to @censo2017chile). The three coastal cities: Valparaíso, the mayor port in the country; Viña del Mar, with high touristic infrastructure; and Concón, a small area that growth from a rural beach to a one of place of mayor urban growth in the las txx years. 
 
 [Provide an overview of the procedure/method itself]
-To estimate species composition and assembles, occupancy models were developed with DiversityOcuppancy package [@divoccu] and 
-species composition were analysed with the vegan package [@Vegan] for RStudio using corrected abundance of species. Bird abundance was corrected by detection capacity using occupancy models. 
+Bird abundance obtained from the field was corrected by detection capacity of sampling using occupancy models with DiversityOcuppancy package [@divoccu]. To estimate species assembles for habitats, the vegan package [@Vegan] was used. 
+Particular species were analized in a continuos environmental gradient using ocupancy probability from occupancy models also with DiversityOcuppancy package [@divoccu].
   
 2. Details about materials and methods- justify choices
 
@@ -158,11 +154,11 @@ species composition were analysed with the vegan package [@Vegan] for RStudio us
 Six coastal habitat were defined in terms of its proximity to the coast, level of urbanization and land cover: urban centre, green area, natural rocky shore, modified rocky shore, natural beach, and urbanized beach (Figura 1). 
 Six replicas of theses habitats were sampled by visual bird surveys in south hemisfer winter and spring of 2019. Surveys were conducted randomly during sunrise and the three hours later for 10 minutes, registering species and behaviour.
 
-Seasonality was tested with a mixed GLM with abundance as a response variable and a random effect of sample sites. We tested a model where seasonality has a interacttion with the habitats defined in this research.
-
+Seasonality was tested with a mixed GLM with abundance as a response variable and a random effect of sample sites. We tested a model where seasonality has a interaction with the habitats defined in this research.
 
 [Continuing to describe what was done in detail, using languajge which comunicate that care was taken]
-Bird commmunities were analised using ordination methods with vegan package [@Vegan] in R with species abundances corrected by detection capacity, using occupancy models with  DiversityOcuppancy package [@divoccu](see table 1).
+
+Bird commmunities for each habitat were analised using ordination methods with vegan package [@Vegan] in R with species abundances corrected by detection capacity, using occupancy models with DiversityOcuppancy package [@divoccu](see table 1).
 We  determined dissimilarity distances among sample sites and tested significant differences among habitat with analysis of similarities (ANOSIM).  To determine species contribution to the differrence between habitats we used Bray-Curtis dissimilaries with SIMPER analysis.
 
 In order to understand habitat use by birds, bird activities were counted by each habitat
@@ -213,18 +209,16 @@ Coastal urban habitats show specific composition of species abundances for winte
 Tidy_Inv_nmds2_bray <- TidyNMDS(MDS = Inv_nmds2_bray, COVS = Amb)
 
 Inv <- ggplot(Tidy_Inv_nmds2_bray)+geom_point(aes(x=MDS1, y=MDS2, color=AMBIENTE))+theme_classic() + 
-  scale_color_manual(name="Coastal habitats",  values = c('#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33')) + 
-  ggtitle('A')
+  scale_color_manual(name="Coastal habitats",  values = c('#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33'))
 
 #Funcion para grafico NMDS en ggplot Primavera
 Tidy_Prim_nmds2_bray <- TidyNMDS(MDS = Prim_nmds2_bray, COVS = Amb)
 
 Prim <-ggplot(Tidy_Prim_nmds2_bray)+geom_point(aes(x=MDS1, y=MDS2, color=AMBIENTE))+theme_classic() + 
-  scale_color_manual(name="Coastal habitats", values = c('#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33')) + 
-  ggtitle('B')
+  scale_color_manual(name="Coastal habitats", values = c('#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33'))
 
 #Ambos graficos con paquete patchwork
-Inv+Prim + plot_layout(guides = 'collect')
+Inv+Prim + plot_annotation(tag_levels = 'A')
 ```
 
 Dissimilary rank shows with an 95% confidence interval that dissimilarities withing habitat are lower than between habitats, this demonstrate that group of species for each habitat are different. There is one exception shown by natural beach habitat during winter, here variability of species in the habitat is as high as we consider all habitats together (Fig. \@ref(fig:ANOSIM))
@@ -249,14 +243,12 @@ summary(Anosim_Diss_Prim2)
 
 ```{r ANOSIM, fig.width=9, fig.cap="Dissimilarity ranking between an within the habitats in A winter (R=0.584, P<0.001) and B spring (R=0.573, P< 0.001)"}
 Inv <- ggplot()+ geom_boxplot(aes(x=Anosim_Diss_Inv2$class.vec, y=Anosim_Diss_Inv2$dis.rank), notch = TRUE, varwidth=TRUE)+theme_classic()+
-  xlab("Variables")+ ylab("Dissimmilarity rank")+
-  ggtitle('A')
+  xlab("Variables")+ ylab("Dissimmilarity rank")
 
 Prim <- ggplot()+ geom_boxplot(aes(Anosim_Diss_Prim2$class.vec, y=Anosim_Diss_Prim2$dis.rank), notch = TRUE, varwidth=TRUE)+theme_classic()+
- xlab("Variables")+ ylab("Dissimmilarity rank")+
-   ggtitle('B')
+ xlab("Variables")+ ylab("Dissimmilarity rank")
 
-Inv / Prim
+Inv / Prim +plot_annotation(tag_levels = 'A')
 ```
 
 
@@ -271,7 +263,7 @@ Species such as xxx, showed differernces in habitat use between seasons.
 (Fig. \@ref(fig:OccuInv)), (Fig. \@ref(fig:OccuPrim))
 
 
-```{r OccuInv, fig.width=9.5, fig.height=6.5}
+```{r OccuInv, fig.width=10, fig.height=7}
 Pelecanus <-read_rds("PredInv_Pelecanus_thagus.rds")
 Larus <-read_rds("PredInv_Larus_dominicanus.rds") 
 Coragyps <-read_rds("PredInv_Coragyps_atratus.rds")
@@ -282,7 +274,7 @@ Turdus <-read_rds("PredInv_Turdus_falcklandii.rds")
 Sephanoides <-read_rds("PredInv_Sephanoides_sephaniodes.rds")
 
 Especies <- stack(Pelecanus,Larus,Coragyps, Larosterna, Leucophaeus,  Columba, Turdus, Sephanoides)
-names(Especies) <- c("Pelecanus thagus", "Larus dominicanus", "Coragyps atratus", "Larosterna inca", "Leucophaeus modestus", "Columba livia", "Turdus falcklandii", "Sephanoides sephaniodes")
+names(Especies) <- c("Columba livia", "Coragyps atratus", "Larosterna inca","Larus dominicanus", "Leucophaeus modestus", "Pelecanus thagus", "Turdus falcklandii", "Sephanoides sephaniodes")
 
 Mytheme <- YlOrRdTheme()
 Mytheme$panel.background$col <- "black"
@@ -293,7 +285,7 @@ levelplot(Especies, par.settings=Mytheme)
 ```
 
 
-```{r OccuPrim, fig.width=7, fig.height=6.5}
+```{r OccuPrim, fig.width=8, fig.height=7}
 Leucophaeus <-read_rds("PredPrim_Leucophaeus_pipixcan.rds")
 Larus <-read_rds("PredPrim_Larus_dominicanus.rds")
 Columba <-read_rds("PredPrim_Columba_livia.rds")
@@ -302,7 +294,7 @@ Phalacrocorax <-read_rds("PredPrim_Phalacrocorax_bougainvillii.rds")
 Pelecanus <-read_rds("PredPrim_Pelecanus_thagus.rds")
 
 Especies <- stack(Leucophaeus, Larus, Columba, Larosterna, Phalacrocorax,  Pelecanus)
-names(Especies) <- c("Leucophaeus pipixcan", "Larus dominicanus", "Columba livia", "Larosterna inca", "Phalacrocorax bougainvillii", "Pelecanus thagus")
+names(Especies) <- c("Columba livia", "Larosterna inca", "Larus dominicanus", "Leucophaeus pipixcan", "Pelecanus thagus", "Phalacrocorax bougainvillii")
 
 Mytheme <- YlOrRdTheme()
 Mytheme$panel.background$col <- "black"
@@ -341,11 +333,11 @@ ModelosOccuPrim <- read_rds("ModelosOccuPrim_Ms.rds")
 
 Finally, use of these habitats can be seen with the activity record of bird species.
 
-```{r Comportamineto, fig.height=10}
+```{r Comportamineto, fig.height=7, fig.width=10}
 ComportamientoInv <- read_rds("ComportamientoInv.rds")
 I <-ggplot(ComportamientoInv) + 
   geom_col(aes(x=AMBIENTE, y=Total_ind, fill=Comportamiento), color="black") + theme_classic()+ facet_wrap(~Cientifico, ncol=4, scales = "free_y")+  
-  theme(legend.position = "right", axis.text.x = element_text(angle = 45, hjust = 1))+ ylab("Número individuos") +xlab(" ")+
+  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1))+ ylab("Número individuos") +xlab(" ")+
   scale_fill_manual(aesthetics = "fill", values = c('#a6cee3','#1f78b4','#33a02c','#e31a1c','#fdbf6f','#ff7f00'), name="Bird behavior")
 
 ComportamientoPrim <- read_rds( "ComportamientoPrim.rds")
@@ -355,11 +347,16 @@ P <-ggplot(ComportamientoPrim) +
   theme(legend.position = "right", axis.text.x = element_text(angle = 45, hjust = 1))+ ylab("Número individuos") +xlab(" ")+
   scale_fill_manual(aesthetics = "fill", values = c('#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00'), name="Bird behavior")
 
-I/P
-  
+layout <- "
+AAAAAAAA
+BBBBBBB#
+"
+I + P + plot_layout(design = layout) +plot_annotation(tag_levels = 'A')
+
+
 ```
 
-
+Most of the species were detected during the fliying, however some were founded in particular activities. 
 
 
 
