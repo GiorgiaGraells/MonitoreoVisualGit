@@ -218,7 +218,7 @@ Prim <-ggplot(Tidy_Prim_nmds2_bray)+geom_point(aes(x=MDS1, y=MDS2, color=AMBIENT
   scale_color_manual(name="Coastal habitats", values = c('#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33'))
 
 #Ambos graficos con paquete patchwork
-Inv+Prim + plot_annotation(tag_levels = 'A')
+Inv+Prim + plot_annotation(tag_levels = 'A')+ plot_layout(guides = 'collect')
 ```
 
 Dissimilary rank shows with an 95% confidence interval that dissimilarities withing habitat are lower than between habitats, this demonstrate that group of species for each habitat are different. There is one exception shown by natural beach habitat during winter, here variability of species in the habitat is as high as we consider all habitats together (Fig. \@ref(fig:ANOSIM))
@@ -333,7 +333,7 @@ ModelosOccuPrim <- read_rds("ModelosOccuPrim_Ms.rds")
 
 Finally, use of these habitats can be seen with the activity record of bird species.
 
-```{r Comportamineto, fig.height=7, fig.width=10}
+```{r Comportamineto, fig.height=8, fig.width=10}
 ComportamientoInv <- read_rds("ComportamientoInv.rds")
 I <-ggplot(ComportamientoInv) + 
   geom_col(aes(x=AMBIENTE, y=Total_ind, fill=Comportamiento), color="black") + theme_classic()+ facet_wrap(~Cientifico, ncol=4, scales = "free_y")+  
