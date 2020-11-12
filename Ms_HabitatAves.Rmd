@@ -304,20 +304,39 @@ nudge_x=-5000, nudge_y = 1000)+
 
 
 ```{r OccuPrim, fig.width=8, fig.height=7}
-Leucophaeus <-read_rds("PredPrim_Leucophaeus_pipixcan.rds")
-Larus <-read_rds("PredPrim_Larus_dominicanus.rds")
 Columba <-read_rds("PredPrim_Columba_livia.rds")
 Larosterna <-read_rds("PredPrim_Larosterna_inca.rds")
+Larus <-read_rds("PredPrim_Larus_dominicanus.rds")
+Leucophaeus <-read_rds("PredPrim_Leucophaeus_pipixcan.rds")
 Phalacrocorax <-read_rds("PredPrim_Phalacrocorax_bougainvillii.rds")
 Pelecanus <-read_rds("PredPrim_Pelecanus_thagus.rds")
 
-Especies <- stack(Leucophaeus, Larus, Columba, Larosterna, Phalacrocorax,  Pelecanus)
-names(Especies) <- c("Columba livia", "Larosterna inca", "Larus dominicanus", "Leucophaeus pipixcan", "Pelecanus thagus", "Phalacrocorax bougainvillii")
+Nombres <- c("Columba", "Larosterna", "Larus","Leucophaeus", "Phalacrocorax", "Pelecanus")
+Species <- list(Columba, Larosterna, Larus, Leucophaeus, Phalacrocorax, Pelecanus)
 
-Mytheme <- YlOrRdTheme()
-Mytheme$panel.background$col <- "black"
+temp <- list()
 
-levelplot(Especies, par.settings=Mytheme)
+for(i in 1:length(Species)){
+  temp[[i]] <- Species[[i]] %>% as("SpatialPixelsDataFrame") %>% as.data.frame()
+  colnames(temp[[i]])[1] <- Nombres[i]
+}
+
+Species_DF <- temp %>% reduce(full_join) %>% dplyr::relocate(Columba, .after = y) %>% pivot_longer(Columba:Pelecanus, names_to = "Species", values_to = "Occupancy")
+
+Sitios <- read.csv("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/MonitoreoVisualGit/Muestreo aves jun-jul 2019/Monitoreo_punto/Reg_completo_aves_inv.csv") %>% 
+  dplyr::filter(Sitio %in% c("PLAZA ANIBAL PINTO", "PLAYA LA BOCA", "PLAZA GABRIELA MISTRAL", "LAGUNA VERDE")) %>% 
+  mutate(Sitio= str_replace(Sitio, "PLAZA ANIBAL PINTO", "PAP"),
+         Sitio= str_replace(Sitio, "PLAYA LA BOCA", "PLB"),
+         Sitio= str_replace(Sitio, "PLAZA GABRIELA MISTRAL", "PGM"),
+         Sitio= str_replace(Sitio, "LAGUNA VERDE", "LG")) %>% 
+  dplyr::select(Sitio, Latitud, Longitud) %>% distinct() %>% st_as_sf(coords=c("Longitud","Latitud"),crs="+proj=longlat +datum=WGS84 +no_defs") %>% 
+  st_transform(crs="+proj=utm +zone=19 +south +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0")
+
+ggplot() + geom_raster(data = Species_DF, aes(x = x, y = y, fill = Occupancy)) + geom_sf(data = Sitios, color="red") +
+    ggrepel::geom_text_repel(data = Sitios,  aes(label = Sitio,  geometry = geometry),  stat = "sf_coordinates", force = 1, 
+nudge_x=-5000, nudge_y = 1000)+ 
+  theme_classic() + scale_fill_viridis_c("Occupancy", option = "plasma", direction = -1) + labs(x = NULL, y = NULL) + facet_wrap(~Species, nrow=2)
+
 
 ```
 
