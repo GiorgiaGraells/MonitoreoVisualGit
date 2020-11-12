@@ -63,17 +63,14 @@ Amb <- Amb %>% dplyr::select(-Sitio) %>%
 1. Establish importance of the field- provide background, keywords- present the problem
 
 [Establish the importance of this research topic]
-
-Urbanization has been growing rapidly. During 2018, more than half of world’s population lived in urban settlements with cities growing in both size and number [@UN_WorldCities2018].
+During 2018, more than half of world’s population lived in urban settlements with cities growing in both size and number [@UN_WorldCities2018].
 
 [Provide general background information]
-
-Urbanization is a complex process that causes profound changes in the ecological functioning of the landscapeand gradually results in a changing spatial structure [@antrop2000changing] being one of the mayor causes of species loss [@czech2000economic].
+Urbanization is a complex process that causes profound changes in the ecological functioning of the landscaped gradually results in a changing spatial structure [@antrop2000changing] being one of the mayor causes of species loss [@czech2000economic].
 
 
 [Establish the importance of this research topic, more specific/detailed way]
-
-In this environment, some of these loss of native species have promoted the replacement by non-native species [@mckinney2006urbanization] because few species can adapt better to urban and suburban conditions [@mckinney1999biotic], affecting at ecosystemic level [grassland: @zeeman2017biotic], biomes [temperate: @zeeman2017biotic], and taxonomic groups [insects: @knop2016biotic, but mainly studies in birds and plants].
+Some of these losses of native species have promoted the replacement by non-native species [@mckinney2006urbanization]. These is because few species can adapt better to urban and suburban conditions [@mckinney1999biotic], affecting at ecosystemic level [grassland: @zeeman2017biotic], biomes [temperate: @zeeman2017biotic], and taxonomic groups [insects: @knop2016biotic, but mainly studies in birds and plants].
 
 [Provide general background information, more specific/detailed way]
 
@@ -264,6 +261,10 @@ Species such as xxx, showed differernces in habitat use between seasons.
 
 
 ```{r OccuInv, fig.width=10, fig.height=7}
+
+library(sf)
+library(raster)
+library(ggrepel)
 Pelecanus <-read_rds("PredInv_Pelecanus_thagus.rds")
 Larus <-read_rds("PredInv_Larus_dominicanus.rds") 
 Coragyps <-read_rds("PredInv_Coragyps_atratus.rds")
@@ -273,14 +274,31 @@ Columba <-read_rds("PredInv_Columba_livia.rds")
 Turdus <-read_rds("PredInv_Turdus_falcklandii.rds")
 Sephanoides <-read_rds("PredInv_Sephanoides_sephaniodes.rds")
 
-Especies <- stack(Pelecanus,Larus,Coragyps, Larosterna, Leucophaeus,  Columba, Turdus, Sephanoides)
-names(Especies) <- c("Columba livia", "Coragyps atratus", "Larosterna inca","Larus dominicanus", "Leucophaeus modestus", "Pelecanus thagus", "Turdus falcklandii", "Sephanoides sephaniodes")
+Nombres <- c("Pelecanus", "Larus", "Coragyps", "Larosterna", "Leucophaeus", "Columba", "Turdus", "Sephanoides")
+Species <- list(Pelecanus, Larus, Coragyps, Larosterna, Leucophaeus, Columba, Turdus, Sephanoides)
 
-Mytheme <- YlOrRdTheme()
-Mytheme$panel.background$col <- "black"
+temp <- list()
 
-levelplot(Especies, par.settings=Mytheme)
+for(i in 1:length(Species)){
+  temp[[i]] <- Species[[i]] %>% as("SpatialPixelsDataFrame") %>% as.data.frame()
+  colnames(temp[[i]])[1] <- Nombres[i]
+}
 
+Species_DF <- temp %>% reduce(full_join) %>% dplyr::relocate(Pelecanus, .after = y) %>% pivot_longer(Pelecanus:Sephanoides, names_to = "Species", values_to = "Occupancy")
+
+Sitios <- read.csv("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/MonitoreoVisualGit/Muestreo aves jun-jul 2019/Monitoreo_punto/Reg_completo_aves_inv.csv") %>% 
+  dplyr::filter(Sitio %in% c("PLAZA ANIBAL PINTO", "PLAYA LA BOCA", "PLAZA GABRIELA MISTRAL", "LAGUNA VERDE")) %>% 
+  mutate(Sitio= str_replace(Sitio, "PLAZA ANIBAL PINTO", "PAP"),
+         Sitio= str_replace(Sitio, "PLAYA LA BOCA", "PLB"),
+         Sitio= str_replace(Sitio, "PLAZA GABRIELA MISTRAL", "PGM"),
+         Sitio= str_replace(Sitio, "LAGUNA VERDE", "LG")) %>% 
+  dplyr::select(Sitio, Latitud, Longitud) %>% distinct() %>% st_as_sf(coords=c("Longitud","Latitud"),crs="+proj=longlat +datum=WGS84 +no_defs") %>% 
+  st_transform(crs="+proj=utm +zone=19 +south +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0")
+
+ggplot() + geom_raster(data = Species_DF, aes(x = x, y = y, fill = Occupancy)) + geom_sf(data = Sitios, color="red") +
+    ggrepel::geom_text_repel(data = Sitios,  aes(label = Sitio,  geometry = geometry),  stat = "sf_coordinates", force = 1, 
+nudge_x=-5000, nudge_y = 1000)+ 
+  theme_classic() + scale_fill_viridis_c("Occupancy", option = "plasma", direction = -1) + labs(x = NULL, y = NULL) + facet_wrap(~Species, nrow=2)
 
 ```
 
