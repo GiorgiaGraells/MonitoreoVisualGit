@@ -302,7 +302,7 @@ Sitios <- read.csv("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/Monit
 OcuI <- ggplot() + geom_raster(data = Species_DF, aes(x = x, y = y, fill = Occupancy)) + geom_sf(data = Sitios, color="red") +
     ggrepel::geom_text_repel(data = Sitios,  aes(label = Sitio,  geometry = geometry),  stat = "sf_coordinates", force = 1, 
 nudge_x=-5000, nudge_y = 1000)+ 
-  theme_classic() + scale_fill_viridis_c("Occupancy", option = "plasma", direction = -1) + labs(x = NULL, y = NULL) + facet_wrap(~Species, nrow=2)+ theme(legend.position = "bottom")
+  theme_classic() + scale_fill_viridis_c("Occupancy", option = "plasma", direction = -1) + labs(x = NULL, y = NULL) + facet_wrap(~Species, nrow=1)+ theme(legend.position = "none")
 
 ```
 
@@ -340,19 +340,19 @@ Sitios <- read.csv("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/Monit
 
 OcuP <- ggplot() + geom_raster(data = Species_DF, aes(x = x, y = y, fill = Occupancy)) + geom_sf(data = Sitios, color="red") +
     ggrepel::geom_text_repel(data = Sitios,  aes(label = Sitio,  geometry = geometry),  stat = "sf_coordinates", force = 1, 
-nudge_x=-5000, nudge_y = 1000)+   theme_classic() + scale_fill_viridis_c("Occupancy", option = "plasma", direction = -1) + 
-  labs(x = NULL, y = NULL) + facet_wrap(~Species, nrow=2)+ theme(legend.position = "bottom")
+nudge_x=-5000, nudge_y = 1000)+ 
+  theme_classic() + scale_fill_viridis_c("Occupancy", option = "plasma", direction = -1) + labs(x = NULL, y = NULL) + facet_wrap(~Species, nrow=1)
 
 
 ```
 
-```{r, fig.height=10}
+```{r, fig.width=13, fig.height=6}
 
 layout <- "
-AAAABBB
-AAAABBB
+AAAA
+BBB#
 "
-OcuI + OcuP+plot_layout(design = layout, guides = 'collect') +plot_annotation(tag_levels = 'A') 
+OcuI + OcuP+plot_annotation(tag_levels = 'A')+ plot_layout(design = layout) 
 
 ```
 
