@@ -58,6 +58,9 @@ Amb <- Amb %>% dplyr::select(-Sitio) %>%
 ```
 
 
+
+
+
 ### Introduction
 
 1. Establish importance of the field- provide background, keywords- present the problem
@@ -80,7 +83,6 @@ Studies suggest that bird communities in cities are more similar to urban commun
 2. Previous an current research and contributions
 
 [Describe general problem area or the current research focus of the field]
-
 
 Cities in coastal areas combine many key economic activities such as marine transport, shipping of goods, fishing, recreation, and tourism. These areas are attractive for people to settle and by 2017, about 40%  of the world’s population live within 100 km of the coast [@UNocean_fact2017].
 Species and ecosystems of coastal areas are often threatened by the growing urbanization, the landscape change, and also by the vulnerable that this area is naturally
@@ -287,18 +289,20 @@ for(i in 1:length(Species)){
 Species_DF <- temp %>% reduce(full_join) %>% dplyr::relocate(Pelecanus, .after = y) %>% pivot_longer(Pelecanus:Sephanoides, names_to = "Species", values_to = "Occupancy")
 
 Sitios <- read.csv("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/MonitoreoVisualGit/Muestreo aves jun-jul 2019/Monitoreo_punto/Reg_completo_aves_inv.csv") %>% 
-  dplyr::filter(Sitio %in% c("PLAZA ANIBAL PINTO", "PLAYA LA BOCA", "PLAZA GABRIELA MISTRAL", "LAGUNA VERDE")) %>% 
-  mutate(Sitio= str_replace(Sitio, "PLAZA ANIBAL PINTO", "PAP"),
+  dplyr::filter(Sitio %in% c("TERMINAL", "PLAYA LA BOCA", "PARQUE EL LITRE", "CALETA EL MEMBRILLO", "ROCA OCEANICA","SECTOR 5")) %>% 
+  mutate(Sitio= str_replace(Sitio, "TERMINAL", "T"),
          Sitio= str_replace(Sitio, "PLAYA LA BOCA", "PLB"),
-         Sitio= str_replace(Sitio, "PLAZA GABRIELA MISTRAL", "PGM"),
-         Sitio= str_replace(Sitio, "LAGUNA VERDE", "LG")) %>% 
+         Sitio= str_replace(Sitio, "PARQUE EL LITRE", "PEL"),
+         Sitio= str_replace(Sitio, "CALETA EL MEMBRILLO", "CEM"),
+         Sitio= str_replace(Sitio, "ROCA OCEANICA", "RO"),
+         Sitio= str_replace(Sitio, "SECTOR 5", "PR")) %>% 
   dplyr::select(Sitio, Latitud, Longitud) %>% distinct() %>% st_as_sf(coords=c("Longitud","Latitud"),crs="+proj=longlat +datum=WGS84 +no_defs") %>% 
   st_transform(crs="+proj=utm +zone=19 +south +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0")
 
-ggplot() + geom_raster(data = Species_DF, aes(x = x, y = y, fill = Occupancy)) + geom_sf(data = Sitios, color="red") +
+OcuI <- ggplot() + geom_raster(data = Species_DF, aes(x = x, y = y, fill = Occupancy)) + geom_sf(data = Sitios, color="red") +
     ggrepel::geom_text_repel(data = Sitios,  aes(label = Sitio,  geometry = geometry),  stat = "sf_coordinates", force = 1, 
 nudge_x=-5000, nudge_y = 1000)+ 
-  theme_classic() + scale_fill_viridis_c("Occupancy", option = "plasma", direction = -1) + labs(x = NULL, y = NULL) + facet_wrap(~Species, nrow=2)
+  theme_classic() + scale_fill_viridis_c("Occupancy", option = "plasma", direction = -1) + labs(x = NULL, y = NULL) + facet_wrap(~Species, nrow=2)+ theme(legend.position = "bottom")
 
 ```
 
@@ -324,22 +328,33 @@ for(i in 1:length(Species)){
 Species_DF <- temp %>% reduce(full_join) %>% dplyr::relocate(Columba, .after = y) %>% pivot_longer(Columba:Pelecanus, names_to = "Species", values_to = "Occupancy")
 
 Sitios <- read.csv("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/MonitoreoVisualGit/Muestreo aves jun-jul 2019/Monitoreo_punto/Reg_completo_aves_inv.csv") %>% 
-  dplyr::filter(Sitio %in% c("PLAZA ANIBAL PINTO", "PLAYA LA BOCA", "PLAZA GABRIELA MISTRAL", "LAGUNA VERDE")) %>% 
-  mutate(Sitio= str_replace(Sitio, "PLAZA ANIBAL PINTO", "PAP"),
+ dplyr::filter(Sitio %in% c("TERMINAL", "PLAYA LA BOCA", "PARQUE EL LITRE", "CALETA EL MEMBRILLO", "ROCA OCEANICA","SECTOR 5")) %>% 
+  mutate(Sitio= str_replace(Sitio, "TERMINAL", "T"),
          Sitio= str_replace(Sitio, "PLAYA LA BOCA", "PLB"),
-         Sitio= str_replace(Sitio, "PLAZA GABRIELA MISTRAL", "PGM"),
-         Sitio= str_replace(Sitio, "LAGUNA VERDE", "LG")) %>% 
+         Sitio= str_replace(Sitio, "PARQUE EL LITRE", "PEL"),
+         Sitio= str_replace(Sitio, "CALETA EL MEMBRILLO", "CEM"),
+         Sitio= str_replace(Sitio, "ROCA OCEANICA", "RO"),
+         Sitio= str_replace(Sitio, "SECTOR 5", "PR")) %>% 
   dplyr::select(Sitio, Latitud, Longitud) %>% distinct() %>% st_as_sf(coords=c("Longitud","Latitud"),crs="+proj=longlat +datum=WGS84 +no_defs") %>% 
   st_transform(crs="+proj=utm +zone=19 +south +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0")
 
-ggplot() + geom_raster(data = Species_DF, aes(x = x, y = y, fill = Occupancy)) + geom_sf(data = Sitios, color="red") +
+OcuP <- ggplot() + geom_raster(data = Species_DF, aes(x = x, y = y, fill = Occupancy)) + geom_sf(data = Sitios, color="red") +
     ggrepel::geom_text_repel(data = Sitios,  aes(label = Sitio,  geometry = geometry),  stat = "sf_coordinates", force = 1, 
-nudge_x=-5000, nudge_y = 1000)+ 
-  theme_classic() + scale_fill_viridis_c("Occupancy", option = "plasma", direction = -1) + labs(x = NULL, y = NULL) + facet_wrap(~Species, nrow=2)
+nudge_x=-5000, nudge_y = 1000)+   theme_classic() + scale_fill_viridis_c("Occupancy", option = "plasma", direction = -1) + 
+  labs(x = NULL, y = NULL) + facet_wrap(~Species, nrow=2)+ theme(legend.position = "bottom")
 
 
 ```
 
+```{r, fig.height=10}
+
+layout <- "
+AAAABBB
+AAAABBB
+"
+OcuI + OcuP+plot_layout(design = layout, guides = 'collect') +plot_annotation(tag_levels = 'A') 
+
+```
 
 
 During winter, community assemblages were explain by three environmental variables: coastal urban habitats, crops and tree plantations. 
