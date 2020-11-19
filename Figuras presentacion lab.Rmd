@@ -239,7 +239,7 @@ OcuI + OcuP+plot_annotation(tag_levels = 'A')+ plot_layout(design = layout)
 
 ```
 
-```{r Pelecanus}
+```{r Pelecanus, fig.width=12}
 
 Species_DFInv_Pel <- Species_DFInv %>% dplyr::filter(Species=="Pelecanus")
 Species_DFPrim_Pel <- Species_DFPrim %>% dplyr::filter(Species=="Pelecanus") 
@@ -252,10 +252,10 @@ OcuP_Pel <- ggplot() + geom_raster(data = Species_DFPrim_Pel, aes(x = x, y = y, 
     ggrepel::geom_text_repel(data = Sitios,  aes(label = Sitio,  geometry = geometry),  stat = "sf_coordinates", force = 1, nudge_x=-5000, nudge_y = 1000)+ 
   theme_classic() + scale_fill_viridis_c("Occupancy", option = "plasma", direction = -1) + labs(x = NULL, y = NULL) + facet_wrap(~Species, nrow=1) + ggtitle('Primavera')
 
-OcuI_Pel+OcuP_Pel
+OcuI_Pel/ OcuP_Pel
 ```
 
-```{r Larus}
+```{r Larus, fig.width=12}
 Species_DFInv_Larus <- Species_DFInv %>% dplyr::filter(Species=="Larus")
 Species_DFPrim_Larus <- Species_DFPrim %>% dplyr::filter(Species=="Larus") 
 
@@ -267,10 +267,10 @@ OcuP_Larus <- ggplot() + geom_raster(data = Species_DFPrim_Larus, aes(x = x, y =
     ggrepel::geom_text_repel(data = Sitios,  aes(label = Sitio,  geometry = geometry),  stat = "sf_coordinates", force = 1, nudge_x=-5000, nudge_y = 1000)+ 
   theme_classic() + scale_fill_viridis_c("Occupancy", option = "plasma", direction = -1) + labs(x = NULL, y = NULL) + facet_wrap(~Species, nrow=1) + ggtitle('Primavera')
 
-OcuI_Larus + OcuP_Larus
+OcuI_Larus / OcuP_Larus
 ```
 
-```{r Larosterna}
+```{r Larosterna, fig.width=12}
 Species_DFInv_Larosterna <- Species_DFInv %>% dplyr::filter(Species=="Larosterna")
 Species_DFPrim_Larosterna <- Species_DFPrim %>% dplyr::filter(Species=="Larosterna") 
 
@@ -282,10 +282,10 @@ OcuP_Larosterna <- ggplot() + geom_raster(data = Species_DFPrim_Larosterna, aes(
     ggrepel::geom_text_repel(data = Sitios,  aes(label = Sitio,  geometry = geometry),  stat = "sf_coordinates", force = 1, nudge_x=-5000, nudge_y = 1000)+ 
   theme_classic() + scale_fill_viridis_c("Occupancy", option = "plasma", direction = -1) + labs(x = NULL, y = NULL) + facet_wrap(~Species, nrow=1) + ggtitle('Primavera')
 
-OcuI_Larosterna + OcuP_Larosterna
+OcuI_Larosterna / OcuP_Larosterna
 ```
 
-```{r Columba}
+```{r Columba, fig.width=12}
 Species_DFInv_Columba <- Species_DFInv %>% dplyr::filter(Species=="Columba")
 Species_DFPrim_Columba <- Species_DFPrim %>% dplyr::filter(Species=="Columba") 
 
@@ -297,7 +297,7 @@ OcuP_Columba <- ggplot() + geom_raster(data = Species_DFPrim_Columba, aes(x = x,
     ggrepel::geom_text_repel(data = Sitios,  aes(label = Sitio,  geometry = geometry),  stat = "sf_coordinates", force = 1, nudge_x=-5000, nudge_y = 1000)+ 
   theme_classic() + scale_fill_viridis_c("Occupancy", option = "plasma", direction = -1) + labs(x = NULL, y = NULL) + facet_wrap(~Species, nrow=1) + ggtitle('Primavera')
 
-OcuI_Columba + OcuP_Columba
+OcuI_Columba / OcuP_Columba
 ```
 
 
@@ -331,44 +331,102 @@ ComportamientoInv <- read_rds("ComportamientoInv.rds")
 I <-ggplot(ComportamientoInv) + 
   geom_col(aes(x=AMBIENTE, y=Total_ind, fill=Comportamiento), color="black") + theme_classic()+ facet_wrap(~Cientifico, ncol=4, scales = "free_y")+  
   theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1))+ ylab("Número individuos") +xlab(" ")+
-  scale_fill_manual(aesthetics = "fill", values = c('#a6cee3','#1f78b4','#33a02c','#e31a1c','#fdbf6f','#ff7f00'), name="Bird behavior")
+  scale_fill_manual(aesthetics = "fill", values = c('#a6cee3','#1f78b4','#33a02c','#e31a1c','#fdbf6f','#ff7f00'), name="Bird behavior") +ggtitle("Invierno")
+
 
 ComportamientoPrim <- read_rds( "ComportamientoPrim.rds")
 
 P <-ggplot(ComportamientoPrim) + 
   geom_col(aes(x=AMBIENTE, y=Total_ind, fill=Comportamiento), color="black") + theme_classic()+ facet_wrap(~Cientifico, ncol=3, scales = "free_y")+  
   theme(legend.position = "right", axis.text.x = element_text(angle = 45, hjust = 1))+ ylab("Número individuos") +xlab(" ")+
-  scale_fill_manual(aesthetics = "fill", values = c('#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00'), name="Bird behavior")
+  scale_fill_manual(aesthetics = "fill", values = c('#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00'), name="Bird behavior")+ ggtitle("Primavera")
 
 layout <- "
 AAAAAAAA
 BBBBBBB#
 "
-I + P + plot_layout(design = layout) +plot_annotation(tag_levels = 'A')
+I + P + plot_layout(design = layout) 
 
 
 ```
 
 
-```{r CompLarus, fig.height=8, fig.width=10}
-ComportamientoInv <- read_rds("ComportamientoInv.rds")
-I <-ggplot(ComportamientoInv) + 
+```{r CompLarus, fig.height=7, fig.width=7}
+ComportamientoInv_Larus <- read_rds("ComportamientoInv.rds") %>% dplyr::filter(Cientifico=="Larus_dominicanus")
+
+I <-ggplot(ComportamientoInv_Larus) + 
   geom_col(aes(x=AMBIENTE, y=Total_ind, fill=Comportamiento), color="black") + theme_classic()+ facet_wrap(~Cientifico, ncol=4, scales = "free_y")+  
-  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1))+ ylab("Número individuos") +xlab(" ")+
-  scale_fill_manual(aesthetics = "fill", values = c('#a6cee3','#1f78b4','#33a02c','#e31a1c','#fdbf6f','#ff7f00'), name="Bird behavior")
+  theme(legend.position = "right", axis.text.x = element_text(angle = 45, hjust = 1))+ ylab("Número individuos") +xlab(" ")+
+  scale_fill_manual(aesthetics = "fill", values = c('#a6cee3','#1f78b4','#33a02c','#e31a1c','#fdbf6f','#ff7f00'), name="Bird behavior") +ggtitle("Invierno")
 
-ComportamientoPrim <- read_rds( "ComportamientoPrim.rds")
+ComportamientoPrim_Larus <- read_rds( "ComportamientoPrim.rds") %>% dplyr::filter(Cientifico=="Larus_dominicanus")
 
-P <-ggplot(ComportamientoPrim) + 
+P <-ggplot(ComportamientoPrim_Larus) + 
   geom_col(aes(x=AMBIENTE, y=Total_ind, fill=Comportamiento), color="black") + theme_classic()+ facet_wrap(~Cientifico, ncol=3, scales = "free_y")+  
   theme(legend.position = "right", axis.text.x = element_text(angle = 45, hjust = 1))+ ylab("Número individuos") +xlab(" ")+
-  scale_fill_manual(aesthetics = "fill", values = c('#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00'), name="Bird behavior")
+  scale_fill_manual(aesthetics = "fill", values = c('#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00'), name="Bird behavior")+
+  ggtitle("Primavera")
 
-layout <- "
-AAAAAAAA
-BBBBBBB#
-"
-I + P + plot_layout(design = layout) +plot_annotation(tag_levels = 'A')
-
-
+I / P 
 ```
+
+
+```{r CompPele, fig.height=7, fig.width=7}
+ComportamientoInv_Pele <- read_rds("ComportamientoInv.rds") %>% dplyr::filter(Cientifico=="Pelecanus_thagus")
+
+I <-ggplot(ComportamientoInv_Pele) + 
+  geom_col(aes(x=AMBIENTE, y=Total_ind, fill=Comportamiento), color="black") + theme_classic()+ facet_wrap(~Cientifico, ncol=4, scales = "free_y")+  
+  theme(legend.position = "right", axis.text.x = element_text(angle = 45, hjust = 1))+ ylab("Número individuos") +xlab(" ")+
+  scale_fill_manual(aesthetics = "fill", values = c('#a6cee3','#1f78b4','#33a02c','#e31a1c','#fdbf6f','#ff7f00'), name="Bird behavior") +ggtitle("Invierno")
+
+ComportamientoPrim_Pele <- read_rds( "ComportamientoPrim.rds") %>% dplyr::filter(Cientifico=="Pelecanus_thagus")
+
+P <-ggplot(ComportamientoPrim_Pele) + 
+  geom_col(aes(x=AMBIENTE, y=Total_ind, fill=Comportamiento), color="black") + theme_classic()+ facet_wrap(~Cientifico, ncol=3, scales = "free_y")+  
+  theme(legend.position = "right", axis.text.x = element_text(angle = 45, hjust = 1))+ ylab("Número individuos") +xlab(" ")+
+  scale_fill_manual(aesthetics = "fill", values = c('#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00'), name="Bird behavior")+
+  ggtitle("Primavera")
+
+I / P 
+```
+
+```{r CompLarosterna, fig.height=7, fig.width=7}
+ComportamientoInv_Larosterna <- read_rds("ComportamientoInv.rds") %>% dplyr::filter(Cientifico=="Larosterna_inca")
+
+I <-ggplot(ComportamientoInv_Larosterna) + 
+  geom_col(aes(x=AMBIENTE, y=Total_ind, fill=Comportamiento), color="black") + theme_classic()+ facet_wrap(~Cientifico, ncol=4, scales = "free_y")+  
+  theme(legend.position = "right", axis.text.x = element_text(angle = 45, hjust = 1))+ ylab("Número individuos") +xlab(" ")+
+  scale_fill_manual(aesthetics = "fill", values = c('#a6cee3','#1f78b4','#33a02c','#e31a1c','#fdbf6f','#ff7f00'), name="Bird behavior") +ggtitle("Invierno")
+
+ComportamientoPrim_Larosterna <- read_rds( "ComportamientoPrim.rds") %>% dplyr::filter(Cientifico=="Larosterna_inca")
+
+P <-ggplot(ComportamientoPrim_Larosterna) + 
+  geom_col(aes(x=AMBIENTE, y=Total_ind, fill=Comportamiento), color="black") + theme_classic()+ facet_wrap(~Cientifico, ncol=3, scales = "free_y")+  
+  theme(legend.position = "right", axis.text.x = element_text(angle = 45, hjust = 1))+ ylab("Número individuos") +xlab(" ")+
+  scale_fill_manual(aesthetics = "fill", values = c('#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00'), name="Bird behavior")+
+  ggtitle("Primavera")
+
+I / P 
+```
+
+```{r CompColumba, fig.height=7, fig.width=7}
+ComportamientoInv_Columba <- read_rds("ComportamientoInv.rds") %>% dplyr::filter(Cientifico=="Columba_livia")
+
+I <-ggplot(ComportamientoInv_Columba) + 
+  geom_col(aes(x=AMBIENTE, y=Total_ind, fill=Comportamiento), color="black") + theme_classic()+ facet_wrap(~Cientifico, ncol=4, scales = "free_y")+  
+  theme(legend.position = "right", axis.text.x = element_text(angle = 45, hjust = 1))+ ylab("Número individuos") +xlab(" ")+
+  scale_fill_manual(aesthetics = "fill", values = c('#a6cee3','#1f78b4','#33a02c','#e31a1c','#fdbf6f','#ff7f00'), name="Bird behavior") +ggtitle("Invierno")
+
+ComportamientoPrim_Columba <- read_rds( "ComportamientoPrim.rds") %>% dplyr::filter(Cientifico=="Columba_livia")
+
+P <-ggplot(ComportamientoPrim_Columba) + 
+  geom_col(aes(x=AMBIENTE, y=Total_ind, fill=Comportamiento), color="black") + theme_classic()+ facet_wrap(~Cientifico, ncol=3, scales = "free_y")+  
+  theme(legend.position = "right", axis.text.x = element_text(angle = 45, hjust = 1))+ ylab("Número individuos") +xlab(" ")+
+  scale_fill_manual(aesthetics = "fill", values = c('#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00'), name="Bird behavior")+
+  ggtitle("Primavera")
+
+I / P 
+```
+
+
+
