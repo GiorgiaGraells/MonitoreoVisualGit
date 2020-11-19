@@ -1,0 +1,374 @@
+---
+title: "Figuras presentacion Lab, Nov 2020"
+output:
+  pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,	message = FALSE,warning = FALSE,cache = TRUE,comment = FALSE)
+
+library(readxl)
+library(tidyverse)
+library(vegan)
+library(MASS)
+library(ggplot2)
+library(ggrepel)
+library(patchwork)
+library(kableExtra)
+library(knitr)
+library(rasterVis)
+library(sf)
+library(raster)
+
+```
+
+
+
+```{r}
+#preparacion de datos registro aves
+
+AvesInv2 <- read_rds("AbundInv_Corregido.rds") 
+AvesInv2 <-AvesInv2 %>% ungroup() %>% dplyr::select(-Sitio) %>% mutate_all(~replace(., is.na(.), 0)) %>% sqrt()
+
+AvesPrim2 <- read_rds("AbundPrim_Corregido.rds")
+AvesPrim2 <-AvesPrim2 %>% ungroup() %>% dplyr::select(-Sitio)%>% mutate_all(~replace(., is.na(.), 0)) %>% sqrt()
+
+#Datos ambientales  incluidos buffers
+
+Amb<- read_rds("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/MonitoreoVisualGit/Occdata_occu.rds")
+Amb <- Amb %>% 
+  dplyr::select(Sitio,CobVeg, AMBIENTE, Distancia_rio, Altura, `Buffer_2200_Bosque Nativo`, `Buffer_2200_Cultivos`, `Buffer_2200_Grava`, `Buffer_2200_Oceano`, `Buffer_2200_Pastizales`, `Buffer_2200_Matorrales`, `Buffer_2200_Sup impermeables`, `Buffer_2200_Suelo arenoso`, `Buffer_2200_Plantación de árboles`) %>% 
+  rename( `Vegetation cover` =CobVeg) %>% rename( `Distance to river` =Distancia_rio) %>% 
+  rename( `Native forest` =`Buffer_2200_Bosque Nativo`) %>% rename(Crops =`Buffer_2200_Cultivos`) %>% 
+  rename( Gravel =`Buffer_2200_Grava`) %>% rename( Ocean =`Buffer_2200_Oceano`) %>% 
+  rename( Grassland =`Buffer_2200_Pastizales`) %>% rename( `Shrublands` =`Buffer_2200_Matorrales`) %>% 
+  rename( `Paved surface` =`Buffer_2200_Sup impermeables`) %>% rename( `Sand` =`Buffer_2200_Suelo arenoso`) %>% 
+  rename( `Tree plantation` =`Buffer_2200_Plantación de árboles`) %>% 
+  rename( Altitude = Altura)
+
+rownames(Amb) <- Amb$Sitio
+
+Amb <- Amb %>% dplyr::select(-Sitio) %>%
+  mutate(AMBIENTE= str_replace(AMBIENTE, "URBANO", "Urban"),
+         AMBIENTE= str_replace(AMBIENTE, "VERDE", "Green area"),
+         AMBIENTE= str_replace(AMBIENTE, "ROCA INTERVENIDA", "Modified rocky shore"),
+         AMBIENTE= str_replace(AMBIENTE, "PLAYA INTERVENIDA", "Urbanized beach"),
+         AMBIENTE= str_replace(AMBIENTE, "ROCA NATURAL", "Natural rocky shore"),
+         AMBIENTE= str_replace(AMBIENTE,"PLAYA NATURAL", "Natural beach"))
+```
+
+
+
+
+
+
+
+```{r, results='hide'}
+##### METAMDS: Non-metric Multidimensional scaling- NMDS
+
+#########################################################
+#Función para sacar los datos y ocupar ggplot
+TidyNMDS <- function(MDS, COVS){
+  DF <- COVS
+  DF2 <- MDS$points %>% as.data.frame()
+  DF <- bind_cols(DF2, DF)
+  return(DF = DF)
+}
+#########################################################
+#Invierno
+Inv_nmds2_bray <- suppressMessages(metaMDS(AvesInv2, autotransform = FALSE, distance="bray", k=2, try=20, trymax=100,  wascores=FALSE, trace=1, plot=FALSE))
+#Primavera
+Prim_nmds2_bray <-suppressMessages(metaMDS(AvesPrim2,autotransform = FALSE, distance="bray", k=2, try=20, trymax=100, wascores=FALSE, trace=1, plot=FALSE)) 
+```
+
+
+
+```{r}
+#figura 1 con los 6 ambientes costeros estudiados
+```
+
+
+```{r}
+#Covariables de deteccion y ocupaciono ocupadas para los modelos
+```
+
+
+
+
+```{r NMDS, fig.width=9, fig.height=4, fig.cap="Sites distribution in A winter and B spring"}
+#Funcion para grafico NMDS en ggplot Invierno
+Tidy_Inv_nmds2_bray <- TidyNMDS(MDS = Inv_nmds2_bray, COVS = Amb)
+
+Inv <- ggplot(Tidy_Inv_nmds2_bray)+geom_point(aes(x=MDS1, y=MDS2, color=AMBIENTE))+theme_classic() + 
+  scale_color_manual(name="Coastal habitats",  values = c('#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33')) + ggtitle('Invierno')
+
+#Funcion para grafico NMDS en ggplot Primavera
+Tidy_Prim_nmds2_bray <- TidyNMDS(MDS = Prim_nmds2_bray, COVS = Amb)
+
+Prim <-ggplot(Tidy_Prim_nmds2_bray)+geom_point(aes(x=MDS1, y=MDS2, color=AMBIENTE))+theme_classic() + 
+  scale_color_manual(name="Coastal habitats", values = c('#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33')) + ggtitle('Primavera')
+
+#Ambos graficos con paquete patchwork
+Inv+Prim + plot_layout(guides = 'collect')
+```
+
+
+
+```{r, results='hide'}
+## test: ANOSIM
+
+#Invierno
+Diss_Inv2 <- vegdist(AvesInv2, method="bray", binary=FALSE, diag=TRUE, upper=TRUE, na.rm = FALSE)
+#con base de datos por abundancia
+Anosim_Diss_Inv2<-anosim(Diss_Inv2, grouping=Amb$AMBIENTE, permutations = 9999, distance = "bray", strata = NULL, parallel = getOption("mc.cores"))
+Summ_AnosimInv <-summary(Anosim_Diss_Inv2)
+
+#Primavera
+Diss_Prim2 <- vegdist(AvesPrim2, method="bray", binary=FALSE, diag=TRUE, upper=TRUE, na.rm = FALSE)
+#con base de datos por abundancia
+Anosim_Diss_Prim2<-anosim(Diss_Prim2, grouping=Amb$AMBIENTE, permutations = 9999, distance = "bray",strata = NULL, parallel = getOption("mc.cores")) 
+summary(Anosim_Diss_Prim2)
+
+```
+
+
+```{r ANOSIM, fig.width=9, fig.cap="Dissimilarity ranking between an within the habitats in A winter (R=0.584, P<0.001) and B spring (R=0.573, P< 0.001)"}
+Inv <- ggplot()+ geom_boxplot(aes(x=Anosim_Diss_Inv2$class.vec, y=Anosim_Diss_Inv2$dis.rank), notch = TRUE, varwidth=TRUE)+theme_classic()+
+  xlab("Variables")+ ylab("Dissimmilarity rank")+ ggtitle('Invierno')
+
+Prim <- ggplot()+ geom_boxplot(aes(Anosim_Diss_Prim2$class.vec, y=Anosim_Diss_Prim2$dis.rank), notch = TRUE, varwidth=TRUE)+theme_classic()+
+ xlab("Variables")+ ylab("Dissimmilarity rank") + ggtitle('Primavera')
+
+Inv / Prim 
+```
+
+
+
+Both sampled seasons showed that few species contribute to differences between habitats. Acccording to simper analysis, during winter species were *Pelecanus thagus*, *Larus dominicanus*, *Coragyps atratus*, *Larosterna inca*, *Leucophaeus modestus*, *Columba livia*, *Turdus falcklandii*, and *Sephanoides sephaniodes*
+
+
+```{r OccuInv, fig.width=10, fig.height=7}
+
+Pelecanus <-read_rds("PredInv_Pelecanus_thagus.rds")
+Larus <-read_rds("PredInv_Larus_dominicanus.rds") 
+Coragyps <-read_rds("PredInv_Coragyps_atratus.rds")
+Larosterna <-read_rds("PredInv_Larosterna_inca.rds")
+Leucophaeus <-read_rds("PredInv_Leucophaeus_modestus.rds")
+Columba <-read_rds("PredInv_Columba_livia.rds")
+Turdus <-read_rds("PredInv_Turdus_falcklandii.rds")
+Sephanoides <-read_rds("PredInv_Sephanoides_sephaniodes.rds")
+
+Nombres <- c("Pelecanus", "Larus", "Coragyps", "Larosterna", "Leucophaeus", "Columba", "Turdus", "Sephanoides")
+Species <- list(Pelecanus, Larus, Coragyps, Larosterna, Leucophaeus, Columba, Turdus, Sephanoides)
+
+temp <- list()
+
+for(i in 1:length(Species)){
+  temp[[i]] <- Species[[i]] %>% as("SpatialPixelsDataFrame") %>% as.data.frame()
+  colnames(temp[[i]])[1] <- Nombres[i]
+}
+
+Species_DFInv <- temp %>% reduce(full_join) %>% dplyr::relocate(Pelecanus, .after = y) %>% pivot_longer(Pelecanus:Sephanoides, names_to = "Species", values_to = "Occupancy")
+
+Sitios <- read.csv("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/MonitoreoVisualGit/Muestreo aves jun-jul 2019/Monitoreo_punto/Reg_completo_aves_inv.csv") %>% 
+  dplyr::filter(Sitio %in% c("TERMINAL", "PLAYA LA BOCA", "PARQUE EL LITRE", "CALETA EL MEMBRILLO", "ROCA OCEANICA","SECTOR 5")) %>% 
+  mutate(Sitio= str_replace(Sitio, "TERMINAL", "T"),
+         Sitio= str_replace(Sitio, "PLAYA LA BOCA", "PLB"),
+         Sitio= str_replace(Sitio, "PARQUE EL LITRE", "PEL"),
+         Sitio= str_replace(Sitio, "CALETA EL MEMBRILLO", "CEM"),
+         Sitio= str_replace(Sitio, "ROCA OCEANICA", "RO"),
+         Sitio= str_replace(Sitio, "SECTOR 5", "PR")) %>% 
+  dplyr::select(Sitio, Latitud, Longitud) %>% distinct() %>% st_as_sf(coords=c("Longitud","Latitud"),crs="+proj=longlat +datum=WGS84 +no_defs") %>% 
+  st_transform(crs="+proj=utm +zone=19 +south +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0")
+
+OcuI <- ggplot() + geom_raster(data = Species_DFInv, aes(x = x, y = y, fill = Occupancy)) + geom_sf(data = Sitios, color="red") +
+    ggrepel::geom_text_repel(data = Sitios,  aes(label = Sitio,  geometry = geometry),  stat = "sf_coordinates", force = 1, 
+nudge_x=-5000, nudge_y = 1000)+ 
+  theme_classic() + scale_fill_viridis_c("Occupancy", option = "plasma", direction = -1) + labs(x = NULL, y = NULL) + facet_wrap(~Species, nrow=1)+ theme(legend.position = "none")
+
+```
+
+during spring, *Leucophaeus pipixcan*, *Larus dominicanus*, *Columba livia*, *Larosterna inca*, *Phalacrocorax bougainvillii*, and *Pelecanus thagus*. 
+
+```{r OccuPrim, fig.width=8, fig.height=7}
+Columba <-read_rds("PredPrim_Columba_livia.rds")
+Larosterna <-read_rds("PredPrim_Larosterna_inca.rds")
+Larus <-read_rds("PredPrim_Larus_dominicanus.rds")
+Leucophaeus <-read_rds("PredPrim_Leucophaeus_pipixcan.rds")
+Phalacrocorax <-read_rds("PredPrim_Phalacrocorax_bougainvillii.rds")
+Pelecanus <-read_rds("PredPrim_Pelecanus_thagus.rds")
+
+Nombres <- c("Columba", "Larosterna", "Larus","Leucophaeus", "Phalacrocorax", "Pelecanus")
+Species <- list(Columba, Larosterna, Larus, Leucophaeus, Phalacrocorax, Pelecanus)
+
+temp <- list()
+
+for(i in 1:length(Species)){
+  temp[[i]] <- Species[[i]] %>% as("SpatialPixelsDataFrame") %>% as.data.frame()
+  colnames(temp[[i]])[1] <- Nombres[i]
+}
+
+Species_DFPrim <- temp %>% reduce(full_join) %>% dplyr::relocate(Columba, .after = y) %>% pivot_longer(Columba:Pelecanus, names_to = "Species", values_to = "Occupancy")
+
+Sitios <- read.csv("/home/giorgia/Documents/Doctorado tesis/Monitoreo aves/MonitoreoVisualGit/Muestreo aves jun-jul 2019/Monitoreo_punto/Reg_completo_aves_inv.csv") %>% 
+ dplyr::filter(Sitio %in% c("TERMINAL", "PLAYA LA BOCA", "PARQUE EL LITRE", "CALETA EL MEMBRILLO", "ROCA OCEANICA","SECTOR 5")) %>% 
+  mutate(Sitio= str_replace(Sitio, "TERMINAL", "T"),
+         Sitio= str_replace(Sitio, "PLAYA LA BOCA", "PLB"),
+         Sitio= str_replace(Sitio, "PARQUE EL LITRE", "PEL"),
+         Sitio= str_replace(Sitio, "CALETA EL MEMBRILLO", "CEM"),
+         Sitio= str_replace(Sitio, "ROCA OCEANICA", "RO"),
+         Sitio= str_replace(Sitio, "SECTOR 5", "PR")) %>% 
+  dplyr::select(Sitio, Latitud, Longitud) %>% distinct() %>% st_as_sf(coords=c("Longitud","Latitud"),crs="+proj=longlat +datum=WGS84 +no_defs") %>% 
+  st_transform(crs="+proj=utm +zone=19 +south +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0")
+
+OcuP <- ggplot() + geom_raster(data = Species_DFPrim, aes(x = x, y = y, fill = Occupancy)) + geom_sf(data = Sitios, color="red") +
+    ggrepel::geom_text_repel(data = Sitios,  aes(label = Sitio,  geometry = geometry),  stat = "sf_coordinates", force = 1, 
+nudge_x=-5000, nudge_y = 1000)+ 
+  theme_classic() + scale_fill_viridis_c("Occupancy", option = "plasma", direction = -1) + labs(x = NULL, y = NULL) + facet_wrap(~Species, nrow=1)
+
+
+```
+
+```{r, fig.width=13, fig.height=6}
+
+layout <- "
+AAAA
+BBB#
+"
+OcuI + OcuP+plot_annotation(tag_levels = 'A')+ plot_layout(design = layout) 
+
+```
+
+```{r Pelecanus}
+
+Species_DFInv_Pel <- Species_DFInv %>% dplyr::filter(Species=="Pelecanus")
+Species_DFPrim_Pel <- Species_DFPrim %>% dplyr::filter(Species=="Pelecanus") 
+
+OcuI_Pel <- ggplot() + geom_raster(data = Species_DFInv_Pel, aes(x = x, y = y, fill = Occupancy)) + geom_sf(data = Sitios, color="red") +
+    ggrepel::geom_text_repel(data = Sitios,  aes(label = Sitio,  geometry = geometry),  stat = "sf_coordinates", force = 1, nudge_x=-5000, nudge_y = 1000)+ 
+  theme_classic() + scale_fill_viridis_c("Occupancy", option = "plasma", direction = -1) + labs(x = NULL, y = NULL) + facet_wrap(~Species, nrow=1)+ theme(legend.position = "none") + ggtitle('Invierno')
+
+OcuP_Pel <- ggplot() + geom_raster(data = Species_DFPrim_Pel, aes(x = x, y = y, fill = Occupancy)) + geom_sf(data = Sitios, color="red") +
+    ggrepel::geom_text_repel(data = Sitios,  aes(label = Sitio,  geometry = geometry),  stat = "sf_coordinates", force = 1, nudge_x=-5000, nudge_y = 1000)+ 
+  theme_classic() + scale_fill_viridis_c("Occupancy", option = "plasma", direction = -1) + labs(x = NULL, y = NULL) + facet_wrap(~Species, nrow=1) + ggtitle('Primavera')
+
+OcuI_Pel+OcuP_Pel
+```
+
+```{r Larus}
+Species_DFInv_Larus <- Species_DFInv %>% dplyr::filter(Species=="Larus")
+Species_DFPrim_Larus <- Species_DFPrim %>% dplyr::filter(Species=="Larus") 
+
+OcuI_Larus <- ggplot() + geom_raster(data = Species_DFInv_Larus, aes(x = x, y = y, fill = Occupancy)) + geom_sf(data = Sitios, color="red") +
+    ggrepel::geom_text_repel(data = Sitios,  aes(label = Sitio,  geometry = geometry),  stat = "sf_coordinates", force = 1, nudge_x=-5000, nudge_y = 1000)+ 
+  theme_classic() + scale_fill_viridis_c("Occupancy", option = "plasma", direction = -1) + labs(x = NULL, y = NULL) + facet_wrap(~Species, nrow=1)+ theme(legend.position = "none") + ggtitle('Invierno')
+
+OcuP_Larus <- ggplot() + geom_raster(data = Species_DFPrim_Larus, aes(x = x, y = y, fill = Occupancy)) + geom_sf(data = Sitios, color="red") +
+    ggrepel::geom_text_repel(data = Sitios,  aes(label = Sitio,  geometry = geometry),  stat = "sf_coordinates", force = 1, nudge_x=-5000, nudge_y = 1000)+ 
+  theme_classic() + scale_fill_viridis_c("Occupancy", option = "plasma", direction = -1) + labs(x = NULL, y = NULL) + facet_wrap(~Species, nrow=1) + ggtitle('Primavera')
+
+OcuI_Larus + OcuP_Larus
+```
+
+```{r Larosterna}
+Species_DFInv_Larosterna <- Species_DFInv %>% dplyr::filter(Species=="Larosterna")
+Species_DFPrim_Larosterna <- Species_DFPrim %>% dplyr::filter(Species=="Larosterna") 
+
+OcuI_Larosterna <- ggplot() + geom_raster(data = Species_DFInv_Larosterna, aes(x = x, y = y, fill = Occupancy)) + geom_sf(data = Sitios, color="red") +
+    ggrepel::geom_text_repel(data = Sitios,  aes(label = Sitio,  geometry = geometry),  stat = "sf_coordinates", force = 1, nudge_x=-5000, nudge_y = 1000)+ 
+  theme_classic() + scale_fill_viridis_c("Occupancy", option = "plasma", direction = -1) + labs(x = NULL, y = NULL) + facet_wrap(~Species, nrow=1)+ theme(legend.position = "none") + ggtitle('Invierno')
+
+OcuP_Larosterna <- ggplot() + geom_raster(data = Species_DFPrim_Larosterna, aes(x = x, y = y, fill = Occupancy)) + geom_sf(data = Sitios, color="red") +
+    ggrepel::geom_text_repel(data = Sitios,  aes(label = Sitio,  geometry = geometry),  stat = "sf_coordinates", force = 1, nudge_x=-5000, nudge_y = 1000)+ 
+  theme_classic() + scale_fill_viridis_c("Occupancy", option = "plasma", direction = -1) + labs(x = NULL, y = NULL) + facet_wrap(~Species, nrow=1) + ggtitle('Primavera')
+
+OcuI_Larosterna + OcuP_Larosterna
+```
+
+```{r Columba}
+Species_DFInv_Columba <- Species_DFInv %>% dplyr::filter(Species=="Columba")
+Species_DFPrim_Columba <- Species_DFPrim %>% dplyr::filter(Species=="Columba") 
+
+OcuI_Columba <- ggplot() + geom_raster(data = Species_DFInv_Columba, aes(x = x, y = y, fill = Occupancy)) + geom_sf(data = Sitios, color="red") +
+    ggrepel::geom_text_repel(data = Sitios,  aes(label = Sitio,  geometry = geometry),  stat = "sf_coordinates", force = 1, nudge_x=-5000, nudge_y = 1000)+ 
+  theme_classic() + scale_fill_viridis_c("Occupancy", option = "plasma", direction = -1) + labs(x = NULL, y = NULL) + facet_wrap(~Species, nrow=1)+ theme(legend.position = "none") + ggtitle('Invierno')
+
+OcuP_Columba <- ggplot() + geom_raster(data = Species_DFPrim_Columba, aes(x = x, y = y, fill = Occupancy)) + geom_sf(data = Sitios, color="red") +
+    ggrepel::geom_text_repel(data = Sitios,  aes(label = Sitio,  geometry = geometry),  stat = "sf_coordinates", force = 1, nudge_x=-5000, nudge_y = 1000)+ 
+  theme_classic() + scale_fill_viridis_c("Occupancy", option = "plasma", direction = -1) + labs(x = NULL, y = NULL) + facet_wrap(~Species, nrow=1) + ggtitle('Primavera')
+
+OcuI_Columba + OcuP_Columba
+```
+
+
+
+
+
+```{r}
+#ORDISTEP
+
+#Invierno
+#Step: AvesInv2 ~ AMBIENTE + Cultivos + `Plantacion de arboles`
+
+#Primavera
+#Step: AvesPrim2 ~ AMBIENTE + `Bosque nativo` 
+
+```
+
+
+
+
+```{r}
+#Resultados occupancia para especies dde Simper
+ModelosOccuPrim <- read_rds("ModelosOccuPrim_Ms.rds")
+#Para generar las ecuaciones **Resultado_OccuPrim_Ms.rds** y **Resultado_OccuInv_Ms.rds**
+```
+
+
+
+```{r Comportamineto, fig.height=8, fig.width=10}
+ComportamientoInv <- read_rds("ComportamientoInv.rds")
+I <-ggplot(ComportamientoInv) + 
+  geom_col(aes(x=AMBIENTE, y=Total_ind, fill=Comportamiento), color="black") + theme_classic()+ facet_wrap(~Cientifico, ncol=4, scales = "free_y")+  
+  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1))+ ylab("Número individuos") +xlab(" ")+
+  scale_fill_manual(aesthetics = "fill", values = c('#a6cee3','#1f78b4','#33a02c','#e31a1c','#fdbf6f','#ff7f00'), name="Bird behavior")
+
+ComportamientoPrim <- read_rds( "ComportamientoPrim.rds")
+
+P <-ggplot(ComportamientoPrim) + 
+  geom_col(aes(x=AMBIENTE, y=Total_ind, fill=Comportamiento), color="black") + theme_classic()+ facet_wrap(~Cientifico, ncol=3, scales = "free_y")+  
+  theme(legend.position = "right", axis.text.x = element_text(angle = 45, hjust = 1))+ ylab("Número individuos") +xlab(" ")+
+  scale_fill_manual(aesthetics = "fill", values = c('#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00'), name="Bird behavior")
+
+layout <- "
+AAAAAAAA
+BBBBBBB#
+"
+I + P + plot_layout(design = layout) +plot_annotation(tag_levels = 'A')
+
+
+```
+
+
+```{r CompLarus, fig.height=8, fig.width=10}
+ComportamientoInv <- read_rds("ComportamientoInv.rds")
+I <-ggplot(ComportamientoInv) + 
+  geom_col(aes(x=AMBIENTE, y=Total_ind, fill=Comportamiento), color="black") + theme_classic()+ facet_wrap(~Cientifico, ncol=4, scales = "free_y")+  
+  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1))+ ylab("Número individuos") +xlab(" ")+
+  scale_fill_manual(aesthetics = "fill", values = c('#a6cee3','#1f78b4','#33a02c','#e31a1c','#fdbf6f','#ff7f00'), name="Bird behavior")
+
+ComportamientoPrim <- read_rds( "ComportamientoPrim.rds")
+
+P <-ggplot(ComportamientoPrim) + 
+  geom_col(aes(x=AMBIENTE, y=Total_ind, fill=Comportamiento), color="black") + theme_classic()+ facet_wrap(~Cientifico, ncol=3, scales = "free_y")+  
+  theme(legend.position = "right", axis.text.x = element_text(angle = 45, hjust = 1))+ ylab("Número individuos") +xlab(" ")+
+  scale_fill_manual(aesthetics = "fill", values = c('#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00'), name="Bird behavior")
+
+layout <- "
+AAAAAAAA
+BBBBBBB#
+"
+I + P + plot_layout(design = layout) +plot_annotation(tag_levels = 'A')
+
+
+```
