@@ -327,11 +327,15 @@ ModelosOccuPrim <- read_rds("ModelosOccuPrim_Ms.rds")
 
 
 ```{r Comportamineto, fig.height=8, fig.width=10}
+
+PalleteInv <- c("Flying"= '#a6cee3', "On the water"='#1f78b4', "Walking"='#e31a1c',  "In the foliage"='#33a02c', "Perching"='#ff7f00',"Standing over a thing"='#fb9a99' )
+PalletePrim <- c("Flying"='#a6cee3', "On the water"='#1f78b4', "Walking"='#e31a1c', "In the foliage"='#33a02c', "Perching"='#ff7f00', "Standing over a thing"='#fb9a99', "Other"='#fdbf6f', "Nesting"='#b2df8a')
+        
 ComportamientoInv <- read_rds("ComportamientoInv.rds")
 I <-ggplot(ComportamientoInv) + 
   geom_col(aes(x=AMBIENTE, y=Total_ind, fill=Comportamiento), color="black") + theme_classic()+ facet_wrap(~Cientifico, ncol=4, scales = "free_y")+  
   theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1))+ ylab("Número individuos") +xlab(" ")+
-  scale_fill_manual(aesthetics = "fill", values = c('#a6cee3','#1f78b4','#33a02c','#e31a1c','#fdbf6f','#ff7f00'), name="Bird behavior") +ggtitle("Invierno")
+  scale_fill_manual(aesthetics = "fill", values = PalleteInv, name="Bird behavior") +ggtitle("Invierno")
 
 
 ComportamientoPrim <- read_rds( "ComportamientoPrim.rds")
@@ -339,7 +343,7 @@ ComportamientoPrim <- read_rds( "ComportamientoPrim.rds")
 P <-ggplot(ComportamientoPrim) + 
   geom_col(aes(x=AMBIENTE, y=Total_ind, fill=Comportamiento), color="black") + theme_classic()+ facet_wrap(~Cientifico, ncol=3, scales = "free_y")+  
   theme(legend.position = "right", axis.text.x = element_text(angle = 45, hjust = 1))+ ylab("Número individuos") +xlab(" ")+
-  scale_fill_manual(aesthetics = "fill", values = c('#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00'), name="Bird behavior")+ ggtitle("Primavera")
+  scale_fill_manual(aesthetics = "fill", values = PalletePrim, name="Bird behavior")+ ggtitle("Primavera")
 
 layout <- "
 AAAAAAAA
@@ -352,19 +356,23 @@ I + P + plot_layout(design = layout)
 
 
 ```{r CompLarus, fig.height=7, fig.width=7}
+
+PalleteInv <- c("Flying"= '#a6cee3', "On the water"='#1f78b4', "Walking"='#e31a1c',  "In the foliage"='#33a02c', "Perching"='#ff7f00',"Standing over a thing"='#fb9a99' )
+PalletePrim <- c("Flying"='#a6cee3', "On the water"='#1f78b4', "Walking"='#e31a1c', "In the foliage"='#33a02c', "Perching"='#ff7f00', "Standing over a thing"='#fb9a99', "Other"='#fdbf6f', "Nesting"='#b2df8a')
+  
 ComportamientoInv_Larus <- read_rds("ComportamientoInv.rds") %>% dplyr::filter(Cientifico=="Larus_dominicanus")
 
 I <-ggplot(ComportamientoInv_Larus) + 
   geom_col(aes(x=AMBIENTE, y=Total_ind, fill=Comportamiento), color="black") + theme_classic()+ facet_wrap(~Cientifico, ncol=4, scales = "free_y")+  
-  theme(legend.position = "right", axis.text.x = element_text(angle = 45, hjust = 1))+ ylab("Número individuos") +xlab(" ")+
-  scale_fill_manual(aesthetics = "fill", values = c('#a6cee3','#1f78b4','#33a02c','#e31a1c','#fdbf6f','#ff7f00'), name="Bird behavior") +ggtitle("Invierno")
+  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1))+ ylab("Número individuos") +xlab(" ")+
+  scale_fill_manual(aesthetics = "fill", values = PalleteInv, name="Bird behavior") +ggtitle("Invierno")
 
 ComportamientoPrim_Larus <- read_rds( "ComportamientoPrim.rds") %>% dplyr::filter(Cientifico=="Larus_dominicanus")
 
 P <-ggplot(ComportamientoPrim_Larus) + 
   geom_col(aes(x=AMBIENTE, y=Total_ind, fill=Comportamiento), color="black") + theme_classic()+ facet_wrap(~Cientifico, ncol=3, scales = "free_y")+  
   theme(legend.position = "right", axis.text.x = element_text(angle = 45, hjust = 1))+ ylab("Número individuos") +xlab(" ")+
-  scale_fill_manual(aesthetics = "fill", values = c('#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00'), name="Bird behavior")+
+  scale_fill_manual(aesthetics = "fill", values = PalletePrim, name="Bird behavior")+
   ggtitle("Primavera")
 
 I / P 
@@ -372,57 +380,66 @@ I / P
 
 
 ```{r CompPele, fig.height=7, fig.width=7}
+
+PalleteInv <- c("Flying"= '#a6cee3', "On the water"='#1f78b4', "Walking"='#e31a1c',  "In the foliage"='#33a02c', "Perching"='#ff7f00',"Standing over a thing"='#fb9a99' )
+PalletePrim <- c("Flying"='#a6cee3', "On the water"='#1f78b4', "Walking"='#e31a1c', "In the foliage"='#33a02c', "Perching"='#ff7f00', "Standing over a thing"='#fb9a99', "Other"='#fdbf6f', "Nesting"='#b2df8a')
 ComportamientoInv_Pele <- read_rds("ComportamientoInv.rds") %>% dplyr::filter(Cientifico=="Pelecanus_thagus")
 
 I <-ggplot(ComportamientoInv_Pele) + 
   geom_col(aes(x=AMBIENTE, y=Total_ind, fill=Comportamiento), color="black") + theme_classic()+ facet_wrap(~Cientifico, ncol=4, scales = "free_y")+  
-  theme(legend.position = "right", axis.text.x = element_text(angle = 45, hjust = 1))+ ylab("Número individuos") +xlab(" ")+
-  scale_fill_manual(aesthetics = "fill", values = c('#a6cee3','#1f78b4','#33a02c','#e31a1c','#fdbf6f','#ff7f00'), name="Bird behavior") +ggtitle("Invierno")
+  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1))+ ylab("Número individuos") +xlab(" ")+
+  scale_fill_manual(aesthetics = "fill", values = PalleteInv, name="Bird behavior") +ggtitle("Invierno")
 
 ComportamientoPrim_Pele <- read_rds( "ComportamientoPrim.rds") %>% dplyr::filter(Cientifico=="Pelecanus_thagus")
 
 P <-ggplot(ComportamientoPrim_Pele) + 
   geom_col(aes(x=AMBIENTE, y=Total_ind, fill=Comportamiento), color="black") + theme_classic()+ facet_wrap(~Cientifico, ncol=3, scales = "free_y")+  
   theme(legend.position = "right", axis.text.x = element_text(angle = 45, hjust = 1))+ ylab("Número individuos") +xlab(" ")+
-  scale_fill_manual(aesthetics = "fill", values = c('#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00'), name="Bird behavior")+
+  scale_fill_manual(aesthetics = "fill", values =PalletePrim, name="Bird behavior")+
   ggtitle("Primavera")
 
 I / P 
 ```
 
 ```{r CompLarosterna, fig.height=7, fig.width=7}
+PalleteInv <- c("Flying"= '#a6cee3', "On the water"='#1f78b4', "Walking"='#e31a1c',  "In the foliage"='#33a02c', "Perching"='#ff7f00',"Standing over a thing"='#fb9a99' )
+PalletePrim <- c("Flying"='#a6cee3', "On the water"='#1f78b4', "Walking"='#e31a1c', "In the foliage"='#33a02c', "Perching"='#ff7f00', "Standing over a thing"='#fb9a99', "Other"='#fdbf6f', "Nesting"='#b2df8a')
 ComportamientoInv_Larosterna <- read_rds("ComportamientoInv.rds") %>% dplyr::filter(Cientifico=="Larosterna_inca")
 
 I <-ggplot(ComportamientoInv_Larosterna) + 
   geom_col(aes(x=AMBIENTE, y=Total_ind, fill=Comportamiento), color="black") + theme_classic()+ facet_wrap(~Cientifico, ncol=4, scales = "free_y")+  
   theme(legend.position = "right", axis.text.x = element_text(angle = 45, hjust = 1))+ ylab("Número individuos") +xlab(" ")+
-  scale_fill_manual(aesthetics = "fill", values = c('#a6cee3','#1f78b4','#33a02c','#e31a1c','#fdbf6f','#ff7f00'), name="Bird behavior") +ggtitle("Invierno")
+  scale_fill_manual(aesthetics = "fill", values = PalleteInv, name="Bird behavior") +ggtitle("Invierno")
 
 ComportamientoPrim_Larosterna <- read_rds( "ComportamientoPrim.rds") %>% dplyr::filter(Cientifico=="Larosterna_inca")
 
 P <-ggplot(ComportamientoPrim_Larosterna) + 
   geom_col(aes(x=AMBIENTE, y=Total_ind, fill=Comportamiento), color="black") + theme_classic()+ facet_wrap(~Cientifico, ncol=3, scales = "free_y")+  
   theme(legend.position = "right", axis.text.x = element_text(angle = 45, hjust = 1))+ ylab("Número individuos") +xlab(" ")+
-  scale_fill_manual(aesthetics = "fill", values = c('#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00'), name="Bird behavior")+
+  scale_fill_manual(aesthetics = "fill", values = PalletePrim, name="Bird behavior")+
   ggtitle("Primavera")
 
 I / P 
 ```
 
 ```{r CompColumba, fig.height=7, fig.width=7}
+
+PalleteInv <- c("Flying"= '#a6cee3', "On the water"='#1f78b4', "Walking"='#e31a1c',  "In the foliage"='#33a02c', "Perching"='#ff7f00',"Standing over a thing"='#fb9a99' )
+PalletePrim <- c("Flying"='#a6cee3', "On the water"='#1f78b4', "Walking"='#e31a1c', "In the foliage"='#33a02c', "Perching"='#ff7f00', "Standing over a thing"='#fb9a99', "Other"='#fdbf6f', "Nesting"='#b2df8a')      
+ 
 ComportamientoInv_Columba <- read_rds("ComportamientoInv.rds") %>% dplyr::filter(Cientifico=="Columba_livia")
 
 I <-ggplot(ComportamientoInv_Columba) + 
   geom_col(aes(x=AMBIENTE, y=Total_ind, fill=Comportamiento), color="black") + theme_classic()+ facet_wrap(~Cientifico, ncol=4, scales = "free_y")+  
   theme(legend.position = "right", axis.text.x = element_text(angle = 45, hjust = 1))+ ylab("Número individuos") +xlab(" ")+
-  scale_fill_manual(aesthetics = "fill", values = c('#a6cee3','#1f78b4','#33a02c','#e31a1c','#fdbf6f','#ff7f00'), name="Bird behavior") +ggtitle("Invierno")
+  scale_fill_manual(aesthetics = "fill", values = PalleteInv, name="Bird behavior") + ggtitle("Invierno")
 
 ComportamientoPrim_Columba <- read_rds( "ComportamientoPrim.rds") %>% dplyr::filter(Cientifico=="Columba_livia")
 
 P <-ggplot(ComportamientoPrim_Columba) + 
   geom_col(aes(x=AMBIENTE, y=Total_ind, fill=Comportamiento), color="black") + theme_classic()+ facet_wrap(~Cientifico, ncol=3, scales = "free_y")+  
-  theme(legend.position = "right", axis.text.x = element_text(angle = 45, hjust = 1))+ ylab("Número individuos") +xlab(" ")+
-  scale_fill_manual(aesthetics = "fill", values = c('#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00'), name="Bird behavior")+
+  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1))+ ylab("Número individuos") +xlab(" ")+
+  scale_fill_manual(aesthetics = "fill", values = PalletePrim, name="Bird behavior")+ 
   ggtitle("Primavera")
 
 I / P 
