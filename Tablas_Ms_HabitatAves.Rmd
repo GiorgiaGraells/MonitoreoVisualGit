@@ -8,9 +8,32 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
 library(kableExtra)
 library(tidyverse)
+```
+
+```{r,results='asis'}
+#Modelo 1= Abundancia ~ Estacion * Especie + AMBIENTE+ (1|Sitio), family = poisson, data =Aves ) #AIC 17716.1
+#Modelo 2= Abundancia ~ Especie + AMBIENTE+ (1|Sitio), family = poisson, data =Aves )           #AIC 18241.0
+DF_seasson <- tibble(Model= c("$Estacion \\times Especie + Ambiente+ \\frac{1}{Sitio}$", "$Especie + Ambiente + \\frac{1}{Sitio}$"), AIC= c(17716.1, 18241.0))
+
+kable(DF_seasson, booktabs=T, escape = F) %>% kable_styling(latex_options = "basic") 
+
+```
+
+```{r, results='asis'}
+Inv_DF <-  read.csv("ResumenSimper_Inv2.csv") %>% as.data.frame() 
+kable(Inv_DF, booktabs = T) 
+
+```
+
+
+
+```{r, results='asis'}
+Prim_DF <-  read.csv("ResumenSimper_Prim2.csv") %>% as.data.frame()
+kable(Prim_DF, booktabs = T) 
+
 ```
 
 ```{r, results='asis'}
