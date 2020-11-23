@@ -61,5 +61,5 @@ DF_occu <- tibble( Species= c("Columba livia","Coragyps atratus", "Larosterna in
                                "$\\psi_{Tf} = e^{687.42 + 29.20Ve +	48.41Al -34.88Oc	-505.66Gs +	59.49Tr -4.94Pa +	283.63Sa -51.82Tr}$"))
 
 kable(DF_occu, booktabs=T, escape = F) %>% kable_styling(latex_options = "basic") %>% column_spec(column = 1, italic = T)
-#dear silvain
+
 ```

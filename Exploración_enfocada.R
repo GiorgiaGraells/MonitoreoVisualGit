@@ -29,7 +29,8 @@ AvesInv <- left_join(x=AvesInv, y= BirdNames)
 
 #Grafico riqueza especies invierno
 AvesInv_riq <- AvesInv %>% group_by(Sitio, AMBIENTE, Habitat) %>% summarise(Riqueza = n())
-AvesInv_riq <- AvesInv_riq %>% mutate(AMBIENTE=fct_relevel(AMBIENTE, "URBANO","VERDE", "ROQUERIO INTERVENIDO","PLAYA INTERVENIDA",  "ROQUERIO NATURAL"))
+AvesInv_riq <- AvesInv_riq %>% 
+  mutate(AMBIENTE=fct_relevel(AMBIENTE, "VERDE", "URBANO", "ROQUERIO NATURAL","ROQUERIO INTERVENIDO","PLAYA NATURAL","PLAYA INTERVENIDA"))
 
 Riqueza_Prom <- AvesInv_riq %>% group_by(AMBIENTE, Habitat) %>% summarise(Riqueza = mean(Riqueza))
 
@@ -62,12 +63,14 @@ AvesPrim <- left_join(x=AvesPrim, y= BirdNames)
 
 #Grafico riqueza especies primavera
 AvesPrim_riq <- AvesPrim %>% group_by(Sitio, AMBIENTE, Habitat) %>% summarise(Riqueza = n())
-AvesPrim_riq <- AvesPrim_riq %>% mutate(AMBIENTE=fct_relevel(AMBIENTE, "URBANO","VERDE", "ROQUERIO INTERVENIDO","PLAYA INTERVENIDA",  "ROQUERIO NATURAL"))
+AvesPrim_riq <- AvesPrim_riq %>% 
+  mutate(AMBIENTE=fct_relevel(AMBIENTE, "VERDE", "URBANO", "ROQUERIO NATURAL","ROQUERIO INTERVENIDO","PLAYA NATURAL","PLAYA INTERVENIDA"))
 
 Riqueza_Prom <- AvesPrim_riq %>% group_by(AMBIENTE, Habitat) %>% summarise(Riqueza = mean(Riqueza))
 
 
-AvesRiqTotal <- bind_rows((AvesInv_riq %>% mutate(Temporada = "Invierno")),(AvesPrim_riq %>% mutate(Temporada = "Primavera"))) %>% mutate(AMBIENTE = fct_relevel(AMBIENTE,"PLAYA NATURAL", "PLAYA INTERVENIDA", "ROQUERIO NATURAL", "ROQUERIO INTERVENIDO", "VERDE"))
+AvesRiqTotal <- bind_rows((AvesInv_riq %>% mutate(Temporada = "Invierno")),(AvesPrim_riq %>% mutate(Temporada = "Primavera"))) %>% 
+  mutate(AMBIENTE = fct_relevel(AMBIENTE,"PLAYA NATURAL", "PLAYA INTERVENIDA", "ROQUERIO NATURAL", "ROQUERIO INTERVENIDO", "VERDE"))
 
 
 ggplot(AvesRiqTotal, aes(x=Temporada, y=Riqueza)) + geom_boxplot(aes(fill=Habitat), position="dodge", notch = F) + facet_wrap(~AMBIENTE, scales = "free_x", ncol=2)+

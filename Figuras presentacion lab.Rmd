@@ -58,6 +58,13 @@ Amb <- Amb %>% dplyr::select(-Sitio) %>%
 ```
 
 
+```{r}
+
+#Abund_Prim <-ggplot(AvesInv2, aes(x=Sitio, y=Riqueza)) + geom_col(aes(fill=Habitat), position="dodge") + facet_wrap(~AMBIENTE, scales = "free_x", ncol=2)+
+#  scale_fill_manual(aesthetics = c("fill", "color"),values = c( '#5ab4ac','#d8b365')) +  theme_bw()+ ylab("Riqueza de especies invierno")+
+#  xlab("Sitios de muestreo")+   theme(axis.text.x=element_blank()) + geom_hline(data = Riqueza_Prom,aes(yintercept = Riqueza, color = Habitat), lty=2)
+
+```
 
 
 
