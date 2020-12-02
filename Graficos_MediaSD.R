@@ -6,7 +6,7 @@ library(ggplot2)
 
 # RIQUEZA DE ESPECIES: Media de sitios por ambiente y sd
 
-#PolaRRR
+# Graficos polares
 
 #invierno
 

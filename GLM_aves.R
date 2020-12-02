@@ -1,4 +1,4 @@
-# Verificar diferencias no estacionales para aves
+# Verificar diferencias no estacionales para aves considderando especies
 #mediante GLMmixto x estación
 
 library(tidyverse)
