@@ -89,17 +89,13 @@ options(na.action = "na.fail")
 #Seleccion de modelos
 
 Selected <- dredge(Modelo, m.lim = c(0, floor(nrow(Riqueza)/10)))
-
 Final <- subset(Selected, delta < 2)
 Final_conpeso <- model.sel(Final)
 
 Final_DF <- as.data.frame(Final_conpeso)
-kable(Final_DF, digits = 2, booktabs=T) %>%  kable_styling(latex_options = c("scale_down"), font_size = 9)
-
-
+#kable(Final_DF, digits = 2, booktabs=T) %>%  kable_styling(latex_options = c("scale_down"), font_size = 9)
 
 NewData <- Riqueza %>% dplyr::select(-Riqueza, -Sitio, -AMBIENTE) %>% distinct()
-
 Predicciones <- predict(Modelo, NewData, type = "response",se.fit = T)
 
 NewData$Pred <- Predicciones$fit
@@ -109,3 +105,4 @@ ggplot(NewData, aes(y=Pred, x=Grado_modificacion)) + geom_col(aes(fill=Habitat),
   scale_fill_manual(aesthetics = c("fill", "color"),values = c( '#5ab4ac','#d8b365')) +  theme_bw()+ ylab("Riqueza de especies")+
    geom_errorbar(aes(ymin=Pred-SE, ymax=Pred+SE), position = position_dodge2(width = 0.1, padding = 0.7))+
   facet_grid(Temporada ~ Ambiente) +   theme(axis.text.x=element_blank())
+

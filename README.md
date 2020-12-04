@@ -161,7 +161,11 @@ analisis NMDS y ensambles con nuevos y mejores colores
 
 Se acuerda generar una grafico de riqueza de especies por ambiente,
 separado en marino-terrestre Para Presencia especies, abundancia y
-probabilidad de ocupancia realizar: - NMDS + ANOSIM - SIMPER - BIOENV
+probabilidad de ocupancia realizar: - NMDS + ANOSIM
+
+  - SIMPER
+
+  - BIOENV
 
 Se borró script de exploración de datos en donde se habia comenzado con
 la exploración, pero fue cocntinuada en el script AnalisisVegan Se geneó
@@ -205,3 +209,9 @@ exportados por separado **PredEstacionX\_EspecieX.rds** - graficos de
 comportamiento desde archivo **Comportamineto\_Aves.R**, con abundancia
 corregida de invierno de **AbundInv\_Corregido.rds** y
 **AbundPrim\_Corregido.rds**
+
+## Figuras para presentacion de laboratorio
+
+Esta presentación surgió con la idea de darle una vuelta a los
+resultados de este estudio Archivo: **Figuras presentacion lab.R** Se
+alimenta de los archivos - **RiquezaAves\_ambiente.R**
