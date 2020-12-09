@@ -19,6 +19,7 @@ library(patchwork)
 library(kableExtra)
 library(knitr)
 library(rasterVis)
+library(sf)
 
 ```
 
@@ -115,6 +116,56 @@ The present study was carried out in the Gran Valparaíso, a metropolitan area t
 Urban habitats in coastal areas present the conditions that allow specific species composition, cohabiting marine and inland bird species
 
 ### Methodology
+
+```{r}
+
+# GLMmixto con variables aleatorias
+library(MuMIn)
+
+nuevoinv <- AvesInv_riq %>% ungroup() %>% mutate(Temporada="Winter") %>% 
+  mutate(Ambiente = case_when(AMBIENTE == "PLAYA INTERVENIDA"| AMBIENTE =="PLAYA NATURAL"~"Beach",
+                              AMBIENTE =="ROQUERIO INTERVENIDO"| AMBIENTE =="ROQUERIO NATURAL"~"Rocky shore",
+                              AMBIENTE =="URBANO" | AMBIENTE == "VERDE"~"Land")) %>% 
+  mutate(Grado_modificacion=case_when(AMBIENTE == "PLAYA INTERVENIDA"| AMBIENTE =="ROQUERIO INTERVENIDO" |AMBIENTE =="URBANO"~"Modified",
+                                      AMBIENTE == "PLAYA NATURAL"| AMBIENTE =="ROQUERIO NATURAL" |AMBIENTE =="VERDE"~"Natural" ))
+
+nuevoprim <- AvesPrim_riq %>% ungroup() %>% mutate(Temporada="Spring") %>% 
+  mutate(Ambiente = case_when(AMBIENTE == "PLAYA INTERVENIDA"| AMBIENTE =="PLAYA NATURAL"~"Beach",
+                              AMBIENTE =="ROQUERIO INTERVENIDO"| AMBIENTE =="ROQUERIO NATURAL"~"Rocky shore",
+                              AMBIENTE =="URBANO" | AMBIENTE == "VERDE"~"Land")) %>% 
+  mutate(Grado_modificacion=case_when(AMBIENTE == "PLAYA INTERVENIDA"| AMBIENTE =="ROQUERIO INTERVENIDO" |AMBIENTE =="URBANO"~"Modified",
+                                      AMBIENTE == "PLAYA NATURAL"| AMBIENTE =="ROQUERIO NATURAL" |AMBIENTE =="VERDE"~"Natural" ))
+
+Riqueza <- bind_rows(nuevoinv, nuevoprim)
+
+# Modelo
+Modelo <- glm(Riqueza ~ Temporada + Ambiente + Grado_modificacion + Habitat +  Temporada:Ambiente + Ambiente:Grado_modificacion , family = poisson, data =Riqueza ) 
+options(na.action = "na.fail")
+#Seleccion de modelos
+
+Selected <- dredge(Modelo, m.lim = c(0, floor(nrow(Riqueza)/10)))
+
+Final <- subset(Selected, delta < 2)
+Final_conpeso <- model.sel(Final)
+
+Final_DF <- as.data.frame(Final_conpeso)
+#kable(Final_DF, digits = 2, booktabs=T) %>%  kable_styling(latex_options = c("scale_down"), font_size = 9)
+
+NewData <- Riqueza %>% dplyr::select(-Riqueza, -Sitio, -AMBIENTE) %>% distinct()
+
+Predicciones <- predict(Modelo, NewData, type = "response",se.fit = T)
+
+NewData$Pred <- Predicciones$fit
+NewData$SE <- Predicciones$se.fit
+
+ggplot(NewData, aes(y=Pred, x=Habitat)) + geom_col(aes(fill=Grado_modificacion ), position="dodge") +
+  scale_fill_manual(aesthetics = c("fill", "color"),values = c( '#5ab4ac','#d8b365')) +  theme_bw()+ ylab("Species richness")+
+   geom_errorbar(aes(ymin=Pred-SE, ymax=Pred+SE), position = position_dodge2(width = 0.1, padding = 0.7))+
+  facet_grid(Ambiente ~ Temporada) + xlab("Habitat of origin")
+
+```
+
+
 
 
 ```{r, results='hide'}

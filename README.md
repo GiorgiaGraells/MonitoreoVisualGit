@@ -210,8 +210,14 @@ comportamiento desde archivo **Comportamineto\_Aves.R**, con abundancia
 corregida de invierno de **AbundInv\_Corregido.rds** y
 **AbundPrim\_Corregido.rds**
 
-## Figuras para presentacion de laboratorio
+## Figuras para presentacion de laboratorio viernes 4 diciembre
 
 Esta presentación surgió con la idea de darle una vuelta a los
 resultados de este estudio Archivo: **Figuras presentacion lab.R** Se
-alimenta de los archivos - **RiquezaAves\_ambiente.R**
+alimenta de los archivos - **RiquezaAves\_ambiente.R** tiene riqueza de
+aves y la riqueza a partir de los modelos de prediccion
+
+## Inclusion de comentarios de la reunion de lab
+
+  - Figura prediccion de riqueza al comienzo de resultados en manuscrito
+    y tabla de modelos. Obtenido de **Figuras presentacion lab.R**

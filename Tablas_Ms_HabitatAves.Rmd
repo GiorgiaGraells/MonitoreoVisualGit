@@ -13,6 +13,46 @@ library(kableExtra)
 library(tidyverse)
 ```
 
+
+
+```{r}
+# GLMmixto con variables aleatorias
+library(MuMIn)
+
+nuevoinv <- AvesInv_riq %>% ungroup() %>% mutate(Temporada="Winter") %>% 
+  mutate(Ambiente = case_when(AMBIENTE == "PLAYA INTERVENIDA"| AMBIENTE =="PLAYA NATURAL"~"Beach",
+                              AMBIENTE =="ROQUERIO INTERVENIDO"| AMBIENTE =="ROQUERIO NATURAL"~"Rocky shore",
+                              AMBIENTE =="URBANO" | AMBIENTE == "VERDE"~"Land")) %>% 
+  mutate(Grado_modificacion=case_when(AMBIENTE == "PLAYA INTERVENIDA"| AMBIENTE =="ROQUERIO INTERVENIDO" |AMBIENTE =="URBANO"~"Modified",
+                                      AMBIENTE == "PLAYA NATURAL"| AMBIENTE =="ROQUERIO NATURAL" |AMBIENTE =="VERDE"~"Natural" ))
+
+nuevoprim <- AvesPrim_riq %>% ungroup() %>% mutate(Temporada="Spring") %>% 
+  mutate(Ambiente = case_when(AMBIENTE == "PLAYA INTERVENIDA"| AMBIENTE =="PLAYA NATURAL"~"Beach",
+                              AMBIENTE =="ROQUERIO INTERVENIDO"| AMBIENTE =="ROQUERIO NATURAL"~"Rocky shore",
+                              AMBIENTE =="URBANO" | AMBIENTE == "VERDE"~"Land")) %>% 
+  mutate(Grado_modificacion=case_when(AMBIENTE == "PLAYA INTERVENIDA"| AMBIENTE =="ROQUERIO INTERVENIDO" |AMBIENTE =="URBANO"~"Modified",
+                                      AMBIENTE == "PLAYA NATURAL"| AMBIENTE =="ROQUERIO NATURAL" |AMBIENTE =="VERDE"~"Natural" ))
+
+Riqueza <- bind_rows(nuevoinv, nuevoprim)
+
+# Modelo
+Modelo <- glm(Riqueza ~ Temporada + Ambiente + Grado_modificacion + Habitat +  Temporada:Ambiente + Ambiente:Grado_modificacion , family = poisson, data =Riqueza ) 
+options(na.action = "na.fail")
+#Seleccion de modelos
+
+Selected <- dredge(Modelo, m.lim = c(0, floor(nrow(Riqueza)/10)))
+
+Final <- subset(Selected, delta < 2)
+Final_conpeso <- model.sel(Final)
+
+Final_DF <- as.data.frame(Final_conpeso)
+kable(Final_DF, digits = 2, booktabs=T) %>%  kable_styling(latex_options = c("scale_down"), font_size = 9)
+
+```
+
+
+
+
 ```{r,results='asis'}
 #Modelo 1= Abundancia ~ Estacion * Especie + AMBIENTE+ (1|Sitio), family = poisson, data =Aves ) #AIC 17716.1
 #Modelo 2= Abundancia ~ Especie + AMBIENTE+ (1|Sitio), family = poisson, data =Aves )           #AIC 18241.0
@@ -63,3 +103,5 @@ DF_occu <- tibble( Species= c("Columba livia","Coragyps atratus", "Larosterna in
 kable(DF_occu, booktabs=T, escape = F) %>% kable_styling(latex_options = "basic") %>% column_spec(column = 1, italic = T)
 
 ```
+
+
