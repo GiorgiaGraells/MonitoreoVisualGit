@@ -62,7 +62,7 @@ Amb <- Amb %>% dplyr::select(-Sitio) %>%
 
 
 
-### Introduction
+# Introduction
 
 1. Establish importance of the field- provide background, keywords- present the problem
 
@@ -115,12 +115,100 @@ The present study was carried out in the Gran Valparaíso, a metropolitan area t
 [Announces the findings]
 Urban habitats in coastal areas present the conditions that allow specific species composition, cohabiting marine and inland bird species
 
-### Methodology
+
+
+# Methodology
+
+1. Overview-purpose of the work-give source of material/equipment used
+
+[General overview of this section]
+
+In this research, we conducted bird surveys in six coastal urban environments in the Greater Valparaíso, estimated species composition and analised occupancy of key species in those environments.
+
+[Provide background information and justification]
+
+The Greater Valparaíso is the largest metropolitan coastal area in Central Chile and the second most populated urban area in the country (935,602 people according to @censo2017chile). The three coastal cities: Valparaíso, the mayor port in the country; Viña del Mar, with high touristic infrastructure; and Concón, a small area that grew from a rural beach to a one of place of mayor urban growth in the las txx years. 
+
+[Provide an overview of the procedure/method itself]
+
+Bird abundance obtained from the field was corrected by detection capacity of sampling using occupancy models with DiversityOcuppancy package [@divoccu]. To estimate species assembles for habitats, the vegan package [@Vegan] was used. 
+Particular species were analized in a continuos environmental gradient using ocupancy probability from occupancy models also with DiversityOcuppancy package [@divoccu].
+  
+2. Details about materials and methods- justify choices
+
+[Provide details about what was done and used and shows that care was taken]
+Six coastal habitat were defined in terms of its proximity to the coast, level of urbanization and land cover: natural rocky shore, modified rocky shore, natural beach, and urbanized beach, green area, and urban center (Fig. \@ref(fig:Ambientes)). 
+Six replicas of theses habitats were sampled by visual bird surveys in south hemisfer winter and spring of 2019. Between four and six surveys were conducted daily randomly during sunrise and the three hours later for 10 minutes in each site. All species that were seen and heard were recorded.
+
+Seasonality was tested with a mixed GLM with abundance as a response variable and a random effect of sample sites. We tested a model where seasonality has a interaction with the habitats defined in this research.
+
+[Continuing to describe what was done in detail, using language which comunicate that care was taken]
+
+Bird commmunities for each habitat were analised using ordination methods with vegan package [@Vegan] in R with species abundances corrected by detection capacity, using occupancy models with DiversityOcuppancy package [@divoccu](see table 1).
+We  determined dissimilarity distances among sample sites and tested significant differences among habitat with analysis of similarities (ANOSIM). 
+To determine species contribution to the differrence between habitats we used Bray-Curtis dissimilaries with SIMPER analysis.
+
+In order to understand habitat use by birds, environmental variables were prepared from landcover layers.
+A 2000m diameter buffer was made
+
+Environmental variables used by bird assembles were tested with a permanova for each season of sampling
+
+
+```{r Ambientes, fig.cap="The six environments selected to sample: Natural rocky shore, modified rocky shore, natural beach, modified beach, green area, and urban center."}
+#figura 1 con los 6 ambientes costeros estudiados
+
+
+include_graphics("Ambientes_Aves.png")
+```
+
+
+3. Relate to other studies
+
+[Describe what was done by referring to existing mehods in the literature]
+
+To independize our analysis from habitats already defined, ocupancy models of SIMPER selected species were developed and projected over the study area.
+
+[Provide more detailed information about the method and show that was a good choice]
+Covariables of detection and occupation are describedd in table 1.
+Ocupancy models were proyected to the study area.
+
+
+4. Indicate where problems occurred
+
+[Mention possible difficulty in the methodology]
+
 
 ```{r}
+#Covariables de deteccion y ocupaciono ocupadas para los modelos
+```
+
+
+
+### Results
+
+1. Revisting the research aim/existing research
+
+Coastal cities in central Chile probed to allow habitats were marine and terrestrial bird species can cohabitat. Urbanization is a big factor in bird assemblages.
+
+2. General overview of results
+
+
+Species richnes is similar between same natural and modified environments. 
+There are distingible birs species assembles where only a few species contribute to the difference between them. For these habitats, bird assemblages differ between winter and spring seasons.
+Environmental variables can be responsible of both community identities and use of habitat individualy
+
+
+3. Invitations to view results
+
+
+```{r PredRiqueza}
 
 # GLMmixto con variables aleatorias
 library(MuMIn)
+
+AvesInv_riq <- readRDS("AvesInv_riq.rds")
+AvesPrim_riq <- readRDS("AvesPrim_riq.rds")
+
 
 nuevoinv <- AvesInv_riq %>% ungroup() %>% mutate(Temporada="Winter") %>% 
   mutate(Ambiente = case_when(AMBIENTE == "PLAYA INTERVENIDA"| AMBIENTE =="PLAYA NATURAL"~"Beach",
@@ -159,16 +247,16 @@ NewData$Pred <- Predicciones$fit
 NewData$SE <- Predicciones$se.fit
 
 ggplot(NewData, aes(y=Pred, x=Habitat)) + geom_col(aes(fill=Grado_modificacion ), position="dodge") +
-  scale_fill_manual(aesthetics = c("fill", "color"),values = c( '#5ab4ac','#d8b365')) +  theme_bw()+ ylab("Species richness")+
+  scale_fill_manual(name="Intervention", aesthetics = c("fill", "color"),values = c( '#5ab4ac','#d8b365')) +  theme_bw()+ ylab("Species richness")+
    geom_errorbar(aes(ymin=Pred-SE, ymax=Pred+SE), position = position_dodge2(width = 0.1, padding = 0.7))+
-  facet_grid(Ambiente ~ Temporada) + xlab("Habitat of origin")
+  facet_grid(Ambiente ~ Temporada) + xlab("Habitat of origin") 
 
 ```
 
+Species richnes is similar between two seasons of sampling, environments, nor habitat of origin of species. Althogh modified anvironmnet have less species for site, only urban centers are distinct.
 
 
-
-```{r, results='hide'}
+```{r DataNMDS, results='hide'}
 ##### METAMDS: Non-metric Multidimensional scaling- NMDS
 
 #########################################################
@@ -187,214 +275,6 @@ Prim_nmds2_bray <-suppressMessages(metaMDS(AvesPrim2,autotransform = FALSE, dist
 ```
 
 
-```{r}
-#Inv
-
-Mod0 <- adonis2(AvesInv2 ~ 1, data = Amb, by = "terms")
-Mod1 <- adonis2(AvesInv2 ~ Altitude +  Ocean +`Vegetation cover`, data = Amb, by = "terms")###################### Menor AIC
-Mod2 <- adonis2(AvesInv2 ~ Altitude + `Paved surface`+ Shrublands+`Vegetation cover`, data = Amb, by = "terms")
-Mod3 <- adonis2(AvesInv2 ~ Altitude + `Paved surface`+ Ocean , data = Amb, by = "terms")
-Mod4 <- adonis2(AvesInv2 ~ Altitude +  Ocean +`Vegetation cover`+ Shrublands, data = Amb, by = "terms")
-Mod5 <- adonis2(AvesInv2 ~ Altitude + `Paved surface`+ Shrublands+ Ocean, data = Amb, by = "terms")
-
-
-AICc.PERMANOVA2 <- function(adonis2.model) {
-  
-  # check to see if object is an adonis2 model...
-  
-  if (is.na(adonis2.model$SumOfSqs[1]))
-    stop("object not output of adonis2 {vegan} ")
-  
-  # Ok, now extract appropriate terms from the adonis model Calculating AICc
-  # using residual sum of squares (RSS or SSE) since I don't think that adonis
-  # returns something I can use as a likelihood function... maximum likelihood
-  # and MSE estimates are the same when distribution is gaussian See e.g.
-  # https://www.jessicayung.com/mse-as-maximum-likelihood/;
-  # https://towardsdatascience.com/probability-concepts-explained-maximum-likelihood-estimation-c7b4342fdbb1
-  # So using RSS or MSE estimates is fine as long as the residuals are
-  # Gaussian https://robjhyndman.com/hyndsight/aic/ If models have different
-  # conditional likelihoods then AIC is not valid. However, comparing models
-  # with different error distributions is ok (above link).
-  
-  
-  RSS <- adonis2.model$SumOfSqs[ length(adonis2.model$SumOfSqs) - 1 ]
-  MSE <- RSS / adonis2.model$Df[ length(adonis2.model$Df) - 1 ]
-  
-  nn <- adonis2.model$Df[ length(adonis2.model$Df) ] + 1
-  
-  k <- nn - adonis2.model$Df[ length(adonis2.model$Df) - 1 ]
-  
-  
-  # AIC : 2*k + n*ln(RSS/n)
-  # AICc: AIC + [2k(k+1)]/(n-k-1)
-  
-  # based on https://en.wikipedia.org/wiki/Akaike_information_criterion;
-  # https://www.statisticshowto.datasciencecentral.com/akaikes-information-criterion/ ;
-  # https://www.researchgate.net/post/What_is_the_AIC_formula;
-  # http://avesbiodiv.mncn.csic.es/estadistica/ejemploaic.pdf;
-  # https://medium.com/better-programming/data-science-modeling-how-to-use-linear-regression-with-python-fdf6ca5481be 
-  
-
-  AIC <- 2*k + nn*log(RSS/nn)
-  AICc <- AIC + (2*k*(k + 1))/(nn - k - 1)
-
-  output <- data.frame(AICc = AICc, k = k, N = nn)
-  
-  return(output)   
-  
-}
-
-DF<- data.frame(Modelo = paste0("Mod", 0:5), AICc = NA)
-
-
-DF$AICc[1] <- AICc.PERMANOVA2(Mod0)$AICc
-DF$AICc[2] <-  AICc.PERMANOVA2(Mod1)$AICc
-DF$AICc[3] <- AICc.PERMANOVA2(Mod2)$AICc
-DF$AICc[4] <-  AICc.PERMANOVA2(Mod3)$AICc
-DF$AICc[5] <-  AICc.PERMANOVA2(Mod4)$AICc
-DF$AICc[6] <-  AICc.PERMANOVA2(Mod5)$AICc
-
-
-```
-
-```{r}
-#Prim
-
-Mod0 <- adonis2(AvesPrim2 ~ 1, data = Amb, by = "terms")
-Mod1 <- adonis2(AvesPrim2 ~ Altitude +  Ocean +`Vegetation cover`, data = Amb, by = "terms")
-Mod2 <- adonis2(AvesPrim2 ~ Altitude + `Paved surface`+ Shrublands+`Vegetation cover`, data = Amb, by = "terms")
-Mod3 <- adonis2(AvesPrim2 ~ Altitude + `Paved surface`+ Ocean , data = Amb, by = "terms")########################     Menor AIC
-Mod4 <- adonis2(AvesPrim2 ~ Altitude +  Ocean +`Vegetation cover`+ Shrublands, data = Amb, by = "terms")
-Mod5 <- adonis2(AvesPrim2 ~ Altitude + `Paved surface`+ Shrublands+ Ocean, data = Amb, by = "terms")
-
-
-AICc.PERMANOVA2 <- function(adonis2.model) {
-  
-  # check to see if object is an adonis2 model...
-  
-  if (is.na(adonis2.model$SumOfSqs[1]))
-    stop("object not output of adonis2 {vegan} ")
-  
-  # Ok, now extract appropriate terms from the adonis model Calculating AICc
-  # using residual sum of squares (RSS or SSE) since I don't think that adonis
-  # returns something I can use as a likelihood function... maximum likelihood
-  # and MSE estimates are the same when distribution is gaussian See e.g.
-  # https://www.jessicayung.com/mse-as-maximum-likelihood/;
-  # https://towardsdatascience.com/probability-concepts-explained-maximum-likelihood-estimation-c7b4342fdbb1
-  # So using RSS or MSE estimates is fine as long as the residuals are
-  # Gaussian https://robjhyndman.com/hyndsight/aic/ If models have different
-  # conditional likelihoods then AIC is not valid. However, comparing models
-  # with different error distributions is ok (above link).
-  
-  
-  RSS <- adonis2.model$SumOfSqs[ length(adonis2.model$SumOfSqs) - 1 ]
-  MSE <- RSS / adonis2.model$Df[ length(adonis2.model$Df) - 1 ]
-  
-  nn <- adonis2.model$Df[ length(adonis2.model$Df) ] + 1
-  
-  k <- nn - adonis2.model$Df[ length(adonis2.model$Df) - 1 ]
-  
-  
-  # AIC : 2*k + n*ln(RSS/n)
-  # AICc: AIC + [2k(k+1)]/(n-k-1)
-  
-  # based on https://en.wikipedia.org/wiki/Akaike_information_criterion;
-  # https://www.statisticshowto.datasciencecentral.com/akaikes-information-criterion/ ;
-  # https://www.researchgate.net/post/What_is_the_AIC_formula;
-  # http://avesbiodiv.mncn.csic.es/estadistica/ejemploaic.pdf;
-  # https://medium.com/better-programming/data-science-modeling-how-to-use-linear-regression-with-python-fdf6ca5481be 
-  
-
-  AIC <- 2*k + nn*log(RSS/nn)
-  AICc <- AIC + (2*k*(k + 1))/(nn - k - 1)
-
-  output <- data.frame(AICc = AICc, k = k, N = nn)
-  
-  return(output)   
-  
-}
-
-DF<- data.frame(Modelo = paste0("Mod", 0:5), AICc = NA)
-
-
-DF$AICc[1] <- AICc.PERMANOVA2(Mod0)$AICc
-DF$AICc[2] <-  AICc.PERMANOVA2(Mod1)$AICc
-DF$AICc[3] <- AICc.PERMANOVA2(Mod2)$AICc
-DF$AICc[4] <-  AICc.PERMANOVA2(Mod3)$AICc
-DF$AICc[5] <-  AICc.PERMANOVA2(Mod4)$AICc
-DF$AICc[6] <-  AICc.PERMANOVA2(Mod5)$AICc
-
-
-```
-
-1. Overview-purpose of the work-give source of material/equipment used
-
-[General overview of this section]
-In this research, we conducted bird surveys in six coastal urban environments in the Greater Valparaíso, estimated species composition based on corrected bird presences, and analysed bird assembles in those environment. 
-
-[Provide background information and justification]
-The Greater Valparaíso is the largest metropolitan coastal area in Central Chile and the second most populated urban area in the country (935,602 people according to @censo2017chile). The three coastal cities: Valparaíso, the mayor port in the country; Viña del Mar, with high touristic infrastructure; and Concón, a small area that growth from a rural beach to a one of place of mayor urban growth in the las txx years. 
-
-[Provide an overview of the procedure/method itself]
-Bird abundance obtained from the field was corrected by detection capacity of sampling using occupancy models with DiversityOcuppancy package [@divoccu]. To estimate species assembles for habitats, the vegan package [@Vegan] was used. 
-Particular species were analized in a continuos environmental gradient using ocupancy probability from occupancy models also with DiversityOcuppancy package [@divoccu].
-  
-2. Details about materials and methods- justify choices
-
-[Provide details about what was done and used and shows that care was taken]
-Six coastal habitat were defined in terms of its proximity to the coast, level of urbanization and land cover: urban centre, green area, natural rocky shore, modified rocky shore, natural beach, and urbanized beach (Figura 1). 
-Six replicas of theses habitats were sampled by visual bird surveys in south hemisfer winter and spring of 2019. Surveys were conducted randomly during sunrise and the three hours later for 10 minutes, registering species and behaviour.
-
-Seasonality was tested with a mixed GLM with abundance as a response variable and a random effect of sample sites. We tested a model where seasonality has a interaction with the habitats defined in this research.
-
-[Continuing to describe what was done in detail, using languajge which comunicate that care was taken]
-
-Bird commmunities for each habitat were analised using ordination methods with vegan package [@Vegan] in R with species abundances corrected by detection capacity, using occupancy models with DiversityOcuppancy package [@divoccu](see table 1).
-We  determined dissimilarity distances among sample sites and tested significant differences among habitat with analysis of similarities (ANOSIM).  To determine species contribution to the differrence between habitats we used Bray-Curtis dissimilaries with SIMPER analysis.
-
-In order to understand habitat use by birds, bird activities were counted by each habitat
-
-Fit of environmental variables on species ordination was also tested. 
-
-
-3. Relate to other studies
-
-[Describe what was done by referring to existing mehods in the literature]
-To independize our analysis from habitats already defined, ocupancy models of SIMPER selected species were developed and projected over the study area.
-
-[Provide more detailed information about the method and show that was a good choice]
-Covariables of detection and occupation are describedd in table 1.
-
-
-4. Indicate where problems occurred
-
-[Mention possible difficulty in the methodology]
-
-```{r}
-#figura 1 con los 6 ambientes costeros estudiados
-```
-
-
-```{r}
-#Covariables de deteccion y ocupaciono ocupadas para los modelos
-```
-
-
-
-### Results
-
-1. Revisting the research aim/existing research
-Coastal cities in central Chile probed to allow habitats were marine and terrestrial bird species can cohabitat. Urbanization is a big factor in bird assemblages.
-
-2. General overview of results
-The six coastal urban habitats shows distingible birs species assembles where only a few species contribute to the difference between them. For these habitats, bird assemblages differ between winter and spring seasons.
-Environmental variables can be responsible of both community identities and use of habitat idiviualy
-
-
-3. Invitations to view results
-
-Coastal urban habitats show specific composition of species abundances for winter and spring seassons (Tabla 3). Distribution of sites in graphical NMDS (Fig. \@ref(fig:NMDS)) showedthat both seassons presented differences in abundance of species mostly in the inland sites. Additionally, coastal modified sites, as those in urbanized beach and modified rocky shore habitats, are closer to urban centres than coastal natural sites. 
-
 ```{r NMDS, fig.width=9, fig.height=4, fig.cap="Sites distribution in A winter and B spring"}
 #Funcion para grafico NMDS en ggplot Invierno
 Tidy_Inv_nmds2_bray <- TidyNMDS(MDS = Inv_nmds2_bray, COVS = Amb)
@@ -412,9 +292,11 @@ Prim <-ggplot(Tidy_Prim_nmds2_bray)+geom_point(aes(x=MDS1, y=MDS2, color=AMBIENT
 Inv+Prim + plot_annotation(tag_levels = 'A')+ plot_layout(guides = 'collect')
 ```
 
-Dissimilary rank shows with an 95% confidence interval that dissimilarities withing habitat are lower than between habitats, this demonstrate that group of species for each habitat are different. There is one exception shown by natural beach habitat during winter, here variability of species in the habitat is as high as we consider all habitats together (Fig. \@ref(fig:ANOSIM))
+Corrected abundances by detection probability 
 
-```{r, results='hide'}
+Coastal urban habitats show specific composition of species abundances for winter and spring seassons (Tabla ModGLMEstacion). Distribution of sites in graphical NMDS (Fig. \@ref(fig:NMDS)) showed that both seassons presented differences in abundance of species mostly in the inland sites. Additionally, coastal modified sites, as those in urbanized beach and modified rocky shore habitats, are closer to urban centres than coastal natural sites. 
+
+```{r DataAnosim, results='hide'}
 ## test: ANOSIM
 
 #Invierno
@@ -442,16 +324,121 @@ Prim <- ggplot()+ geom_boxplot(aes(Anosim_Diss_Prim2$class.vec, y=Anosim_Diss_Pr
 Inv / Prim +plot_annotation(tag_levels = 'A')
 ```
 
+Dissimilary rank shows with an 95% confidence interval that dissimilarities withing habitat are lower than between habitats, this demonstrate that group of species for each habitat are different. There is one exception shown by natural beach habitat during winter, here variability of species in the habitat is as high as we consider all habitats together (Fig. \@ref(fig:ANOSIM))
+
+
+```{r DataPermInv}
+#Inv
+
+Mod0 <- adonis2(AvesInv2 ~ 1, data = Amb, by = "terms")
+Mod1 <- adonis2(AvesInv2 ~ Altitude +  Ocean +`Vegetation cover`, data = Amb, by = "terms")###################### Menor AIC
+Mod2 <- adonis2(AvesInv2 ~ Altitude + `Paved surface`+ Shrublands+`Vegetation cover`, data = Amb, by = "terms")
+Mod3 <- adonis2(AvesInv2 ~ Altitude + `Paved surface`+ Ocean , data = Amb, by = "terms")
+Mod4 <- adonis2(AvesInv2 ~ Altitude +  Ocean +`Vegetation cover`+ Shrublands, data = Amb, by = "terms")
+Mod5 <- adonis2(AvesInv2 ~ Altitude + `Paved surface`+ Shrublands+ Ocean, data = Amb, by = "terms")
+
+
+AICc.PERMANOVA2 <- function(adonis2.model) {
+  
+  # check to see if object is an adonis2 model...
+  
+  if (is.na(adonis2.model$SumOfSqs[1]))
+    stop("object not output of adonis2 {vegan} ")
+  
+
+  
+  RSS <- adonis2.model$SumOfSqs[ length(adonis2.model$SumOfSqs) - 1 ]
+  MSE <- RSS / adonis2.model$Df[ length(adonis2.model$Df) - 1 ]
+  
+  nn <- adonis2.model$Df[ length(adonis2.model$Df) ] + 1
+  
+  k <- nn - adonis2.model$Df[ length(adonis2.model$Df) - 1 ]
+  
+  
+  # AIC : 2*k + n*ln(RSS/n)
+  # AICc: AIC + [2k(k+1)]/(n-k-1)
+
+
+  AIC <- 2*k + nn*log(RSS/nn)
+  AICc <- AIC + (2*k*(k + 1))/(nn - k - 1)
+
+  output <- data.frame(AICc = AICc, k = k, N = nn)
+  
+  return(output)   
+  
+}
+
+DF<- data.frame(Modelo = paste0("Mod", 0:5), AICc = NA)
+
+
+DF$AICc[1] <- AICc.PERMANOVA2(Mod0)$AICc
+DF$AICc[2] <-  AICc.PERMANOVA2(Mod1)$AICc
+DF$AICc[3] <- AICc.PERMANOVA2(Mod2)$AICc
+DF$AICc[4] <-  AICc.PERMANOVA2(Mod3)$AICc
+DF$AICc[5] <-  AICc.PERMANOVA2(Mod4)$AICc
+DF$AICc[6] <-  AICc.PERMANOVA2(Mod5)$AICc
+
+
+```
+
+```{r DataPermPrim}
+#Prim
+
+Mod0 <- adonis2(AvesPrim2 ~ 1, data = Amb, by = "terms")
+Mod1 <- adonis2(AvesPrim2 ~ Altitude +  Ocean +`Vegetation cover`, data = Amb, by = "terms")
+Mod2 <- adonis2(AvesPrim2 ~ Altitude + `Paved surface`+ Shrublands+`Vegetation cover`, data = Amb, by = "terms")
+Mod3 <- adonis2(AvesPrim2 ~ Altitude + `Paved surface`+ Ocean , data = Amb, by = "terms")########################     Menor AIC
+Mod4 <- adonis2(AvesPrim2 ~ Altitude +  Ocean +`Vegetation cover`+ Shrublands, data = Amb, by = "terms")
+Mod5 <- adonis2(AvesPrim2 ~ Altitude + `Paved surface`+ Shrublands+ Ocean, data = Amb, by = "terms")
+
+
+AICc.PERMANOVA2 <- function(adonis2.model) {
+  
+  # check to see if object is an adonis2 model...
+  
+  if (is.na(adonis2.model$SumOfSqs[1]))
+    stop("object not output of adonis2 {vegan} ")
+  
+  RSS <- adonis2.model$SumOfSqs[ length(adonis2.model$SumOfSqs) - 1 ]
+  MSE <- RSS / adonis2.model$Df[ length(adonis2.model$Df) - 1 ]
+  
+  nn <- adonis2.model$Df[ length(adonis2.model$Df) ] + 1
+  
+  k <- nn - adonis2.model$Df[ length(adonis2.model$Df) - 1 ]
+  
+  
+  # AIC : 2*k + n*ln(RSS/n)
+  # AICc: AIC + [2k(k+1)]/(n-k-1)
+  
+   AIC <- 2*k + nn*log(RSS/nn)
+  AICc <- AIC + (2*k*(k + 1))/(nn - k - 1)
+
+  output <- data.frame(AICc = AICc, k = k, N = nn)
+  
+  return(output)   
+  
+}
+
+DF<- data.frame(Modelo = paste0("Mod", 0:5), AICc = NA)
+
+
+DF$AICc[1] <- AICc.PERMANOVA2(Mod0)$AICc
+DF$AICc[2] <-  AICc.PERMANOVA2(Mod1)$AICc
+DF$AICc[3] <- AICc.PERMANOVA2(Mod2)$AICc
+DF$AICc[4] <-  AICc.PERMANOVA2(Mod3)$AICc
+DF$AICc[5] <-  AICc.PERMANOVA2(Mod4)$AICc
+DF$AICc[6] <-  AICc.PERMANOVA2(Mod5)$AICc
+
+
+```
+
+Altitud, oceano y cob veg en invierno
+Altitud, oceano y sup imp en primavera
 
 4. Specific/key results in details
 
-Both sampled seasons showed that few species contribute to differences between habitats. Acccording to simper analysis, during winter species were *Pelecanus thagus*, *Larus dominicanus*, *Coragyps atratus*, *Larosterna inca*, *Leucophaeus modestus*, *Columba livia*, *Turdus falcklandii*, and *Sephanoides sephaniodes*; and during spring, *Leucophaeus pipixcan*, *Larus dominicanus*, *Columba livia*, *Larosterna inca*, *Phalacrocorax bougainvillii*, and *Pelecanus thagus*.  (For a complete species list of SIMPER, see Suplementary material).
+Both sampled seasons showed that few species contribute to differences between habitats. Acccording to simper analysis, during winter species were *Pelecanus thagus*, *Larus dominicanus*, *Coragyps atratus*, *Larosterna inca*, *Leucophaeus modestus*, *Columba livia*, *Turdus falcklandii*, and *Sephanoides sephaniodes*; and during spring, *Leucophaeus pipixcan*, *Larus dominicanus*, *Columba livia*, *Larosterna inca*, *Phalacrocorax bougainvillii*, and *Pelecanus thagus*.  (For a complete species list of SIMPER, see Suplementary material SimperPrim, SimperInv).
 
-
-Predictions in the studied area indicates differences of habitat use (Fig. \@ref(fig:OccuInv) and \@ref(fig:OccuPrim))
-
-Species such as xxx, showed differernces in habitat use between seasons.
-(Fig. \@ref(fig:OccuInv)), (Fig. \@ref(fig:OccuPrim))
 
 
 ```{r OccuInv, fig.width=10, fig.height=7}
@@ -538,7 +525,7 @@ nudge_x=-5000, nudge_y = 1000)+
 
 ```
 
-```{r, fig.width=13, fig.height=6}
+```{r Ocupancia, fig.width=13, fig.height=6}
 
 layout <- "
 AAAA
@@ -549,20 +536,16 @@ OcuI + OcuP+plot_annotation(tag_levels = 'A')+ plot_layout(design = layout)
 ```
 
 
+
+Predictions in the studied area indicates differences of habitat use (Fig. \@ref(fig:OccuInv) and \@ref(fig:OccuPrim))
+
+Species such as xxx, showed differernces in habitat use between seasons.
+(Fig. \@ref(fig:OccuInv)), (Fig. \@ref(fig:OccuPrim))
+
 During winter, community assemblages were explain by three environmental variables: coastal urban habitats, crops and tree plantations. 
 In spring, variables were coastal urban habitats and native forest.
 
 
-```{r}
-#ORDISTEP
-
-#Invierno
-#Step: AvesInv2 ~ AMBIENTE + Cultivos + `Plantacion de arboles`
-
-#Primavera
-#Step: AvesPrim2 ~ AMBIENTE + `Bosque nativo` 
-
-```
 
 species for each habitat
 Occupancy model map show
@@ -577,26 +560,26 @@ ModelosOccuPrim <- read_rds("ModelosOccuPrim_Ms.rds")
 
 Finally, use of these habitats can be seen with the activity record of bird species.
 
-```{r Comportamineto, fig.height=8, fig.width=10}
-ComportamientoInv <- read_rds("ComportamientoInv.rds")
-I <-ggplot(ComportamientoInv) + 
-  geom_col(aes(x=AMBIENTE, y=Total_ind, fill=Comportamiento), color="black") + theme_classic()+ facet_wrap(~Cientifico, ncol=4, scales = "free_y")+  
-  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1))+ ylab("Número individuos") +xlab(" ")+
-  scale_fill_manual(aesthetics = "fill", values = c('#a6cee3','#1f78b4','#33a02c','#e31a1c','#fdbf6f','#ff7f00'), name="Bird behavior")
-
-ComportamientoPrim <- read_rds( "ComportamientoPrim.rds")
-
-P <-ggplot(ComportamientoPrim) + 
-  geom_col(aes(x=AMBIENTE, y=Total_ind, fill=Comportamiento), color="black") + theme_classic()+ facet_wrap(~Cientifico, ncol=3, scales = "free_y")+  
-  theme(legend.position = "right", axis.text.x = element_text(angle = 45, hjust = 1))+ ylab("Número individuos") +xlab(" ")+
-  scale_fill_manual(aesthetics = "fill", values = c('#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00'), name="Bird behavior")
-
-layout <- "
-AAAAAAAA
-BBBBBBB#
-"
-I + P + plot_layout(design = layout) +plot_annotation(tag_levels = 'A')
-
+```{r Comportamiento, fig.height=8, fig.width=10}
+# ComportamientoInv <- read_rds("ComportamientoInv.rds")
+# I <-ggplot(ComportamientoInv) + 
+#   geom_col(aes(x=AMBIENTE, y=Total_ind, fill=Comportamiento), color="black") + theme_classic()+ facet_wrap(~Cientifico, ncol=4, scales = "free_y")+  
+#   theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1))+ ylab("Número individuos") +xlab(" ")+
+#   scale_fill_manual(aesthetics = "fill", values = c('#a6cee3','#1f78b4','#33a02c','#e31a1c','#fdbf6f','#ff7f00'), name="Bird behavior")
+# 
+# ComportamientoPrim <- read_rds( "ComportamientoPrim.rds")
+# 
+# P <-ggplot(ComportamientoPrim) + 
+#   geom_col(aes(x=AMBIENTE, y=Total_ind, fill=Comportamiento), color="black") + theme_classic()+ facet_wrap(~Cientifico, ncol=3, scales = "free_y")+  
+#   theme(legend.position = "right", axis.text.x = element_text(angle = 45, hjust = 1))+ ylab("Número individuos") +xlab(" ")+
+#   scale_fill_manual(aesthetics = "fill", values = c('#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00'), name="Bird behavior")
+# 
+# layout <- "
+# AAAAAAAA
+# BBBBBBB#
+# "
+# I + P + plot_layout(design = layout) +plot_annotation(tag_levels = 'A')
+# 
 
 ```
 

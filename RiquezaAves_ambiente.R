@@ -20,6 +20,8 @@ AvesInv <- left_join(x=AvesInv, y= BirdNames)
 #Grafico riqueza especies invierno
 AvesInv_riq <- AvesInv %>% group_by(AMBIENTE,Sitio, Habitat) %>% summarise(Riqueza = n())
 
+saveRDS(AvesInv_riq, "AvesInv_riq.rds")
+
 AvesInv_riq2 <- AvesInv_riq %>% group_by(AMBIENTE, Habitat) %>% summarise_at("Riqueza", .funs = list(mean=mean, max=max, min=min)) %>% 
   mutate(AMBIENTE=fct_relevel(AMBIENTE, "VERDE", "URBANO", "ROQUERIO NATURAL","ROQUERIO INTERVENIDO","PLAYA NATURAL","PLAYA INTERVENIDA"))
 
@@ -50,6 +52,8 @@ AvesPrim <- left_join(x=AvesPrim, y= BirdNames)
 #Grafico riqueza especies primavera
 
 AvesPrim_riq <- AvesPrim %>% group_by(AMBIENTE,Sitio, Habitat) %>% summarise(Riqueza = n())
+
+saveRDS(AvesPrim_riq, "AvesPrim_riq.rds")
 
 AvesPrim_riq2 <- AvesPrim_riq %>% group_by(AMBIENTE, Habitat) %>% summarise_at("Riqueza", .funs = list(mean=mean, max=max, min=min)) %>% 
   mutate(AMBIENTE=fct_relevel(AMBIENTE, "VERDE", "URBANO", "ROQUERIO NATURAL","ROQUERIO INTERVENIDO","PLAYA NATURAL","PLAYA INTERVENIDA"))

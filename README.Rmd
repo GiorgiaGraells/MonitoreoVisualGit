@@ -128,6 +128,7 @@ Se modifica tambien la importacion de este nuevo dataframe para hacer los analis
 ## Escritura manuscrito, arreglo de figuras y analisis especificos
 
 Escritura de manuscrito en ingles **Ms_HabitatAves.Rmd**
+
 El manuscrito cuenta con imput desde: 
 - Algunos analisis ubicados en **Analisis_HabitatAves.R**. 
 - Ocupancia de las especies obtenidas de simper para invierno y primavera en **Occu_especifica_Ms.R**, resultados en **Resultado_OccuPrim_Ms.rds** y **Resultado_OccuInv_Ms.rds**.
@@ -141,6 +142,7 @@ Esta presentación surgió con la idea de darle una vuelta a los resultados de e
 Archivo: **Figuras presentacion lab.R**
 Se alimenta de los archivos
 - **RiquezaAves_ambiente.R** tiene riqueza de aves y la riqueza a partir de los modelos de prediccion
+- desde **RiquezaAves_ambiente.R** se exportan **AvesInv_riq.rds** y **AvesPrim_riq.rds**
 
 
 

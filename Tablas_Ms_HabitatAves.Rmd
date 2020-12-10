@@ -15,7 +15,7 @@ library(tidyverse)
 
 
 
-```{r}
+```{r ModPredRiqueza}
 # GLMmixto con variables aleatorias
 library(MuMIn)
 
@@ -51,9 +51,7 @@ kable(Final_DF, digits = 2, booktabs=T) %>%  kable_styling(latex_options = c("sc
 ```
 
 
-
-
-```{r,results='asis'}
+```{r ModGLMEstacion,results='asis'}
 #Modelo 1= Abundancia ~ Estacion * Especie + AMBIENTE+ (1|Sitio), family = poisson, data =Aves ) #AIC 17716.1
 #Modelo 2= Abundancia ~ Especie + AMBIENTE+ (1|Sitio), family = poisson, data =Aves )           #AIC 18241.0
 DF_seasson <- tibble(Model= c("$Estacion \\times Especie + Ambiente+ \\frac{1}{Sitio}$", "$Especie + Ambiente + \\frac{1}{Sitio}$"), AIC= c(17716.1, 18241.0))
@@ -62,21 +60,22 @@ kable(DF_seasson, booktabs=T, escape = F) %>% kable_styling(latex_options = "bas
 
 ```
 
-```{r, results='asis'}
+
+```{r SimperInv, results='asis'}
 Inv_DF <-  read.csv("ResumenSimper_Inv2.csv") %>% as.data.frame() 
 kable(Inv_DF, booktabs = T) 
 
 ```
 
 
-
-```{r, results='asis'}
+```{r SimperPrim, results='asis'}
 Prim_DF <-  read.csv("ResumenSimper_Prim2.csv") %>% as.data.frame()
 kable(Prim_DF, booktabs = T) 
 
 ```
 
-```{r, results='asis'}
+
+```{r ModOcuPrim, results='asis'}
 DF_occu <- tibble( Species= c("Columba livia", "Larus dominicanus", "Leucophaeus pipixcan", "Pelecanus thagus", "Phalacrocorax bougainvillii"), 
                    Equation= c("$\\psi_{Cl} = e^{-39.76 + 45.23Na - 21.04Gr + 44.82Sa}$",
                                "$\\psi_{Ld} = e^{12.45}$", 
@@ -89,7 +88,7 @@ kable(DF_occu, booktabs=T, escape = F) %>% kable_styling(latex_options = "basic"
 ```
 
 
-```{r, results='asis'}
+```{r ModOcuInv, results='asis'}
 DF_occu <- tibble( Species= c("Columba livia","Coragyps atratus", "Larosterna inca", "Larus dominicanus", "Leucophaeus modestus", "Pelecanus thagus", "Sephanoides sephaniodes", "Turdus falcklandii"), 
                    Equation= c("$\\psi_{Cl} = e^{-1.77 + 1.83Sa}$", 
                                "$\\psi_{Ca} = e^{7.57 -3.29Pa +	33.80Sa}$", 
