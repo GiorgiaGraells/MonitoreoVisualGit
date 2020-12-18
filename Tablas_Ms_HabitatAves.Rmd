@@ -14,7 +14,19 @@ library(tidyverse)
 
 ```
 
+```{r covariables, results='asis'}
+DF_cov <- tibble( `Detection covariables`= c("Temperatura","Humedad", "DirViento" ,"RapViento", "Agua"), 
+                   `Occupancy covariables`= c("Vegetation cover","Altitude","Distance to river",
+                                              "Grassland", "Shrublands", "Native forest","Tree plantation" ,"Crops" ,
+                                              "Paved surface","Sand", "Gravel", "Ocean" )
+                   )
 
+kable(DF_cov, booktabs=T, escape = F) %>% kable_styling(latex_options = "basic") %>% column_spec(column = 1, italic = T)
+
+ 
+
+
+```
 
 ```{r ModPredRiqueza}
 # GLMmixto con variables aleatorias

@@ -58,6 +58,12 @@ Amb <- Amb %>% dplyr::select(-Sitio) %>%
          AMBIENTE= str_replace(AMBIENTE,"PLAYA NATURAL", "Natural beach"))
 ```
 
+# Abstract
+
+I. 
+M.
+R.Six environments present specific assembles and they are determined mostly by variables such as altitude and percentage of the ocean in the areas. From the species ocurrence in those, there are strictly marine species and some can move to inland environments. Most of the terrestrial species are less strict and they manage to get closer to the ocean, specifically in areas with native vegetation such as natural beaches and natural rocky shore (with hay percentage of shrubs and native forrest).
+D-C. Elements of urbanization and closeness to the coast are important factors on bird assemblages
 
 
 
@@ -78,38 +84,29 @@ Studies suggest that bird communities in cities are more similar to urban commun
 Cities in coastal areas combine many key economic activities such as marine transport, shipping of goods, fishing, recreation, and tourism. These areas are attractive for people to settle and by 2017, about 40%  of the world’s population live within 100 km of the coast [@UNocean_fact2017].
 Hence, only in 2009, 67% of magacities corresponded to coastal cities *von glasgow 2013*.
 Species and ecosystems of coastal areas are often threatened by the growing urbanization, the landscape change, and also by the vulnerable that this area is naturally
-
 Even this scenario, urbanization has been mostly focus in terrestrial aspects, and even when more than the half of the cities in the world rise on the coast, there is a lack of studies addressing marine and terrestrial interactions.
 
 
 3. Locate the gap-describe the problem to address-present a prediction to be tested
 
 Birds have been largely studied in urban ecology and they are considered one of the most recognised ways to interact with nature [@miller2002conservation;@jones2011appetite]
-
 Urban homogenization has been studied in cities and there is many information about bird species.
 Considering bird communities in urban areas depend of the peri-urban composition of species, there are no studies in the effects of marine habitats.
-
 Although birds are the most research species in coastal urban studies, most of the literature have been centered in pollution and human impacts and they have focused on terrestrial ecosystems [@graells2020review].
-
 There is a gap in studies that focus in coastal ecotone and the influence of urban areas focusing on marine and terrestrial interaction of species in an urbanized area and how birds use it.
 
-
 This research aim to identified the use of coastal urban habitats by birds describing the composition of species in different environments, considering bird species origin (marine and terrestrial).
-
 Specifically, the objectives of this study are: 
 1. Identify bird species assemble in coastal urban environments, specifically the interaction between marine and inland birds, 
-2. Caracterize differences among those bird assembles, 
+2. Caracterize differences among those bird assembles, and
 3. identify patterns in spatial use in coastal cities from iconic bird species habitat occupation.
 
 4. Describe the present paper
-[Give details about the methodology reported in the paper]
 
+We studied coastal urban diversity of birds in the Graeter Valparaíso, determined assembles in different environments, relationships with environmental conditions and occupancy of key bird species.
+Bird assembles showed to be different among environments, showing that variability of urban habitats in coastal areas allow specific species composition, hence the coexistence of marine and inland bird species.
 
-We studied coastal urban diversity of birds in the Graeter Valparaíso, determined assembles in different environments, relationships with environmental conditions and occupancy of bird species.
-
-[Announces the findings]
-Bird assembles showed to be different among environments, showing that urban habitats in coastal areas present the conditions that allow specific species composition. This allow the coexistence of marine and inland bird species.
-
+**Conclusion: La variabilidad ambiental dentro de las ciudades costeras permite la co-ocurrencia de especies marinas y terrestres, determinando ensambles especfíficos para los distintos ambientes**
 
 
 # Methodology
@@ -583,30 +580,38 @@ ModelosOccuPrim <- read_rds("ModelosOccuPrim_Ms.rds")
 [Revisit previous research]
 [Revisit Introduction to recall specific weakness in methodology used in previous studies]
 
-Living in the city: can anyone become an‘urban exploiter’?
-Are urban bird communities influenced by the bird diversity of adjacent landscapes?
-Generalists are the most urban-tolerant of birds: a phylogenetically controlled analysis of ecological and life history traits using a novel continuous measure of bird responses to urbanization
-Bird Diversity in Urban Ecosystems: The Role of the Biome and Land Use Along Urbanization Gradients
-Arthropod abundance modulates bird community responses to urbanization   … es importante considerar la disponibilidad de alimento en especies que pueden movilizarse desde su ambiente ideal?
-A habitat island approach to conserving birdsin urban landscapes: case studies from southernand northern Europe
-Distribution and habitat selection of wintering birds in urbanenvironments
-Bird communities and the structure of urban habitats
-Species interactions and habitat associations of birds inhabiting urban areas of Sydney, Australia
-
 
 2. Mapping 
 [Revisit methodology used in this study]
+
+This study gives information about not only bird species richness found in coastal urban habitats, also describe species identity in terms of assembles adapted in specific conditions within the city and bird ocurrence in continuos conditions 
+
 [Revisit and summaries the results]
+Six environments present specific assembles and they are determined mostly by variables such as altitude and percentage of the ocean in the areas. From the species ocurrence in those, there are strictly marine species and some can move to inland environments. Most of the terrestrial species are less strict and they manage to get closer to the ocean, specifically in areas with native vegetation such as natural beaches and natural rocky shore (with hay percentage of shrubs and native forrest).
+
 [Show where and how the present work fits into the research "map" in this field]
+
 
 3. Achievements/contributions- refining implications
 [Recall an aspect of the results that represents a positive achievement or contribution of this work]
+
+Environmental variability within coastal urban areas could allow the co-ocurrence of marine and terrestrial bird species, which is reflected in specific asembles in the six studied environments. 
+
 [Focus in the meaning and implications of the achievements in this work]
+
+
+
+
+
 [Note if one of the achievement or contributions of the work is a novelty]
 [Describe implications of the results, including possible applications]
 
 4. Limitations-current and future work-applications
 [Describe limitations which should direct future research]
+High variability among studied environments plays a difficult rol 
+This is considered at the momnet of occupancy analysis and analysis are made considering continuos data
+It is possible that buffer area of influence should be specific for each species
+
 [Suggest a specific area to be addressed in future work]
 
 
