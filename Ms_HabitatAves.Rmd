@@ -511,20 +511,12 @@ In spring, four species are strictly marine and two are present in the whole sty
 Only four species are present in both seasons. From those, two of species  showed the same use of habitats between winter and sprin (**Larus dominicanus** and **Pelecanus thagus**), while the other two showed differences between seasons (**Columba livia** and **Larosterna inca**).
 *Larus dominicanus* presented the maximun probability of occupancy in the whole area both winter and spring. In this case, there was none covariable in the model that determined the occupancy. 
 Occupancy of *Pelcanus thagus* is almos identical between both seasons. Projection shows the maximun probability of ocupancy in the coast and probabilities of zero in inland areas. The ocurrence of this species is determined by the altitude (negative effect) and in the winter ausence of native forest, grave and the presence of ocean surface, and in spring the presence of native forest, and the ausence of shrubs and sand.
+During the winter the ocurrence of *Columba livia* is focussed in certain coastal areas, defined by the presence of sand (mapa y modelo). During the spring, its presence is high in almost the whole study area with exception of some small areas. According to the model selected, the presence of native forest and sand, and the ausence of grave and tree plantation allow this pattern.
+*Larosterna inca* shows similar ocurrence in both seasons, however during the spring it expand a little to the inland in some specific parts of the study area. The ocurrence is determined by covariables such as altitud, native forest, sand (winter), and crops and ocean (spring).
 
 
-
-  
 During winter, community assemblages were explain by three environmental variables: coastal urban habitats, crops and tree plantations. In spring, variables were coastal urban habitats and native forest.
 
-
-
-*Larosterna inca* shows similar ocurrence in both seasons, however during the spring it expand a little to the inland in some specific parts of the study area. The ocurrence is determine  
-
-
-
-
-*Columba livia* . During the winter its presence is focussed in certain coastal areas, defined by the presence of sand (mapa y modelo). During the spring, its presence is high in almost the whole study area with exception of some small areas. According to the model selected, the presence of native forest and sand, and the ausence of grave and tree plantation allow this pattern.
 
 
 ```{r}
@@ -561,8 +553,6 @@ ModelosOccuPrim <- read_rds("ModelosOccuPrim_Ms.rds")
 
 
 
-
-
 ### Discussion/Conclusion
 
 1. Revising previous research- summaries
@@ -573,13 +563,19 @@ ModelosOccuPrim <- read_rds("ModelosOccuPrim_Ms.rds")
 2. Mapping 
 [Revisit methodology used in this study]
 
-This study gives information about not only bird species richness found in coastal urban habitats, also describe species identity in terms of assembles adapted in specific conditions within the city and bird ocurrence in continuos conditions 
+This study gives information about not only bird species richness found in coastal urban habitats, also describe species identity in terms of assembles adapted in specific conditions within the metropolitan coastal area and bird ocurrence in continuos conditions.
 
 [Revisit and summaries the results]
-Coastal urban environment studied present specific assembles of birds and they are determined mostly by variables such as altitude and ocean surface surrounding that areas. From the species ocurrence in those, there are strictly marine species and some can move to inland environments. Most of the terrestrial species are less strict and they manage to get closer to the ocean, specifically in areas with native vegetation such as natural beaches and natural rocky shore (with hay percentage of shrubs and native forrest).
+Coastal urban environment studied present specific assembles of birds and they are determined mostly by variables such as altitude and ocean surface surrounding that areas. 
+From the key species studied, there are strictly marine species and some can move to inland environments. Most of the terrestrial species are less strict and they manage to get closer to the ocean, specifically in areas with native vegetation such as natural beaches and natural rocky shore (with high percentage of shrubs and native forrest).
 
 [Show where and how the present work fits into the research "map" in this field]
+Althogh assembles found in coastal urban areas were different among them, there were several species shared and only a few that contribute to the difference between pairs of comparision. 
+This specific species showed that marine species ocurrence is determined by not only marine variables
+and terestrial species can be positive influence by conditions presented in the coast line.
 
+The evidence shows that in inland areas only high urbanized environments present low abundance of species, nevertheless 
+most of the birds 
 
 3. Achievements/contributions- refining implications
 [Recall an aspect of the results that represents a positive achievement or contribution of this work]
