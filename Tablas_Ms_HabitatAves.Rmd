@@ -32,13 +32,15 @@ kable(DF_cov, booktabs=T, escape = F) %>% kable_styling(latex_options = "basic")
 # GLMmixto con variables aleatorias
 library(MuMIn)
 
-nuevoinv <- AvesInv_riq %>% ungroup() %>% mutate(Temporada="Winter") %>% 
+AvesInv_riq <- readRDS("AvesInv_riq.rds")
+nuevoinv <- AvesInv_riq  %>% mutate(Temporada="Winter") %>% 
   mutate(Ambiente = case_when(AMBIENTE == "PLAYA INTERVENIDA"| AMBIENTE =="PLAYA NATURAL"~"Beach",
                               AMBIENTE =="ROQUERIO INTERVENIDO"| AMBIENTE =="ROQUERIO NATURAL"~"Rocky shore",
                               AMBIENTE =="URBANO" | AMBIENTE == "VERDE"~"Land")) %>% 
   mutate(Grado_modificacion=case_when(AMBIENTE == "PLAYA INTERVENIDA"| AMBIENTE =="ROQUERIO INTERVENIDO" |AMBIENTE =="URBANO"~"Modified",
                                       AMBIENTE == "PLAYA NATURAL"| AMBIENTE =="ROQUERIO NATURAL" |AMBIENTE =="VERDE"~"Natural" ))
 
+AvesPrim_riq <- readRDS("AvesPrim_riq.rds")
 nuevoprim <- AvesPrim_riq %>% ungroup() %>% mutate(Temporada="Spring") %>% 
   mutate(Ambiente = case_when(AMBIENTE == "PLAYA INTERVENIDA"| AMBIENTE =="PLAYA NATURAL"~"Beach",
                               AMBIENTE =="ROQUERIO INTERVENIDO"| AMBIENTE =="ROQUERIO NATURAL"~"Rocky shore",

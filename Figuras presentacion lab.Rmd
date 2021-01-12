@@ -83,7 +83,7 @@ B <-ggplot(AvesPrim_riq2, aes(x=AMBIENTE, y=mean)) + geom_col(aes(fill=Habitat),
   xlab(" ")+ geom_errorbar(aes(ymin=min, ymax=max), position = position_dodge2(width = 0.1, padding = 0.7))+ 
   facet_wrap(~AMBIENTE, scales = "free_x", ncol=2) +   theme(axis.text.x=element_blank())
 
-#A+B + plot_layout(guides = 'collect')
+A+B + plot_layout(guides = 'collect')
 ```
 
 
