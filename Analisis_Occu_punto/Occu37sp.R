@@ -615,6 +615,13 @@ ggplot(Seleccionados, aes(x = Distancia, y = n)) +
   geom_path() +
   theme_bw() 
 
+PorEspecie <- Todos %>% 
+  group_by(Especies) %>% 
+  dplyr::filter(AICc == min(AICc)) %>% 
+  ungroup() %>% dplyr::select(Especies, Distancia) %>% 
+  dplyr::distinct() %>% 
+  arrange(Distancia)
+
 #######
 
 #Grafico para todas las especies y variables x distancia
