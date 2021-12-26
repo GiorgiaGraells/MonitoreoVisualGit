@@ -505,3 +505,34 @@ PorEspecie <- Todos %>%
   ungroup() %>% dplyr::select(Especies, Distancia) %>% 
   dplyr::distinct() %>% 
   arrange(Distancia)
+
+## Resumen temporadas
+
+TodosPrim <-read_csv("Resumen_ocuPrimNuevo_buffer.csv")
+
+
+PorEspeciePrim <- TodosPrim %>% 
+  group_by(Especies) %>% 
+  dplyr::filter(AICc == min(AICc)) %>% 
+  ungroup() %>% dplyr::select(Especies, Distancia) %>% 
+  dplyr::distinct() %>% 
+  arrange(Distancia) %>% 
+  rename(Distancia_Prim = Distancia)
+
+TodosInv <-read_csv("Resumen_ocuInvNuevo_buffer.csv")
+
+
+PorEspecieInv <- TodosInv %>% 
+  group_by(Especies) %>% 
+  dplyr::filter(AICc == min(AICc)) %>% 
+  ungroup() %>% dplyr::select(Especies, Distancia) %>% 
+  dplyr::distinct() %>% 
+  arrange(Distancia) %>% 
+  rename(Distancia_Inv = Distancia)
+
+PorEspecie <- full_join(PorEspecieInv, PorEspeciePrim) %>% 
+  dplyr::filter(Especies != "Larus_dominicanus") %>% 
+  group_by(Especies) %>% 
+  rowwise() %>% 
+  mutate(Distancia=mean(c(Distancia_Inv, Distancia_Prim), na.rm=T)) %>% 
+  arrange(Distancia) 
